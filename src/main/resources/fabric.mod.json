@@ -1,35 +1,36 @@
 {
 	"schemaVersion": 1,
-	"id": "skyblock-overhaul",
+	"id": "sbo-kotlin",
 	"version": "${version}",
-	"name": "Skyblock Overhaul",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "SBO-Kotlin",
+	"description": "SBO is the ultimate diana mod for diana nons! FPS friendly, and packed with QOL features!",
 	"authors": [
-		"Me!"
+		"D4rkSwift/Saotzuri",
+		"RolexDE"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/skyblock-overhaul/icon.png",
+	"icon": "assets/sbo-kotlin/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
 			{
-				"value": "net.sbo.mod.SkyblockOverhaul",
+				"value": "net.sbo.mod.SBOKotlin",
 				"adapter": "kotlin"
 			}
 		],
 		"fabric-datagen": [
 			{
-				"value": "net.sbo.mod.SkyblockOverhaulDataGenerator",
+				"value": "net.sbo.mod.SBOKotlinDataGenerator",
 				"adapter": "kotlin"
 			}
 		]
 	},
 	"mixins": [
-		"skyblock-overhaul.mixins.json"
+		"sbo-kotlin.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.16.14",
