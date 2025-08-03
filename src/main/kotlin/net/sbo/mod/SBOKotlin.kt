@@ -8,6 +8,6 @@ object SBOKotlin : ModInitializer {
     private val logger = LoggerFactory.getLogger(MOD_ID)
 
 	override fun onInitialize() {
-		logger.info("Hello Fabric world!")
+		logger.info("Hello Fabric world!!")
 	}
 }
