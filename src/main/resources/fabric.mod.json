@@ -22,9 +22,9 @@
 				"adapter": "kotlin"
 			}
 		],
-		"fabric-datagen": [
+		"client": [
 			{
-				"value": "net.sbo.mod.SBOKotlinDataGenerator",
+				"value": "net.sbo.mod.SBOKotlin",
 				"adapter": "kotlin"
 			}
 		]
