@@ -10,6 +10,7 @@ object Chat {
     /**
      * Sends a command to the server.
      * This correctly simulates a player typing a command.
+     * * @param command The command to send, without the leading slash.
      */
     fun command(command: String) {
         if (command.startsWith("/")) {
@@ -22,6 +23,7 @@ object Chat {
 
     /**
      * Shows a local chat message only visible to the player.
+     * * @param message The message to display in the chat.
      */
     fun chat(message: String) {
         client.inGameHud.chatHud.addMessage(Text.of(message))
