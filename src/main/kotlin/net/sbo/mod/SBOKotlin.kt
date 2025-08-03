@@ -2,15 +2,14 @@ package net.sbo.mod
 
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
-import net.minecraft.client.MinecraftClient
 import org.slf4j.LoggerFactory
-import net.minecraft.text.Text
 import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.Chat
 
 object SBOKotlin : ModInitializer, ClientModInitializer {
 	private const val MOD_ID = "sbo-kotlin"
 	internal val logger = LoggerFactory.getLogger(MOD_ID)
+	private var xx = 5
 
 	override fun onInitialize() {
 		logger.info("Hello from the common Fabric world!")
@@ -45,20 +44,22 @@ object SBOKotlin : ModInitializer, ClientModInitializer {
 			logger.info("Key pressed in GUI: ${screen.title.string}, Key: $key")
 		}
 
-//		Register.onRenderOverlay { matrices, tickDelta ->
+		Register.onTick(20) { tickDelta ->
+			xx += 1
+		}
+
+//		Register.onRenderOverlay { context, tickDelta ->
 //			val client = MinecraftClient.getInstance()
 //			val textRenderer = client.textRenderer
-//
-//			// Der Text, der angezeigt werden soll
 //			val text = "Hallo Welt!"
+//			val color = 0x000000 // Schwarz
 //
-//			// Zeichne den Text an den Koordinaten (5, 5) mit einem Schatten
-//			textRenderer.drawStringWithShadow(
-//				matrices,
+//			context.drawTextWithShadow(
+//				textRenderer,
 //				text,
-//				5f,
-//				5f,
-//				0xFFFFFF // weiße Farbe
+//				xx,
+//				5,
+//				color
 //			)
 //		}
 	}
