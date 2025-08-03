@@ -18,16 +18,16 @@ import net.minecraft.client.gui.DrawContext
 object Register {
     private val guiOpenActions = mutableListOf<(client: MinecraftClient, screen: Screen) -> Unit>()
     private val guiCloseActions = mutableListOf<(client: MinecraftClient, screen: Screen) -> Unit>()
-    private val guiRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen) -> Unit>()
-    private val guiPostRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen) -> Unit>()
+    private val guiRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
+    private val guiPostRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
     private val guiKeyActions = mutableListOf<(client: MinecraftClient, screen: Screen, key: Int) -> Unit>()
     private val renderWorldActions = mutableListOf<(tickDelta: Float) -> Unit>()
     private val renderOverlayActions = mutableListOf<(DrawContext, Float) -> Unit>()
 
     fun runGuiOpenActions(client: MinecraftClient, screen: Screen) { guiOpenActions.forEach { action -> action(client, screen) } }
     fun runGuiCloseActions(client: MinecraftClient, screen: Screen) { guiCloseActions.forEach { action -> action(client, screen) } }
-    fun runGuiRenderActions(client: MinecraftClient, screen: Screen) { guiRenderActions.forEach { action -> action(client, screen) } }
-    fun runGuiPostRenderActions( client: MinecraftClient, screen: Screen) { guiPostRenderActions.forEach { action -> action(client, screen) } }
+    fun runGuiRenderActions(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
+    fun runGuiPostRenderActions( client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiPostRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
     fun runGuiKeyActions(client: MinecraftClient, screen: Screen, key: Int) { guiKeyActions.forEach { action -> action(client, screen, key) } }
     fun runRenderWorldActions(tickDelta: Float) { renderWorldActions.forEach { action -> action(tickDelta) } }
     fun runRenderOverlayActions(matrices: DrawContext, tickDelta: Float) { renderOverlayActions.forEach { action -> action(matrices, tickDelta) } }
@@ -105,7 +105,7 @@ object Register {
      * Registers an event that listens for GUI render events and executes an action.
      * @param action The action to execute when a GUI is rendered.
      */
-    fun onGuiRender(action: (client: MinecraftClient, screen: Screen) -> Unit) {
+    fun onGuiRender(action: (client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit) {
         guiRenderActions.add(action)
     }
 
@@ -113,7 +113,7 @@ object Register {
      * Registers an event that listens for GUI post-render events and executes an action.
      * @param action The action to execute after a GUI is rendered.
      */
-    fun onGuiPostRender(action: (client: MinecraftClient, screen: Screen) -> Unit) {
+    fun onGuiPostRender(action: (client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit) {
         guiPostRenderActions.add(action)
     }
 

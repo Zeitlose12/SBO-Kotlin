@@ -8,25 +8,28 @@ import org.spongepowered.asm.mixin.injection.At
 import org.spongepowered.asm.mixin.injection.Inject
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
+import net.minecraft.client.gui.DrawContext // Wichtiger Import
 
 @Mixin(Screen::class)
 abstract class ScreenMixin {
 
+    // Korrigierte onRender-Methode
     @Inject(method = ["render"], at = [At("HEAD")])
-    fun onRender(ci: CallbackInfo) {
+    fun onRender(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float, ci: CallbackInfo) {
         val client = MinecraftClient.getInstance()
         val currentScreen = client.currentScreen
         if (currentScreen != null) {
-            Register.runGuiRenderActions(client, currentScreen)
+            Register.runGuiRenderActions(client, currentScreen, context, mouseX, mouseY, delta)
         }
     }
 
+    // Korrigierte onPostRender-Methode
     @Inject(method = ["render"], at = [At("RETURN")])
-    fun onPostRender(ci: CallbackInfo) {
+    fun onPostRender(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float, ci: CallbackInfo) {
         val client = MinecraftClient.getInstance()
         val currentScreen = client.currentScreen
         if (currentScreen != null) {
-            Register.runGuiPostRenderActions(client, currentScreen)
+            Register.runGuiPostRenderActions(client, currentScreen, context, mouseX, mouseY, delta)
         }
     }
 
