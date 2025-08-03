@@ -1,9 +1,12 @@
 {
 	"required": true,
-	"package": "net.sbo.mod.mixin",
+	"package": "net.sbo.mod.mixins",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin"
+		"MinecraftClientMixin",
+		"ScreenMixin",
+		"GameRendererMixin",
+		"InGameHudMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
