@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient
 import org.slf4j.LoggerFactory
 import net.minecraft.text.Text
 import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.Chat
 
 object SBOKotlin : ModInitializer, ClientModInitializer {
 	private const val MOD_ID = "sbo-kotlin"
@@ -18,9 +19,10 @@ object SBOKotlin : ModInitializer, ClientModInitializer {
 	override fun onInitializeClient() {
 		logger.info("Hello from the client-specific Fabric world!")
 
-		Register.command("sbo-kotlin") { context ->
-			context.source.sendFeedback(Text.of("Hello from the sbo-kotlin command!"))
-			1 // Return 1 to indicate success
+		Register.command("sbotest") { context ->
+			Chat.chat("Hello from the sbo-kotlin mod!")
+			Chat.command("say Hello from the sbo-kotlin mod! command!")
+			1
 		}
 
 		Register.onChatMessage("§7unclaimed event rewards!") { message ->
