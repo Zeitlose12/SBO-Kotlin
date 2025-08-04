@@ -30,7 +30,7 @@
 		]
 	},
 	"mixins": [
-		"sbo-kotlin.mixins.json"
+		"mixins.sbo-kotlin.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.16.14",
