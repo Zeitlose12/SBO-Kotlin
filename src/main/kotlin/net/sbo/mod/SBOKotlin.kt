@@ -2,9 +2,11 @@ package net.sbo.mod
 
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import org.slf4j.LoggerFactory
 import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.Chat
+import net.sbo.mod.render.MyWaypointRenderer
 
 object SBOKotlin : ModInitializer, ClientModInitializer {
 	private const val MOD_ID = "sbo-kotlin"
@@ -47,6 +49,8 @@ object SBOKotlin : ModInitializer, ClientModInitializer {
 		Register.onTick(20) { tickDelta ->
 			xx += 1
 		}
+
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(MyWaypointRenderer)
 
 //		Register.onRenderOverlay { context, tickDelta ->
 //			val client = MinecraftClient.getInstance()

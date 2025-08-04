@@ -1,0 +1,201 @@
+package net.sbo.mod.render
+
+import net.sbo.mod.mixins.BeaconRendererMixin
+import net.sbo.mod.utils.SboVec
+import net.fabricmc.fabric.api.client.rendering.v1.*
+import net.minecraft.client.MinecraftClient
+import net.minecraft.client.font.TextRenderer
+import net.minecraft.client.render.*
+import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.util.math.RotationAxis
+
+import java.lang.reflect.Method
+import java.awt.Color
+
+object MyWaypointRenderer : WorldRenderEvents.AfterTranslucent {
+    override fun afterTranslucent(context: WorldRenderContext) {
+        RenderUtil.drawString(
+            context,
+            SboVec(100.0, 101.3, 100.0),
+            "Waypoint",
+            Color.WHITE.rgb,
+            false,
+            0.02,
+            true
+        )
+
+        // Example of drawing a filled box
+        RenderUtil.drawFilledBox(
+            context,
+            SboVec(100.0, 100.0, 100.0),
+            1.0,
+            1.0,
+            1.0,
+            floatArrayOf(0.0f, 1.0f, 0.0f), // RGB (green)
+            0.4f,
+            true
+        )
+
+//        RenderUtil.renderBeaconBeam(
+//            context,
+//            SboVec(100.0, 100.0, 100.0),
+//            floatArrayOf(1.0f, 0.0f, 0.0f) // RGB (red)
+//        )
+
+    }
+}
+
+object RenderUtil {
+    private val mc: MinecraftClient = MinecraftClient.getInstance()
+    private var renderBeamMethod: Method? = null
+
+    /**
+     * Draws a filled box at the specified world coordinates.
+     * @param context The world render context.
+     * @param pos The position in the world where the box should be drawn.
+     * @param width The width of the box.
+     * @param height The height of the box.
+     * @param depth The depth of the box.
+     * @param colorComponents The RGB color components as a FloatArray (0.0 to 1.0).
+     * @param alpha The alpha value for transparency (0.0 to 1.0).
+     * @param throughWalls Whether the box should be drawn through walls.
+     */
+    fun drawFilledBox(
+        context: WorldRenderContext,
+        pos: SboVec,
+        width: Double,
+        height: Double,
+        depth: Double,
+        colorComponents: FloatArray,
+        alpha: Float,
+        throughWalls: Boolean
+    ) {
+        val matrices = context.matrixStack()
+        val camera = context.camera().pos
+
+        matrices!!.push()
+        matrices.translate(pos.x + 0.5 - camera.x, pos.y - camera.y, pos.z + 0.5 - camera.z)
+
+        val consumers = context.consumers()!!
+
+        val renderLayer = if (throughWalls) RenderLayers.FILLED_BOX_THROUGH_WALLS else RenderLayers.FILLED_BOX
+        val buffer = consumers.getBuffer(renderLayer)
+
+        val minX = -width / 2.0
+        val minZ = -depth / 2.0
+        val maxX = width / 2.0
+        val maxZ = depth / 2.0
+
+        val minY = 0.0
+        val maxY = height
+
+        VertexRendering.drawFilledBox(
+            matrices, buffer,
+            minX, minY, minZ,
+            maxX, maxY, maxZ,
+            colorComponents[0], colorComponents[1], colorComponents[2], alpha
+        )
+
+        matrices.pop()
+    }
+
+    /**
+     * Draws a string in the 3D world that always faces the player.
+     * @param context The matrix stack for transformations.
+     * @param pos The position in the world where the text should be drawn.
+     * @param text The text to draw.
+     * @param color The color of the text in ARGB format.
+     * @param shadow Whether to draw the text with a shadow.
+     * @param scale The scale of the text.
+     */
+    fun drawString(
+        context: WorldRenderContext,
+        pos: SboVec,
+        text: String,
+        color: Int,
+        shadow: Boolean,
+        scale: Double,
+        throughWalls: Boolean
+    ) {
+        val matrices = context.matrixStack()
+        val camera = context.camera()
+        val cameraPos = camera.pos
+        val cameraYaw = camera.yaw
+        val cameraPitch = camera.pitch
+        val textRenderer = mc.textRenderer
+
+        matrices!!.push()
+
+        matrices.translate(pos.x + 0.5 - cameraPos.x, pos.y - cameraPos.y, pos.z + 0.5 - cameraPos.z)
+
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-cameraYaw))
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(cameraPitch))
+        matrices.scale(-scale.toFloat(), -scale.toFloat(), scale.toFloat())
+
+        val textWidth = textRenderer.getWidth(text)
+        val xOffset = -textWidth / 2f
+
+        val consumers = context.consumers()!!
+
+        val layerType = if (throughWalls) TextRenderer.TextLayerType.SEE_THROUGH else TextRenderer.TextLayerType.NORMAL
+
+        textRenderer.draw(
+            text,
+            xOffset,
+            0f,
+            color,
+            shadow,
+            matrices.peek().positionMatrix,
+            consumers,
+            layerType,
+            0,
+            0xF000F0
+        )
+
+        matrices.pop()
+    }
+
+    /**
+     * Renders a beacon beam at the given location.
+     */
+    fun renderBeaconBeam(
+        context: WorldRenderContext,
+        pos: SboVec,
+        colorComponents: FloatArray,
+    ) {
+        val matrices = context.matrixStack()!!
+        val camera = context.camera().pos
+        val world = context.world()
+
+        matrices.push()
+        matrices.translate(pos.x - camera.x, pos.y - camera.y, pos.z - camera.z)
+
+        val consumers = context.consumers()!!
+        val partialTicks = context.tickCounter().getTickProgress(true)
+        val worldAge = world.time
+
+        val beamHeight = context.world().height
+        val beamColor = floatArrayOf(colorComponents[0], colorComponents[1], colorComponents[2], 1.0f)
+
+
+        BeaconRendererMixin.renderBeam(
+            matrices,
+            consumers,
+            partialTicks,
+            1.0f, // scale
+            worldAge,
+            0, // yOffset
+            beamHeight,
+            Color(beamColor[0], beamColor[1], beamColor[2]).rgb
+        )
+
+        matrices.pop()
+    }
+
+    /**
+     * Draws a line from the player's eyes to a target point in the world.
+     */
+    fun trace() {
+    }
+}

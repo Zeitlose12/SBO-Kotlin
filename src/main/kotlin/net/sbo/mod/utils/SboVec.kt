@@ -6,13 +6,6 @@ import kotlin.math.pow
 
 data class SboVec(val x: Double, val y: Double, val z: Double) {
 
-//    fun distanceTo(other: SboVec): Double {
-//        val dx = other.x - this.x
-//        val dy = other.y - this.y
-//        val dz = other.z - this.z
-//        return sqrt(dx * dx + dy * dy + dz * dz)
-//    }
-//
     fun distanceTo(other: SboVec): Double {
         return sqrt((other.x - this.x).pow(2) + (other.y - this.y).pow(2) + (other.z - this.z).pow(2))
     }
