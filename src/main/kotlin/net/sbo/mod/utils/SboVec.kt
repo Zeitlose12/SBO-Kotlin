@@ -54,10 +54,6 @@ data class SboVec(val x: Double, val y: Double, val z: Double) {
         return sqrt(x * x + y * y + z * z)
     }
 
-    fun getX(): Double = this.x
-    fun getY(): Double = this.y
-    fun getZ(): Double = this.z
-
     companion object {
         fun fromArray(arr: DoubleArray): SboVec {
             require(arr.size >= 3) { "Array must contain at least 3 elements for x, y, z." }
