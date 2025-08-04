@@ -2,8 +2,8 @@ package net.sbo.mod.mixins
 
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.hud.InGameHud
-import net.minecraft.client.gui.DrawContext // <-- Wichtiger Import
-import net.minecraft.client.render.RenderTickCounter // <-- Wichtiger Import
+import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.render.RenderTickCounter
 import net.sbo.mod.utils.Register
 import org.spongepowered.asm.mixin.Mixin
 import org.spongepowered.asm.mixin.injection.At
