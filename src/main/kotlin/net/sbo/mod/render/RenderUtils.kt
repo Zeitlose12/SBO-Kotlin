@@ -1,14 +1,18 @@
 package net.sbo.mod.render
 
-import net.sbo.mod.mixin.accessor.BeaconBlockEntityRendererInvoker
+import com.mojang.blaze3d.systems.RenderSystem
+import net.sbo.mod.mixins.BeaconRendererMixin
 import net.sbo.mod.utils.SboVec
 import net.fabricmc.fabric.api.client.rendering.v1.*
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.*
-import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.RotationAxis
+import net.minecraft.util.math.Vec3d
+import net.sbo.mod.utils.Chat
+import net.sbo.mod.utils.Player
+import org.joml.Vector3f
 
 import java.lang.reflect.Method
 import java.awt.Color
@@ -37,12 +41,19 @@ object MyWaypointRenderer : WorldRenderEvents.AfterTranslucent {
             true
         )
 
-        RenderUtil.renderBeaconBeam(
+//        RenderUtil.renderBeaconBeam(
+//            context,
+//            SboVec(100.0, 100.0, 100.0),
+//            floatArrayOf(1.0f, 0.0f, 0.0f) // RGB (red)
+//        )
+
+        RenderUtil.trace(
             context,
             SboVec(100.0, 100.0, 100.0),
-            floatArrayOf(1.0f, 0.0f, 0.0f) // RGB (red)
+            floatArrayOf(0.0f, 0.0f, 1.0f), // RGB (blue)
+            2.0f,
+            true
         )
-
     }
 }
 
@@ -72,14 +83,14 @@ object RenderUtil {
         throughWalls: Boolean
     ) {
         val matrices = context.matrixStack()
-        val camera = context.camera().pos
+        val cameraPos = context.camera().pos
 
         matrices!!.push()
-        matrices.translate(pos.x + 0.5 - camera.x, pos.y - camera.y, pos.z + 0.5 - camera.z)
+        matrices.translate(pos.x + 0.5 - cameraPos.x, pos.y - cameraPos.y, pos.z + 0.5 - cameraPos.z)
 
         val consumers = context.consumers()!!
 
-        val renderLayer = if (throughWalls) RenderLayers.FILLED_BOX_THROUGH_WALLS else RenderLayers.FILLED_BOX
+        val renderLayer = if (throughWalls) SboRenderLayers.FILLED_BOX_THROUGH_WALLS else SboRenderLayers.FILLED_BOX
         val buffer = consumers.getBuffer(renderLayer)
 
         val minX = -width / 2.0
@@ -158,6 +169,9 @@ object RenderUtil {
 
     /**
      * Renders a beacon beam at the given location.
+     * @param context The world render context.
+     * @param pos The position in the world where the beacon beam should be rendered.
+     * @param colorComponents The RGB color components as a FloatArray (0.0 to
      */
     fun renderBeaconBeam(
         context: WorldRenderContext,
@@ -165,11 +179,11 @@ object RenderUtil {
         colorComponents: FloatArray,
     ) {
         val matrices = context.matrixStack()!!
-        val camera = context.camera().pos
+        val cameraPos = context.camera().pos
         val world = context.world()
 
         matrices.push()
-        matrices.translate(pos.x - camera.x, pos.y - camera.y, pos.z - camera.z)
+        matrices.translate(pos.x - cameraPos.x, pos.y - cameraPos.y, pos.z - cameraPos.z)
 
         val consumers = context.consumers()!!
         val partialTicks = context.tickCounter().getTickProgress(true)
@@ -178,8 +192,8 @@ object RenderUtil {
         val beamHeight = context.world().height
         val beamColor = floatArrayOf(colorComponents[0], colorComponents[1], colorComponents[2], 1.0f)
 
-        // Korrekter Aufruf der statischen Methode aus dem Mixin-Interface
-        BeaconBlockEntityRendererInvoker.renderBeam(
+
+        BeaconRendererMixin.renderBeam(
             matrices,
             consumers,
             partialTicks,
@@ -195,7 +209,48 @@ object RenderUtil {
 
     /**
      * Draws a line from the player's eyes to a target point in the world.
+     * @param context The world render context.
+     * @param target The target position in the world.
+     * @param color The RGB color of the line as a FloatArray (0.0 to 1.0).
+     * @param lineWidth The width of the line.
+     * @param throughWalls Whether the line should be drawn through walls.
      */
-    fun trace() {
+    fun trace(
+        context: WorldRenderContext,
+        target: SboVec,
+        color: FloatArray,
+        lineWidth: Float,
+        throughWalls: Boolean
+    ) {
+        val camera = context.camera()
+        val cameraPos = camera.pos
+        val matrices = context.matrixStack()!!
+
+        matrices.push()
+        matrices.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z)
+
+        val consumers = context.consumers()!!
+        val cameraPoint = cameraPos.add(Vec3d.fromPolar(camera.pitch, camera.yaw))
+
+        val point = target.center().toVec3d()
+        val normal = point.toVector3f().sub(cameraPoint.x.toFloat(), cameraPoint.y.toFloat(), cameraPoint.z.toFloat()).normalize()
+
+        val renderLayer = if (throughWalls) SboRenderLayers.LINES_THROUGH_WALLS else SboRenderLayers.LINES
+        val buffer = consumers.getBuffer(renderLayer)
+
+        val matrixEntry = matrices.peek()
+        val matrix = matrices.peek().positionMatrix
+
+        RenderSystem.lineWidth(lineWidth)
+
+        buffer.vertex(matrix, cameraPoint.x.toFloat(), cameraPoint.y.toFloat(), cameraPoint.z.toFloat())
+            .normal(matrixEntry, normal)
+            .color(color[0], color[1], color[2], 1.0f)
+
+        buffer.vertex(matrix, point.x.toFloat(), point.y.toFloat() + 0.5f, point.z.toFloat())
+            .normal(matrixEntry, normal)
+            .color(color[0], color[1], color[2], 1.0f)
+
+        matrices.pop()
     }
 }

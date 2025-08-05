@@ -8,13 +8,16 @@ import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.render.MyWaypointRenderer
 
-object SBOKotlin {
+object SBOKotlin : ModInitializer, ClientModInitializer {
 	private const val MOD_ID = "sbo-kotlin"
 	internal val logger = LoggerFactory.getLogger(MOD_ID)
 	private var xx = 5
 
-	@JvmStatic
-	fun onInitializeClient() {
+	override fun onInitialize() {
+		logger.info("Hello from the common Fabric world!")
+	}
+
+	override fun onInitializeClient() {
 		logger.info("Hello from the client-specific Fabric world!")
 
 		Register.command("sbotest") { context ->
