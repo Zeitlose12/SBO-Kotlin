@@ -1,8 +1,13 @@
 {
-	"package": "net.sbo.mod.mixins",
-	"refmap": "mixins.sbo-kotlin.refmap.json",
+	"required": true,
+	"package": "net.sbo.mod.mixin",
 	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"MinecraftClientMixin",
+		"ScreenMixin",
+		"accessor.BeaconBlockEntityRendererInvoker"
+	],
 	"injectors": {
-		"maxShiftBy": 2
+		"defaultRequire": 1
 	}
 }
