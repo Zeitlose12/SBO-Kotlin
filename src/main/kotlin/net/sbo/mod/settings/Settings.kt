@@ -9,7 +9,7 @@ import java.awt.Color
 import java.io.File
 
 object Settings : Vigilant(
-    file = File("./config/sbo-settings.toml"),
+    file = File("./config/sbo/config.toml"),
     guiTitle = "SBO Settings",
     sortingBehavior = Sorting // <--- Hier den Sorter einfügen
 ) {
