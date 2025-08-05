@@ -25,7 +25,7 @@ object Chat {
      * Shows a local chat message only visible to the player.
      * @param message The message to display in the chat.
      */
-    fun chat(message: String) {
-        client.inGameHud.chatHud.addMessage(Text.of(message))
+    fun chat(text: Text) {
+        client.inGameHud.chatHud.addMessage(text)
     }
 }

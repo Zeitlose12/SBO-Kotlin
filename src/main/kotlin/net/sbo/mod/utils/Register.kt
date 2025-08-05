@@ -21,16 +21,12 @@ object Register {
     private val guiRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
     private val guiPostRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
     private val guiKeyActions = mutableListOf<(client: MinecraftClient, screen: Screen, key: Int) -> Unit>()
-    private val renderWorldActions = mutableListOf<(tickDelta: Float) -> Unit>()
-    private val renderOverlayActions = mutableListOf<(DrawContext, Float) -> Unit>()
 
     fun runGuiOpenActions(client: MinecraftClient, screen: Screen) { guiOpenActions.forEach { action -> action(client, screen) } }
     fun runGuiCloseActions(client: MinecraftClient, screen: Screen) { guiCloseActions.forEach { action -> action(client, screen) } }
     fun runGuiRenderActions(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
     fun runGuiPostRenderActions( client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiPostRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
     fun runGuiKeyActions(client: MinecraftClient, screen: Screen, key: Int) { guiKeyActions.forEach { action -> action(client, screen, key) } }
-    fun runRenderWorldActions(tickDelta: Float) { renderWorldActions.forEach { action -> action(tickDelta) } }
-    fun runRenderOverlayActions(matrices: DrawContext, tickDelta: Float) { renderOverlayActions.forEach { action -> action(matrices, tickDelta) } }
 
     /**
      * Registers a client command with the specified name and action.
@@ -123,22 +119,5 @@ object Register {
      */
     fun onGuiKey(action: (client: MinecraftClient, screen: Screen, key: Int) -> Unit) {
         guiKeyActions.add(action)
-    }
-
-    /**
-     * Registers an event that listens for rendering actions in the world and executes an action.
-     * @param action The action to execute when the world is rendered.
-     */
-    fun onRenderWorld(action: (tickDelta: Float) -> Unit) {
-        renderWorldActions.add(action)
-    }
-
-    /**
-     * Registers an event that listens for rendering actions in the overlay and executes an action.
-     * @param action The action to execute when the overlay is rendered.
-     * This is typically used for drawing custom elements on the screen.
-     */
-    fun onRenderOverlay(action: (context: DrawContext, tickDelta: Float) -> Unit) {
-        renderOverlayActions.add(action)
     }
 }
