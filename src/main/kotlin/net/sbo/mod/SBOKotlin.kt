@@ -13,10 +13,10 @@ object SBOKotlin {
 	fun onInitializeClient() {
 		logger.info("Hello from the client-specific Fabric world!")
 		registerHelpCommand()
-		Register.command("world") { _ ->
-			val worldName = World.getWorld()
-			logger.info("Current world: $worldName")
-			0 // Return 0 to indicate success
-		}
+//		Register.command("world") { _ ->
+//			val worldName = World.getWorld()
+//			logger.info("Current world: $worldName")
+//			0 // Return 0 to indicate success
+//		}
 	}
 }
