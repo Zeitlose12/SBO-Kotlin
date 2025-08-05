@@ -1,6 +1,6 @@
 package net.sbo.mod.render
 
-import net.sbo.mod.mixins.BeaconRendererMixin
+import net.sbo.mod.accessor.BeaconBlockEntityRendererInvoker
 import net.sbo.mod.utils.SboVec
 import net.fabricmc.fabric.api.client.rendering.v1.*
 import net.minecraft.client.MinecraftClient
@@ -178,8 +178,8 @@ object RenderUtil {
         val beamHeight = context.world().height
         val beamColor = floatArrayOf(colorComponents[0], colorComponents[1], colorComponents[2], 1.0f)
 
-
-        BeaconRendererMixin.renderBeam(
+        // Korrekter Aufruf der statischen Methode aus dem Mixin-Interface
+        BeaconBlockEntityRendererInvoker.invokeRenderBeam(
             matrices,
             consumers,
             partialTicks,
