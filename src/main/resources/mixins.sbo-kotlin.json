@@ -1,13 +1,13 @@
 {
 	"required": true,
-	"package": "net.sbo.mod.mixins",
+	"package": "net.sbo.mod.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
 		"GameRendererMixin",
 		"InGameHudMixin",
 		"MinecraftClientMixin",
 		"ScreenMixin",
-		"accessors.BeaconBlockEntityRendererInvoker"
+		"accessor.BeaconBlockEntityRendererInvoker"
 	],
 	"injectors": {
 		"defaultRequire": 1

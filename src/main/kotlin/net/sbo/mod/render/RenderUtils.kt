@@ -1,6 +1,6 @@
 package net.sbo.mod.render
 
-import net.sbo.mod.accessor.BeaconBlockEntityRendererInvoker
+import net.sbo.mod.mixin.accessor.BeaconBlockEntityRendererInvoker
 import net.sbo.mod.utils.SboVec
 import net.fabricmc.fabric.api.client.rendering.v1.*
 import net.minecraft.client.MinecraftClient
@@ -37,11 +37,11 @@ object MyWaypointRenderer : WorldRenderEvents.AfterTranslucent {
             true
         )
 
-//        RenderUtil.renderBeaconBeam(
-//            context,
-//            SboVec(100.0, 100.0, 100.0),
-//            floatArrayOf(1.0f, 0.0f, 0.0f) // RGB (red)
-//        )
+        RenderUtil.renderBeaconBeam(
+            context,
+            SboVec(100.0, 100.0, 100.0),
+            floatArrayOf(1.0f, 0.0f, 0.0f) // RGB (red)
+        )
 
     }
 }
@@ -179,7 +179,7 @@ object RenderUtil {
         val beamColor = floatArrayOf(colorComponents[0], colorComponents[1], colorComponents[2], 1.0f)
 
         // Korrekter Aufruf der statischen Methode aus dem Mixin-Interface
-        BeaconBlockEntityRendererInvoker.invokeRenderBeam(
+        BeaconBlockEntityRendererInvoker.renderBeam(
             matrices,
             consumers,
             partialTicks,
