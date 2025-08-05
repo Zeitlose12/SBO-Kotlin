@@ -36,11 +36,14 @@ object Register {
      * @param name The name of the command to register.
      * @param action The action to execute when the command is invoked.
      */
-    fun command(name: String, action: (CommandContext<FabricClientCommandSource>) -> Int) {
+    fun command(name: String, action: (CommandContext<FabricClientCommandSource>) -> Unit) {
         ClientCommandRegistrationCallback.EVENT.register { dispatcher, _ ->
             dispatcher.register(
                 ClientCommandManager.literal(name)
-                    .executes(action)
+                    .executes {
+                        action(it)
+                        1
+                    }
             )
         }
     }

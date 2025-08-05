@@ -28,12 +28,9 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// vigiliance
-	implementation(include("gg.essential:vigilance:312"))
-	// Elementa
-	implementation(include("gg.essential:elementa:710"))
-	// Essential's UniversalCraft mod. This is required for the mod to work.
-	modImplementation(include("gg.essential:universalcraft-1.21.5-forge:415"))
+	implementation(include("gg.essential:vigilance:306"))
+	modImplementation(include("gg.essential:universalcraft-1.21.5-fabric:401"))
+	modImplementation(include("gg.essential:elementa:704"))
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
@@ -46,7 +43,6 @@ loom {
 		removeIf { it.name != "client" }
 		named("client") {
 			property("devauth.enabled", "true")
-			property("fabric.log.level", "info")
 			vmArg("-ea")
 			/*vmArg("-XX:+AllowEnhancedClassRedefinition")*/
 			/*vmArg("-XX:HotswapAgent=external")

@@ -59,6 +59,5 @@ fun registerHelpCommand() {
 
             Chat.chat(styledText)
         }
-        1
     }
 }
