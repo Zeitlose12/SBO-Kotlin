@@ -9,6 +9,12 @@ object ScoreBoard {
         .reversed()
         .thenComparing({ obj: ScoreboardEntry -> obj.owner() }, CASE_INSENSITIVE_ORDER);
 
+    /**
+     * Retrieves the lines from the scoreboard sidebar.
+     * It returns a list of formatted strings representing the scoreboard entries.
+     * Each entry is stripped of any formatting codes.
+     * @return A list of formatted strings representing the scoreboard entries.
+     */
     fun getLines(): List<String> {
         val scoreboard = SBOKotlin.mc.world?.scoreboard ?: return emptyList()
         val objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.SIDEBAR) ?: return emptyList()
