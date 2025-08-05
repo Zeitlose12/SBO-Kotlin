@@ -1,8 +1,8 @@
 plugins {
 	id 'fabric-loom' version "${loom_version}"
 	id 'maven-publish'
-	id "org.jetbrains.kotlin.jvm" version "2.1.21"
-//	id "org.jetbrains.kotlin.kapt" version "2.1.21"
+	id "org.jetbrains.kotlin.jvm" version "2.1.0"
+	id "org.jetbrains.kotlin.plugin.serialization" version "2.1.0"
 }
 
 version = project.mod_version
@@ -19,8 +19,6 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 	maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
-	maven { url = "https://repo.spongepowered.org/maven" }
-	maven { url = "https://maven.fabricmc.net/" }
 }
 
 dependencies {
@@ -28,14 +26,29 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-//	kapt "org.spongepowered:mixin:0.8.5:processor"
+
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
-
 	modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.1")
 }
+
+loom {
+	runs {
+		removeIf { it.name != "client" }
+		named("client") {
+			property("devauth.enabled", "true")
+			property("fabric.log.level", "info")
+			vmArg("-ea")
+			/*vmArg("-XX:+AllowEnhancedClassRedefinition")*/
+			/*vmArg("-XX:HotswapAgent=external")
+            vmArg("-javaagent:/home/ronald/Software-Packages/hotswap-agent-1.4.2-SNAPSHOT.jar")*/
+		}
+	}
+	accessWidenerPath = file("src/main/resources/sbo-kotlin.accesswidener")
+}
+
 
 processResources {
 	inputs.property "version", project.version
@@ -70,23 +83,5 @@ jar {
 
 	from("LICENSE") {
 		rename { "${it}_${inputs.properties.archivesName}"}
-	}
-}
-
-// configure the maven publication
-publishing {
-	publications {
-		create("mavenJava", MavenPublication) {
-			artifactId = project.archives_base_name
-			from components.java
-		}
-	}
-
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
 	}
 }
