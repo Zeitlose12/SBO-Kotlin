@@ -19,6 +19,7 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 	maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
+	maven {url = "https://repo.essential.gg/repository/maven-public"}
 }
 
 dependencies {
@@ -27,6 +28,12 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
+	// vigiliance
+	implementation(include("gg.essential:vigilance:312"))
+	// Elementa
+	implementation(include("gg.essential:elementa:710"))
+	// Essential's UniversalCraft mod. This is required for the mod to work.
+	modImplementation(include("gg.essential:universalcraft-1.21.5-forge:415"))
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
