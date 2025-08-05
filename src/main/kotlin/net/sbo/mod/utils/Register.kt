@@ -1,6 +1,6 @@
 package net.sbo.mod.utils
 
-import net.sbo.mod.SBOKotlin
+import net.sbo.mod.SBOKotlin.mc
 import com.mojang.brigadier.context.CommandContext
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
@@ -83,7 +83,7 @@ object Register {
      */
     fun onWorldChange(action: (client: MinecraftClient) -> Unit) {
         ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register { _, _ ->
-            action(MinecraftClient.getInstance())
+            action(mc)
         }
     }
 

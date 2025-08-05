@@ -2,6 +2,7 @@ package net.sbo.mod.utils
 
 import net.minecraft.client.network.PlayerListEntry
 import net.minecraft.text.Text
+import net.sbo.mod.SBOKotlin.mc
 
 object TabList {
     /**
@@ -9,7 +10,7 @@ object TabList {
      * Each PlayerListEntry object contains detailed information about a player.
      */
     fun getTabEntries(): List<PlayerListEntry> {
-        val client = net.minecraft.client.MinecraftClient.getInstance()
+        val client = mc
         // Use toList() to convert the Collection to a List
         return client.player?.networkHandler?.playerList?.toList() ?: emptyList()
     }

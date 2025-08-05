@@ -272,7 +272,7 @@ class Waypoint(
         closestBurrowDistance: Double,
         inqWaypoints: List<Waypoint>
     ) {
-        this.line = Settings.guessLine && (closestBurrowDistance > 60) && inqWaypoints.isEmpty()
+        this.line =  Settings.guessLine && (closestBurrowDistance > 60) && inqWaypoints.isEmpty()
         this.r = Settings.guessColor.red / 255.0
         this.g = Settings.guessColor.green / 255.0
         this.b = Settings.guessColor.blue / 255.0

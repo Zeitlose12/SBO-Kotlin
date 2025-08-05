@@ -1,11 +1,12 @@
 package net.sbo.mod.utils
 
+import net.sbo.mod.SBOKotlin.mc
 import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
 
 object Chat {
     private val client: MinecraftClient
-        get() = MinecraftClient.getInstance()
+        get() = mc
 
     /**
      * Sends a command to the server.
@@ -23,7 +24,7 @@ object Chat {
 
     /**
      * Shows a local chat message only visible to the player.
-     * @param message The message to display in the chat.
+     * @param text The message to display in the chat.
      */
     fun chat(text: Text) {
         client.inGameHud.chatHud.addMessage(text)

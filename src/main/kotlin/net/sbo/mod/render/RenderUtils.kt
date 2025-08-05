@@ -1,6 +1,7 @@
 package net.sbo.mod.render
 
 import com.mojang.blaze3d.systems.RenderSystem
+import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.mixin.accessor.BeaconBlockEntityRendererInvoker
 import net.sbo.mod.utils.SboVec
 import net.fabricmc.fabric.api.client.rendering.v1.*
@@ -19,8 +20,6 @@ import java.awt.Color
 import kotlin.math.max
 
 object RenderUtil {
-    private val mc: MinecraftClient = MinecraftClient.getInstance()
-
     fun renderWaypoint(
         context: WorldRenderContext,
         text: String,
