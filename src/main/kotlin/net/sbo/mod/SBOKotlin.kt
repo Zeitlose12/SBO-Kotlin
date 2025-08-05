@@ -5,15 +5,12 @@ import net.sbo.mod.init.registerHelpCommand
 import net.sbo.mod.utils.World
 import net.sbo.mod.utils.Register
 
-object SBOKotlin : ModInitializer, ClientModInitializer {
+object SBOKotlin {
 	private const val MOD_ID = "sbo-kotlin"
 	internal val logger = LoggerFactory.getLogger(MOD_ID)
 
-	override fun onInitialize() {
-		logger.info("Hello from the common Fabric world!")
-	}
-
-	override fun onInitializeClient() {
+	@JvmStatic
+	fun onInitializeClient() {
 		logger.info("Hello from the client-specific Fabric world!")
 		registerHelpCommand()
 		Register.command("world") { _ ->

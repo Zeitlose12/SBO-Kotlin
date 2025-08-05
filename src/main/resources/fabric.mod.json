@@ -16,16 +16,9 @@
 	"icon": "assets/sbo-kotlin/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
-			{
-				"value": "net.sbo.mod.SBOKotlin",
-				"adapter": "kotlin"
-			}
-		],
 		"client": [
 			{
-				"value": "net.sbo.mod.SBOKotlin",
-				"adapter": "kotlin"
+				"value": "net.sbo.mod.SBOKotlin::onInitializeClient"
 			}
 		]
 	},
