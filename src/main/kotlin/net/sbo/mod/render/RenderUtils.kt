@@ -41,17 +41,17 @@ object MyWaypointRenderer : WorldRenderEvents.AfterTranslucent {
             true
         )
 
-//        RenderUtil.renderBeaconBeam(
-//            context,
-//            SboVec(100.0, 100.0, 100.0),
-//            floatArrayOf(1.0f, 0.0f, 0.0f) // RGB (red)
-//        )
+        RenderUtil.renderBeaconBeam(
+            context,
+            SboVec(100.0, 100.0, 100.0),
+            floatArrayOf(1.0f, 0.0f, 0.0f) // RGB (red)
+        )
 
         RenderUtil.trace(
             context,
             SboVec(100.0, 100.0, 100.0),
             floatArrayOf(0.0f, 0.0f, 1.0f), // RGB (blue)
-            2.0f,
+            3.0f,
             true
         )
     }
@@ -214,13 +214,15 @@ object RenderUtil {
      * @param color The RGB color of the line as a FloatArray (0.0 to 1.0).
      * @param lineWidth The width of the line.
      * @param throughWalls Whether the line should be drawn through walls.
+     * @param alpha The alpha value for transparency (0.0 to 1.0).
      */
     fun trace(
         context: WorldRenderContext,
         target: SboVec,
         color: FloatArray,
         lineWidth: Float,
-        throughWalls: Boolean
+        throughWalls: Boolean,
+        alpha: Float = 0.5f
     ) {
         val camera = context.camera()
         val cameraPos = camera.pos
@@ -235,21 +237,19 @@ object RenderUtil {
         val point = target.center().toVec3d()
         val normal = point.toVector3f().sub(cameraPoint.x.toFloat(), cameraPoint.y.toFloat(), cameraPoint.z.toFloat()).normalize()
 
-        val renderLayer = if (throughWalls) SboRenderLayers.LINES_THROUGH_WALLS else SboRenderLayers.LINES
+        val renderLayer = SboRenderLayers.getLines(lineWidth.toDouble(), throughWalls)
         val buffer = consumers.getBuffer(renderLayer)
 
         val matrixEntry = matrices.peek()
         val matrix = matrices.peek().positionMatrix
 
-        RenderSystem.lineWidth(lineWidth)
-
         buffer.vertex(matrix, cameraPoint.x.toFloat(), cameraPoint.y.toFloat(), cameraPoint.z.toFloat())
             .normal(matrixEntry, normal)
-            .color(color[0], color[1], color[2], 1.0f)
+            .color(color[0], color[1], color[2], alpha)
 
         buffer.vertex(matrix, point.x.toFloat(), point.y.toFloat() + 0.5f, point.z.toFloat())
             .normal(matrixEntry, normal)
-            .color(color[0], color[1], color[2], 1.0f)
+            .color(color[0], color[1], color[2], alpha)
 
         matrices.pop()
     }
