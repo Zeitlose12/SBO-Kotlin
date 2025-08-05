@@ -16,50 +16,69 @@ import org.joml.Vector3f
 
 import java.lang.reflect.Method
 import java.awt.Color
-
-object MyWaypointRenderer : WorldRenderEvents.AfterTranslucent {
-    override fun afterTranslucent(context: WorldRenderContext) {
-        RenderUtil.drawString(
-            context,
-            SboVec(100.0, 101.3, 100.0),
-            "Waypoint",
-            Color.WHITE.rgb,
-            false,
-            0.02,
-            true
-        )
-
-        // Example of drawing a filled box
-        RenderUtil.drawFilledBox(
-            context,
-            SboVec(100.0, 100.0, 100.0),
-            1.0,
-            1.0,
-            1.0,
-            floatArrayOf(0.0f, 1.0f, 0.0f), // RGB (green)
-            0.4f,
-            true
-        )
-
-        RenderUtil.renderBeaconBeam(
-            context,
-            SboVec(100.0, 100.0, 100.0),
-            floatArrayOf(1.0f, 0.0f, 0.0f) // RGB (red)
-        )
-
-        RenderUtil.trace(
-            context,
-            SboVec(100.0, 100.0, 100.0),
-            floatArrayOf(0.0f, 0.0f, 1.0f), // RGB (blue)
-            3.0f,
-            true
-        )
-    }
-}
+import kotlin.math.max
 
 object RenderUtil {
     private val mc: MinecraftClient = MinecraftClient.getInstance()
-    private var renderBeamMethod: Method? = null
+
+    fun renderWaypoint(
+        context: WorldRenderContext,
+        text: String,
+        pos: SboVec,
+        colorComponents: FloatArray,
+        hexColor: Int,
+        alpha: Float,
+        throughWalls: Boolean,
+        drawLine: Boolean,
+        lineWidth: Float,
+        renderBeam: Boolean
+    ) {
+
+        drawFilledBox(
+            context,
+            pos,
+            1.0,
+            1.0,
+            1.0,
+            colorComponents,
+            alpha,
+            throughWalls
+        )
+
+        if (drawLine) {
+            trace(
+                context,
+                pos,
+                colorComponents,
+                lineWidth,
+                throughWalls,
+                alpha
+            )
+        }
+
+        if (renderBeam) {
+            renderBeaconBeam(
+                context,
+                pos,
+                1,
+                colorComponents
+            )
+
+        }
+
+        if (text.isNotEmpty() && text != "§7") {
+            drawString(
+                context,
+                pos,
+                1.5,
+                text,
+                hexColor,
+                true,
+                0.01,
+                throughWalls
+            )
+        }
+    }
 
     /**
      * Draws a filled box at the specified world coordinates.
@@ -123,6 +142,7 @@ object RenderUtil {
     fun drawString(
         context: WorldRenderContext,
         pos: SboVec,
+        yOffset: Double,
         text: String,
         color: Int,
         shadow: Boolean,
@@ -138,11 +158,16 @@ object RenderUtil {
 
         matrices!!.push()
 
-        matrices.translate(pos.x + 0.5 - cameraPos.x, pos.y - cameraPos.y, pos.z + 0.5 - cameraPos.z)
+        val textWorldPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
+        val distance = cameraPos.distanceTo(textWorldPos)
+        val dynamicScale = max(distance, 2.5) * scale
+
+        matrices.translate(pos.x + 0.5 - cameraPos.x, pos.y + yOffset + - cameraPos.y, pos.z + 0.5 - cameraPos.z)
 
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-cameraYaw))
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(cameraPitch))
-        matrices.scale(-scale.toFloat(), -scale.toFloat(), scale.toFloat())
+
+        matrices.scale(-dynamicScale.toFloat(), -dynamicScale.toFloat(), dynamicScale.toFloat())
 
         val textWidth = textRenderer.getWidth(text)
         val xOffset = -textWidth / 2f
@@ -176,6 +201,7 @@ object RenderUtil {
     fun renderBeaconBeam(
         context: WorldRenderContext,
         pos: SboVec,
+        yOffset: Int,
         colorComponents: FloatArray,
     ) {
         val matrices = context.matrixStack()!!
@@ -199,7 +225,7 @@ object RenderUtil {
             partialTicks,
             1.0f,
             worldAge,
-            0,
+            yOffset,
             beamHeight,
             Color(beamColor[0], beamColor[1], beamColor[2]).rgb
         )

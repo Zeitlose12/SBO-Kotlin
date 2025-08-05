@@ -5,10 +5,14 @@ import kotlin.math.round
 import kotlin.math.sqrt
 import kotlin.math.pow
 
-data class SboVec(val x: Double, val y: Double, val z: Double) {
+data class SboVec(var x: Double, var y: Double, var z: Double) {
 
     fun distanceTo(other: SboVec): Double {
         return sqrt((other.x - this.x).pow(2) + (other.y - this.y).pow(2) + (other.z - this.z).pow(2))
+    }
+
+    fun distanceTo(x: Double, y: Double, z: Double): Double {
+        return sqrt((x - this.x).pow(2) + (y - this.y).pow(2) + (z - this.z).pow(2))
     }
 
     operator fun plus(other: SboVec): SboVec {
