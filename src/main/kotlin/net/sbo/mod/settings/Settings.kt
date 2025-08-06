@@ -5,6 +5,8 @@ import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
 import net.sbo.mod.SBOKotlin
 import net.sbo.mod.settings.categories.General
+import net.sbo.mod.settings.categories.Customization
+import net.sbo.mod.settings.categories.Diana
 
 object Settings : ConfigKt("sbo/config") {
     override val name: TranslatableValue = Literal("SBO v1.0.0")
@@ -18,6 +20,8 @@ object Settings : ConfigKt("sbo/config") {
 
     init {
         category(General)
+        category(Customization)
+        category(Diana)
     }
 
     init {

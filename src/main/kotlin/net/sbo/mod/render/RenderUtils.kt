@@ -13,6 +13,7 @@ import net.minecraft.util.math.RotationAxis
 import net.minecraft.util.math.Vec3d
 import net.sbo.mod.general.WaypointManager
 import net.sbo.mod.settings.Settings
+import net.sbo.mod.settings.categories.Customization
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Player
 import org.joml.Vector3f
@@ -80,8 +81,8 @@ object RenderUtil {
                 1.5,
                 text,
                 hexColor,
-                true,
-                5/1000.0,
+                Customization.waypointTextShadow,
+                Customization.waypointTextScale/100.0,
                 throughWalls
             )
         }
