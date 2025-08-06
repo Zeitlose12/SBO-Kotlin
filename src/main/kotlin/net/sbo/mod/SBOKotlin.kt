@@ -10,6 +10,7 @@ import net.sbo.mod.settings.Settings
 import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.World
 import net.sbo.mod.general.PartyCommands
+import net.sbo.mod.utils.SboKeyBinds
 
 object SBOKotlin {
 	@JvmField
@@ -34,5 +35,8 @@ object SBOKotlin {
 		Register.command("sboTest") {
 			logger.info(World.isInSkyblock().toString())
 		}
+
+		SboKeyBinds.register()
+		SboKeyBinds.registerKeyBindListener()
 	}
 }
