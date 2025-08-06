@@ -3,14 +3,14 @@ package net.sbo.mod.general
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.sbo.mod.render.RenderUtil
 import net.sbo.mod.settings.Settings
+import net.sbo.mod.settings.categories.Customization
+import net.sbo.mod.settings.categories.Diana
 import java.awt.Color
 import net.sbo.mod.utils.SboVec
 import net.sbo.mod.utils.Player
 import kotlin.math.sqrt
 import kotlin.math.pow
 import kotlin.math.roundToInt
-
-fun javaColorToHex(color: Color): String = String.format("%06X", color.rgb and 0xFFFFFF)
 
 /**
  * @class Waypoint
@@ -38,7 +38,7 @@ class Waypoint(
     var beam: Boolean = true,
     var distance: Boolean = true
 ) {
-    var hexCodeString: String = javaColorToHex(Color(r.toFloat(), g.toFloat(), b.toFloat()))
+    var hexCode: Int = Color(r.toFloat(), g.toFloat(), b.toFloat()).rgb
     val alpha: Double = 0.5
     var hidden: Boolean = false
     val creation: Long = System.currentTimeMillis()
@@ -62,11 +62,12 @@ class Waypoint(
         closestBurrowDistance: Double,
         inqWaypoints: List<Waypoint>
     ) {
-//        this.line =  Settings.guessLine && (closestBurrowDistance > 60) && inqWaypoints.isEmpty()
-//        this.r = Settings.guessColor.red / 255.0
-//        this.g = Settings.guessColor.green / 255.0
-//        this.b = Settings.guessColor.blue / 255.0
-//        this.hexCodeString = javaColorToHex(Settings.guessColor)
+        this.line =  Diana.guessLine && (closestBurrowDistance > 60) && inqWaypoints.isEmpty()
+        val guessColor = Color(Customization.guessColor)
+        this.r = guessColor.red / 255.0
+        this.g = guessColor.green / 255.0
+        this.b = guessColor.blue / 255.0
+        this.hexCode = guessColor.rgb
 
         val (exists, wp) = WaypointManager.waypointExists("burrow", this.pos)
         if (exists && wp != null) {
@@ -115,14 +116,14 @@ class Waypoint(
     fun render(context: WorldRenderContext) {
         if (!this.formatted || this.hidden) return
 
-//        if (this.type == "guess" && this.distanceRaw <= Settings.removeGuessDistance && Settings.removeGuess) return
+        if ((this.type == "guess" && this.distanceRaw <= Diana.removeGuessDistance) || Diana.removeGuessDistance == 0) return
 
         RenderUtil.renderWaypoint(
             context,
             this.formattedText,
             this.pos,
             floatArrayOf(this.r.toFloat(), this.g.toFloat(), this.b.toFloat()),
-            this.hexCodeString.toLong(16).toInt(),
+            this.hexCode,
             this.alpha.toFloat(),
             true,
             this.line,

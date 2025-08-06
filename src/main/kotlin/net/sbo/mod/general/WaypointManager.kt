@@ -3,8 +3,11 @@ package net.sbo.mod.general
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.sbo.mod.render.WaypointRenderer
+import net.sbo.mod.utils.Chat
+import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.SboVec
+import kotlin.math.roundToInt
 
 object WaypointManager { // works
     var guessWp: Waypoint? = null
@@ -33,8 +36,34 @@ object WaypointManager { // works
             1
         }
 
-//        val testWaypoint = Waypoint("Mob", SboVec(100.0, 100.0, 100.0), 1.0, 0.0, 0.0, type = "burrow", line = true, beam = true)
-//        addWaypoint(testWaypoint)
+        Register.command("sendcoords") {
+            val playerPos = Player.getLastPosition()
+            Chat.command("cc x: ${playerPos.x.roundToInt()}, y: ${playerPos.y.roundToInt()}, z: ${playerPos.z.roundToInt()}")
+        }
+
+        Register.onChatMessage(
+            Regex("^(?<channel>.*> )?(?<playerName>.+?)[§&]f: (?:[§&]r)?x: (?<x>[^ ,]+),? y: (?<y>[^ ,]+),? z: (?<z>[^ ,]+)$")
+        ) { message, match ->
+            val playerName = match.groups["playerName"]?.value ?: "Unknown"
+
+            val x = match.groups["x"]?.value?.toDoubleOrNull() ?: 0.0
+            val y = match.groups["y"]?.value?.toDoubleOrNull() ?: 0.0
+            val z = match.groups["z"]?.value?.toDoubleOrNull() ?: 0.0
+
+            val channel = match.groups["channel"]?.value ?: "Unknown"
+
+            if (!channel.contains("Guild")) {
+//                Chat.chat("Added waypoint for $playerName at ($x, $y, $z) channel: $channel")
+//                Chat.chat(message)
+                // show title to player
+
+                addWaypoint(Waypoint(playerName, SboVec(x+2, y, z), 1.0, 0.84, 0.0, 45, type = "inq"))
+
+                addWaypoint(Waypoint(playerName, SboVec(x, y, z), 0.0, 0.2, 1.0, 30))
+
+            }
+            1
+        }
 
         Register.onTick(5) { _ ->
             this.formatAllWaypoints()
