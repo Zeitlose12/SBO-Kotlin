@@ -42,7 +42,8 @@ object SboDataObject {
     fun loadAllData(modName: String): SboConfigBundle {
         val sboData = load(modName, "SboData.json", SboData(), SboData::class.java)
         val achievementsData = load(modName, "sbo_achievements.json", AchievementsData(), AchievementsData::class.java)
-        return SboConfigBundle(sboData, achievementsData)
+        val pastDianaEventsData = load(modName, "pastDianaEvents.json", PastDianaEventsData(), PastDianaEventsData::class.java)
+        return SboConfigBundle(sboData, achievementsData, pastDianaEventsData)
     }
 
     fun <T> save(modName: String, data: T, fileName: String) {

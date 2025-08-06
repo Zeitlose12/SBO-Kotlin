@@ -41,6 +41,7 @@ object SBOKotlin {
 			logger.info(SBOConfigBundle.sboData.b2bInq.toString())
 			logger.info(SBOConfigBundle.sboData.toString())
 			logger.info(SBOConfigBundle.achievementsData.toString())
+			logger.info(SBOConfigBundle.pastDianaEventsData.toString())
 		}
 
 		SboKeyBinds.register()

@@ -2,8 +2,11 @@ package net.sbo.mod.data
 
 data class SboConfigBundle(
     val sboData: SboData,
-    val achievementsData: AchievementsData
+    val achievementsData: AchievementsData,
+    val pastDianaEventsData: PastDianaEventsData
 )
+
+// ------ Data Classes ------
 
 data class Effect(
     val name: String,
@@ -11,6 +14,15 @@ data class Effect(
     val timeStamp: Long,
     val loggedOff: Boolean
 )
+
+data class DianaEvent(
+    val year: Any, // Can be String or Int
+    val items: Map<String, Any>,
+    val mobs: Map<String, Any>,
+    val inquis: Map<String, Any>? = null // Optional, can be null if not applicable
+)
+
+// ------ Main Data Class ------
 
 data class SboData(
     val effects: List<Effect> = emptyList(),
@@ -56,4 +68,8 @@ data class SboData(
 
 data class AchievementsData(
     val unlocked: List<Int> = emptyList()
+)
+
+data class PastDianaEventsData(
+    val events: List<DianaEvent> = emptyList()
 )
