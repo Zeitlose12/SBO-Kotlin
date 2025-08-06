@@ -2,6 +2,7 @@ package net.sbo.mod
 
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.client.MinecraftClient
 import net.sbo.mod.general.WaypointManager
 import org.slf4j.LoggerFactory
@@ -27,7 +28,19 @@ object SBOKotlin {
 	@JvmStatic
 	fun onInitializeClient() {
 		logger.info("Initializing SBO-Kotlin...")
+
+		// Load configuration and data
 		SBOConfigBundle = SboDataObject.loadAllData("SBO")
+		SboDataObject.saveAllDataThreaded("SBO")
+		Register.onTick(20 * 60 * 10) { client ->
+			// Save data every 10 minutes
+			SboDataObject.saveAllDataThreaded("SBO")
+		}
+		ServerLifecycleEvents.SERVER_STOPPING.register {
+			SboDataObject.saveAndBackupAllDataThreaded("SBO")
+		}
+
+		// load Main Features
 		registerHelpCommand()
 		WaypointManager
 		PartyCommands.registerPartyChatListeners()
@@ -39,12 +52,17 @@ object SBOKotlin {
 		Register.command("sboTest") {
 			logger.info(World.isInSkyblock().toString())
 			logger.info(SBOConfigBundle.sboData.b2bInq.toString())
-			logger.info(SBOConfigBundle.sboData.toString())
-			logger.info(SBOConfigBundle.achievementsData.toString())
-			logger.info(SBOConfigBundle.pastDianaEventsData.toString())
+//			logger.info(SBOConfigBundle.sboData.toString())
+//			logger.info(SBOConfigBundle.achievementsData.toString())
+//			logger.info(SBOConfigBundle.pastDianaEventsData.toString())
+//			logger.info(SBOConfigBundle.dianaTrackerTotalData.toString())
+//			logger.info(SBOConfigBundle.dianaTrackerSessionData.toString())
+//			logger.info(SBOConfigBundle.dianaTrackerMayorData.toString())
+			logger.info(SBOConfigBundle.dianaTrackerTotalData.items.Chimera.toString())
 		}
 
 		SboKeyBinds.register()
 		SboKeyBinds.registerKeyBindListener()
+		logger.info("SBO-Kotlin initialized successfully!")
 	}
 }
