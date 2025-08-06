@@ -3,6 +3,7 @@ package net.sbo.mod.utils
 import net.sbo.mod.SBOKotlin.mc
 import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
+import net.minecraft.text.Texts.toText
 
 object Chat {
     private val client: MinecraftClient
@@ -24,9 +25,17 @@ object Chat {
 
     /**
      * Shows a local chat message only visible to the player.
-     * @param text The message to display in the chat.
+     * @param string The message to display in the chat.
      */
     fun chat(string: String) {
         client.inGameHud.chatHud.addMessage(Text.of(string))
+    }
+
+    /**
+     * Shows a local chat message only visible to the player.
+     * @param text The message to display in the chat.
+     */
+    fun chat(text: Text) {
+        client.inGameHud.chatHud.addMessage(text)
     }
 }

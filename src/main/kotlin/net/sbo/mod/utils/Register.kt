@@ -65,14 +65,19 @@ object Register {
     }
 
     /**
-     * Registers an event that listens for chat messages and executes an action if the message meets the criteria.
-     * @param criteria Optional string to filter messages. If null, all messages will trigger the action.
-     * @param action The action to execute when a chat message is received that meets the criteria.
+     * Registers an event that listens for chat messages that match a regex.
+     * The action receives both the message and the regex match result for easy value extraction.
+     *
+     * @param regex The regular expression to filter messages with.
+     * @param action The action to execute. It receives the message and the `MatchResult`.
      */
-    fun onChatMessage(criteria: String, action: (message: Text) -> Unit) {
+    fun onChatMessage(
+        regex: Regex,
+        action: (message: Text, matchResult: MatchResult) -> Unit
+    ) {
         ClientReceiveMessageEvents.GAME.register { message, _ ->
-            if (message.string.contains(criteria)) {
-                action(message)
+            regex.find(message.string)?.let { result ->
+                action(message, result)
             }
         }
     }
