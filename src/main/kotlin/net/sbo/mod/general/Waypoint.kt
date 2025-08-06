@@ -62,11 +62,11 @@ class Waypoint(
         closestBurrowDistance: Double,
         inqWaypoints: List<Waypoint>
     ) {
-        this.line =  Settings.guessLine && (closestBurrowDistance > 60) && inqWaypoints.isEmpty()
-        this.r = Settings.guessColor.red / 255.0
-        this.g = Settings.guessColor.green / 255.0
-        this.b = Settings.guessColor.blue / 255.0
-        this.hexCodeString = javaColorToHex(Settings.guessColor)
+//        this.line =  Settings.guessLine && (closestBurrowDistance > 60) && inqWaypoints.isEmpty()
+//        this.r = Settings.guessColor.red / 255.0
+//        this.g = Settings.guessColor.green / 255.0
+//        this.b = Settings.guessColor.blue / 255.0
+//        this.hexCodeString = javaColorToHex(Settings.guessColor)
 
         val (exists, wp) = WaypointManager.waypointExists("burrow", this.pos)
         if (exists && wp != null) {
@@ -115,7 +115,7 @@ class Waypoint(
     fun render(context: WorldRenderContext) {
         if (!this.formatted || this.hidden) return
 
-        if (this.type == "guess" && this.distanceRaw <= Settings.removeGuessDistance && Settings.removeGuess) return
+//        if (this.type == "guess" && this.distanceRaw <= Settings.removeGuessDistance && Settings.removeGuess) return
 
         RenderUtil.renderWaypoint(
             context,
@@ -126,7 +126,7 @@ class Waypoint(
             this.alpha.toFloat(),
             true,
             this.line,
-            Settings.lineWidth.toFloat(),
+            5f,
             this.beam
         )
     }

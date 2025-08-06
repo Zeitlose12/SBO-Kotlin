@@ -20,6 +20,10 @@ repositories {
 	// for more information about repositories.
 	maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
 	maven {url = "https://repo.essential.gg/repository/maven-public"}
+	maven {
+		name = "Team Resourceful Maven"
+		url = "https://maven.teamresourceful.com/repository/maven-public/"
+	}
 }
 
 dependencies {
@@ -28,9 +32,11 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	implementation(include("gg.essential:vigilance:306"))
+
 	modImplementation(include("gg.essential:universalcraft-1.21.5-fabric:401"))
 	modImplementation(include("gg.essential:elementa:704"))
+	modImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.5:3.5.13"))
+	modImplementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:3.5.13"))
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"

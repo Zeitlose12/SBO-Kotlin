@@ -80,8 +80,8 @@ object RenderUtil {
                 1.5,
                 text,
                 hexColor,
-                Settings.waypointTextShadow,
-                Settings.waypointTextScale/1000.0,
+                true,
+                5/1000.0,
                 throughWalls
             )
         }
