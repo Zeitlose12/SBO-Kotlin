@@ -39,6 +39,12 @@ object SboDataObject {
         }
     }
 
+    fun loadAllData(modName: String): SboConfigBundle {
+        val sboData = load(modName, "SboData.json", SboData(), SboData::class.java)
+        val achievementsData = load(modName, "sbo_achievements.json", AchievementsData(), AchievementsData::class.java)
+        return SboConfigBundle(sboData, achievementsData)
+    }
+
     fun <T> save(modName: String, data: T, fileName: String) {
         val modConfigDir = File(FabricLoader.getInstance().configDir.toFile(), modName)
         if (!modConfigDir.exists()) {

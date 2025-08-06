@@ -1,4 +1,9 @@
-package net.sbo.mod.data.configs
+package net.sbo.mod.data
+
+data class SboConfigBundle(
+    val sboData: SboData,
+    val achievementsData: AchievementsData
+)
 
 data class Effect(
     val name: String,
@@ -47,4 +52,8 @@ data class SboData(
     val backTrack: Boolean = true,
     val version: String = "0.1.3",
     val b2bChimLsInq: Boolean = false
+)
+
+data class AchievementsData(
+    val unlocked: List<Int> = emptyList()
 )
