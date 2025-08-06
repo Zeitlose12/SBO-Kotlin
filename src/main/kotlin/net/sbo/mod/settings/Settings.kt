@@ -274,14 +274,14 @@ object Settings : Vigilant(
 
     @Property(
         type = PropertyType.SLIDER,
-        name = "Line Width",
-        description = "Set the width of the lines",
+        name = "Line Width For Diana",
+        description = "Set the width of the lines for Diana waypoints",
         category = "Diana",
         subcategory = "Diana Waypoint Lines",
         min = 1,
         max = 10
     )
-    var burrowLineWidth = 1
+    var lineWidth = 3
 
     // Diana Other
     @Property(
@@ -908,7 +908,16 @@ object Settings : Vigilant(
         min = 5,
         max = 20
     )
-    var waypointTextSize = 10
+    var waypointTextScale = 7
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Waypoint Text Shadow",
+        description = "Enables a shadow for the waypoint text",
+        category = "Customization",
+        subcategory = "Waypoint"
+    )
+    var waypointTextShadow = true
 
     // Crown Tracker
     @Property(

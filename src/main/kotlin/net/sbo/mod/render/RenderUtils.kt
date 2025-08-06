@@ -1,16 +1,18 @@
 package net.sbo.mod.render
 
 import com.mojang.blaze3d.systems.RenderSystem
+import net.fabricmc.fabric.api.client.rendering.v1.*
 import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.mixin.accessor.BeaconBlockEntityRendererInvoker
 import net.sbo.mod.utils.SboVec
-import net.fabricmc.fabric.api.client.rendering.v1.*
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.RotationAxis
 import net.minecraft.util.math.Vec3d
+import net.sbo.mod.general.WaypointManager
+import net.sbo.mod.settings.Settings
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Player
 import org.joml.Vector3f
@@ -18,6 +20,12 @@ import org.joml.Vector3f
 import java.lang.reflect.Method
 import java.awt.Color
 import kotlin.math.max
+
+object WaypointRenderer : WorldRenderEvents.AfterTranslucent {
+    override fun afterTranslucent(context: WorldRenderContext) {
+        WaypointManager.renderAllWaypoints(context)
+    }
+}
 
 object RenderUtil {
     fun renderWaypoint(
@@ -72,8 +80,8 @@ object RenderUtil {
                 1.5,
                 text,
                 hexColor,
-                true,
-                0.01,
+                Settings.waypointTextShadow,
+                Settings.waypointTextScale/1000.0,
                 throughWalls
             )
         }
