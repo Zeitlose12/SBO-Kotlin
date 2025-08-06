@@ -114,16 +114,6 @@ object SboDataObject {
         return SboConfigBundle(sboData, achievementsData, pastDianaEventsData, dianaTrackerTotalData, dianaTrackerSessionData, dianaTrackerMayorData)
     }
 
-    private fun saveAllData(modName: String) {
-        val bundle = SBOKotlin.SBOConfigBundle
-        save(modName, bundle.sboData, "SboData.json")
-        save(modName, bundle.achievementsData, "sbo_achievements.json")
-        save(modName, bundle.pastDianaEventsData, "pastDianaEvents.json")
-        save(modName, bundle.dianaTrackerTotalData, "dianaTrackerTotal.json")
-        save(modName, bundle.dianaTrackerSessionData, "dianaTrackerSession.json")
-        save(modName, bundle.dianaTrackerMayorData, "dianaTrackerMayor.json")
-    }
-
     private fun zipFolder(folderToZip: File, zipFilePath: File) {
         ZipOutputStream(FileOutputStream(zipFilePath)).use { zos ->
             folderToZip.walk().filter { it.isFile }.forEach { file ->
@@ -181,6 +171,17 @@ object SboDataObject {
             gson.toJson(data, writer)
         }
     }
+
+    private fun saveAllData(modName: String) {
+        val bundle = SBOKotlin.SBOConfigBundle
+        save(modName, bundle.sboData, "SboData.json")
+        save(modName, bundle.achievementsData, "sbo_achievements.json")
+        save(modName, bundle.pastDianaEventsData, "pastDianaEvents.json")
+        save(modName, bundle.dianaTrackerTotalData, "dianaTrackerTotal.json")
+        save(modName, bundle.dianaTrackerSessionData, "dianaTrackerSession.json")
+        save(modName, bundle.dianaTrackerMayorData, "dianaTrackerMayor.json")
+    }
+
 
     fun saveAllDataThreaded(modName: String) {
         thread(isDaemon = true) {
