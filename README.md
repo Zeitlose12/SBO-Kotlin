@@ -10,7 +10,7 @@
 
 ## What it does
 
-[SBO] SkyblockOverhaul is a feature‐rich ChatTriggers module for Minecraft 1.8.9 designed primarily for the Diana event.
+[SBO] SkyblockOverhaul is a feature‐rich Hypixel Skyvlock for Minecraft fabric-1.21.5 designed primarily for the Diana event.
 
 ## Installation & Configuration
 
