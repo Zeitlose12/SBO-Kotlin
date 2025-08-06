@@ -82,6 +82,14 @@ object Register {
         }
     }
 
+    /**
+     * Registers an event that listens for chat messages containing a specific string.
+     * The action receives the message as a `Text` object.
+     * This is mainly used for testing purposes
+     *
+     * @param criteria The string to search for in chat messages.
+     * @param action The action to execute when a matching message is found.
+     */
     fun chatMessageNormal(criteria: String, action: (message: Text) -> Unit) {
         ClientReceiveMessageEvents.GAME.register { message, _ ->
             if (message.string.contains(criteria)) {
