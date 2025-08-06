@@ -38,7 +38,7 @@ fun registerHelpCommand() {
             .formatted(Formatting.GOLD)
             .append(Text.literal("Commands:").formatted(Formatting.YELLOW))
 
-        Chat.chat(headerText)
+        Chat.chat(headerText.toString())
 
         commands.forEach { command ->
             val cmd = command["cmd"]!!
@@ -57,7 +57,7 @@ fun registerHelpCommand() {
                     .withHoverEvent(ShowText(Text.literal("Click to run /$commandToRun").formatted(Formatting.GRAY)))
             )
 
-            Chat.chat(styledText)
+            Chat.chat(styledText.toString())
         }
     }
 }
