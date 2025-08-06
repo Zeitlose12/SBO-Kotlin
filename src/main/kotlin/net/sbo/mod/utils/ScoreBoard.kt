@@ -34,4 +34,10 @@ object ScoreBoard {
             }
             .asReversed()
     }
+
+    fun getTitle(): String {
+        val scoreboard = SBOKotlin.mc.world?.scoreboard ?: return "Unknown Scoreboard"
+        val objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.SIDEBAR) ?: return "No Objective"
+        return objective.displayName.string
+    }
 }

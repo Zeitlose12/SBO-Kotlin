@@ -82,6 +82,14 @@ object Register {
         }
     }
 
+    fun chatMessageNormal(criteria: String, action: (message: Text) -> Unit) {
+        ClientReceiveMessageEvents.GAME.register { message, _ ->
+            if (message.string.contains(criteria)) {
+                action(message)
+            }
+        }
+    }
+
     /**
      * Registers an event that listens for world load events and executes an action.
      * @param action The action to execute when a world is loaded.
