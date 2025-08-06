@@ -3,6 +3,7 @@ package net.sbo.mod.data
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonSyntaxException
+import com.google.gson.reflect.TypeToken
 import net.fabricmc.loader.api.FabricLoader
 import net.sbo.mod.SBOKotlin
 import java.io.File
@@ -18,7 +19,7 @@ import kotlin.concurrent.thread
 
 object SboDataObject {
     private val gson: Gson = GsonBuilder().setPrettyPrinting().create()
-    private const val MAX_BACKUPS = 5 // Maximum number of backup zips to keep
+    private const val MAX_BACKUPS = 5
 
     fun <T> load(modName: String, fileName: String, defaultData: T, type: Class<T>): T {
         val modConfigDir = File(FabricLoader.getInstance().configDir.toFile(), modName)
@@ -49,9 +50,63 @@ object SboDataObject {
         }
     }
 
+    private fun loadAchievementsData(modName: String): AchievementsData {
+        val modConfigDir = File(FabricLoader.getInstance().configDir.toFile(), modName)
+        val dataFile = File(modConfigDir, "sbo_achievements.json")
+        val defaultData = AchievementsData()
+
+        if (!dataFile.exists()) {
+            SBOKotlin.logger.info("[$modName] sbo_achievements.json not found. Creating with default data.")
+            save(modName, defaultData, "sbo_achievements.json")
+            return defaultData
+        }
+
+        return try {
+            val typeToken = object : TypeToken<Map<String, Any>>() {}.type
+            val oldFormatData: Map<String, Any> = gson.fromJson(FileReader(dataFile), typeToken)
+
+            val combinedUnlockedIds = mutableSetOf<Int>()
+            val achievementMap = mutableMapOf<String, Boolean>()
+            var isOldFormat = false
+
+            // Iterate through all key-value pairs in the old file
+            for ((key, value) in oldFormatData) {
+                if (key != "unlocked" && value is Boolean) {
+                    // This handles the "1": true, "2": true, etc. pairs
+                    achievementMap[key] = value
+                    key.toIntOrNull()?.let { combinedUnlockedIds.add(it) }
+                    isOldFormat = true
+                }
+            }
+
+            // Add the already-unlocked list from the old file, if it exists
+            val existingUnlockedList = (oldFormatData["unlocked"] as? List<*>)?.filterIsInstance<Int>() ?: emptyList()
+            combinedUnlockedIds.addAll(existingUnlockedList)
+
+            if (isOldFormat) {
+                SBOKotlin.logger.info("[$modName] Old achievements file format detected. Migrating to new format.")
+                val newAchievementsData = AchievementsData(
+                    unlocked = combinedUnlockedIds.toList().sorted(),
+                    achievements = achievementMap
+                )
+                save(modName, newAchievementsData, "sbo_achievements.json")
+                SBOKotlin.logger.info("[$modName] Achievements data migrated successfully.")
+                newAchievementsData
+            } else {
+                // If not old format, load it directly as the new AchievementsData class
+                // which now includes the 'achievements' map.
+                load(modName, "sbo_achievements.json", defaultData, AchievementsData::class.java)
+            }
+        } catch (e: Exception) {
+            SBOKotlin.logger.error("[$modName] Error reading sbo_achievements.json, resetting to default data.", e)
+            save(modName, defaultData, "sbo_achievements.json")
+            defaultData
+        }
+    }
+
     fun loadAllData(modName: String): SboConfigBundle {
         val sboData = load(modName, "SboData.json", SboData(), SboData::class.java)
-        val achievementsData = load(modName, "sbo_achievements.json", AchievementsData(), AchievementsData::class.java)
+        val achievementsData = loadAchievementsData(modName)
         val pastDianaEventsData = load(modName, "pastDianaEvents.json", PastDianaEventsData(), PastDianaEventsData::class.java)
         val dianaTrackerTotalData = load(modName, "dianaTrackerTotal.json", DianaTrackerTotalData(), DianaTrackerTotalData::class.java)
         val dianaTrackerSessionData = load(modName, "dianaTrackerSession.json", DianaTrackerSessionData(), DianaTrackerSessionData::class.java)

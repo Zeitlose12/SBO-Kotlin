@@ -70,6 +70,7 @@ data class SboData(
 )
 
 data class AchievementsData(
+    val achievements: Map<String, Boolean> = emptyMap(),
     val unlocked: List<Int> = emptyList()
 )
 
