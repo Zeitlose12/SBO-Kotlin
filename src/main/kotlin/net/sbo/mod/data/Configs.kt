@@ -19,10 +19,10 @@ data class Effect(
 )
 
 data class DianaEvent(
-    val year: Any, // Can be String or Int
+    val year: Any,
     val items: Map<String, Any>,
     val mobs: Map<String, Any>,
-    val inquis: Map<String, Any>? = null // Optional, can be null if not applicable
+    val inquis: Map<String, Any>? = null
 )
 
 // ------ Main Data Class ------

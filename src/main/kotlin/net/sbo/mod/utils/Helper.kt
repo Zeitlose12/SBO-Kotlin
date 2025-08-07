@@ -3,6 +3,8 @@ package net.sbo.mod.utils
 import kotlin.concurrent.thread
 import net.sbo.mod.data.DianaItemsData
 import net.sbo.mod.data.DianaMobsData
+import kotlin.reflect.full.memberProperties
+import java.text.DecimalFormat
 
 object Helper {
     /**
@@ -30,24 +32,71 @@ object Helper {
         return name.trim()
     }
 
-//    fun calcPercentWithMob(items: DianaItemsData, mobs: DianaMobsData, mobName: String): Double? {
-//        val itemCount = items
-//        val mobCount = when (mobName) {
-//            "Minos Inquisitor" -> mobs.`Minos Inquisitor`
-//            else -> return null
-//        }
-//        if (mobCount <= 0) return 0.0
-//        return (itemCount.toDouble() / mobCount.toDouble() * 100)
-//    }
-//
-//    fun calcPercentTotal(items: DianaItemsData, mobs: DianaMobsData, itemName: String): Double? {
-//        val itemCount = when (itemName) {
-//            "Chimera" -> items.Chimera
-//            "Daedalus Stick" -> items.`Daedalus Stick`
-//            else -> return null
-//        }
-//        val totalMobsCount = mobs.TotalMobs
-//        if (totalMobsCount <= 0) return 0.0
-//        return (itemCount.toDouble() / totalMobsCount.toDouble() * 100)
-//    }
+    fun calcPercentOne(items: DianaItemsData, mobs: DianaMobsData, itemName: String, mobName: String? = null): Double? {
+        if (mobName != null) {
+            val itemCount = items::class.memberProperties.firstOrNull { it.name == itemName }
+                ?.call(items) as? Int ?: 0
+            val mobCount = mobs::class.memberProperties.firstOrNull { it.name == mobName }
+                ?.call(mobs) as? Int ?: 0
+
+            if (mobCount <= 0) return 0.0
+            return (itemCount.toDouble() / mobCount.toDouble() * 100)
+        } else {
+            val mobCount = mobs::class.memberProperties.firstOrNull { it.name == itemName }
+                ?.call(mobs) as? Int ?: 0
+            val totalMobsCount = mobs.TotalMobs
+
+            if (totalMobsCount <= 0) return 0.0
+            return (mobCount.toDouble() / totalMobsCount.toDouble() * 100)
+        }
+    }
+
+    fun formatNumber(number: Number?, withCommas: Boolean = false): String {
+        val num = number?.toDouble() ?: 0.0
+
+        if (withCommas) {
+            // Format with commas
+            val formatter = DecimalFormat("#,###")
+            return formatter.format(num)
+        } else {
+            // Format with suffixes (k, m, b)
+            return when {
+                num >= 1_000_000_000 -> "%.2fb".format(num / 1_000_000_000)
+                num >= 1_000_000 -> "%.1fm".format(num / 1_000_000)
+                num >= 1_000 -> "%.1fk".format(num / 1_000)
+                else -> "%.0f".format(num)
+            }
+        }
+    }
+
+    fun formatTime(milliseconds: Long): String {
+        if (milliseconds <= 0) {
+            return "0s"
+        }
+
+        val totalSeconds = (milliseconds / 1000).toInt()
+        val totalMinutes = totalSeconds / 60
+        val totalHours = totalMinutes / 60
+        val days = totalHours / 24
+        val hours = totalHours % 24
+        val minutes = totalMinutes % 60
+        val seconds = totalSeconds % 60
+
+        val builder = StringBuilder()
+
+        if (days > 0) {
+            builder.append("${days}d ")
+        }
+        if (hours > 0 || days > 0) {
+            builder.append("${hours}h ")
+        }
+        if (minutes > 0 || hours > 0 || days > 0) {
+            builder.append("${minutes}m ")
+        }
+        if (builder.isEmpty()) {
+            builder.append("${seconds}s")
+        }
+
+        return builder.toString().trim()
+    }
 }

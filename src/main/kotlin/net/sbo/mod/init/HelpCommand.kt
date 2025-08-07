@@ -57,7 +57,7 @@ fun registerHelpCommand() {
                     .withHoverEvent(ShowText(Text.literal("Click to run /$commandToRun").formatted(Formatting.GRAY)))
             )
 
-            Chat.chat(styledText.toString())
+            Chat.chat(styledText)
         }
     }
 }
