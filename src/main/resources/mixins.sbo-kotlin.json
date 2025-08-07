@@ -5,6 +5,7 @@
 	"client": [
 		"MinecraftClientMixin",
 		"ScreenMixin",
+		"ChatHudMixin",
 		"accessor.BeaconBlockEntityRendererInvoker"
 	],
 	"injectors": {
