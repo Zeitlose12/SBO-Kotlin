@@ -11,8 +11,12 @@ import net.sbo.mod.utils.Chat.chat
 import net.sbo.mod.utils.SboKeyBinds
 import org.lwjgl.glfw.GLFW
 import javax.swing.text.JTextComponent
+enum class SettingDiana {
+    INSTASELL, SELLOFFER
+}
 
 object Diana : CategoryKt("Diana") {
+
     init {
         separator {
             this.title = "Diana Warp"
@@ -41,6 +45,17 @@ object Diana : CategoryKt("Diana") {
         this.slider = true
         this.name = Translated("Warp Delay")
         this.description = Translated("The delay bevor you can warp after guessing with spade. (0 to disable)")
+    }
+
+    init {
+        separator {
+            this.title = "Diana Tracker"
+        }
+    }
+
+    var bazaarSettingDiana by enum(SettingDiana.SELLOFFER) {
+        this.name = Translated("Bazaar Setting")
+        this.description = Translated("Bazaar setting to set the price for loot")
     }
 
     init {
