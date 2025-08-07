@@ -1,25 +1,19 @@
 package net.sbo.mod.render
 
-import com.mojang.blaze3d.systems.RenderSystem
+
 import net.fabricmc.fabric.api.client.rendering.v1.*
 import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.mixin.accessor.BeaconBlockEntityRendererInvoker
 import net.sbo.mod.utils.SboVec
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.*
-import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.RotationAxis
 import net.minecraft.util.math.Vec3d
 import net.sbo.mod.general.WaypointManager
-import net.sbo.mod.settings.Settings
 import net.sbo.mod.settings.categories.Customization
-import net.sbo.mod.utils.Chat
-import net.sbo.mod.utils.Player
-import org.joml.Vector3f
 
-import java.lang.reflect.Method
 import java.awt.Color
+import kotlin.math.abs
 import kotlin.math.max
 
 object WaypointRenderer : WorldRenderEvents.AfterTranslucent {
@@ -41,7 +35,6 @@ object RenderUtil {
         lineWidth: Float,
         renderBeam: Boolean
     ) {
-
         drawFilledBox(
             context,
             pos,
@@ -54,7 +47,7 @@ object RenderUtil {
         )
 
         if (drawLine) {
-            trace(
+            drawLineFromCursor(
                 context,
                 pos,
                 colorComponents,
@@ -250,7 +243,7 @@ object RenderUtil {
      * @param throughWalls Whether the line should be drawn through walls.
      * @param alpha The alpha value for transparency (0.0 to 1.0).
      */
-    fun trace( // todo: add better line
+    fun drawLineFromCursor(
         context: WorldRenderContext,
         target: SboVec,
         color: FloatArray,
@@ -266,23 +259,36 @@ object RenderUtil {
         matrices.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z)
 
         val consumers = context.consumers()!!
-        val cameraPoint = cameraPos.add(Vec3d.fromPolar(camera.pitch, camera.yaw))
+        val startPos = cameraPos.add(Vec3d.fromPolar(camera.pitch, camera.yaw))
+        val endPos = target.center().toVec3d().add(0.0, 0.5, 0.0)
 
-        val point = target.center().toVec3d()
-        val normal = point.toVector3f().sub(cameraPoint.x.toFloat(), cameraPoint.y.toFloat(), cameraPoint.z.toFloat()).normalize()
+        val lineDir = endPos.subtract(startPos)
+        val viewDir = startPos.subtract(cameraPos)
+
+        var sideVec = lineDir.crossProduct(viewDir).normalize()
+
+        if (sideVec.lengthSquared() < 1e-6) {
+            val nonParallelVec = if (abs(lineDir.normalize().y) > 0.99) Vec3d(1.0, 0.0, 0.0) else Vec3d(0.0, 1.0, 0.0)
+            sideVec = lineDir.crossProduct(nonParallelVec).normalize()
+        }
+
+        val upVec = sideVec.crossProduct(lineDir).normalize()
+
+        val nx = upVec.x.toFloat()
+        val ny = upVec.y.toFloat()
+        val nz = upVec.z.toFloat()
 
         val renderLayer = SboRenderLayers.getLines(lineWidth.toDouble(), throughWalls)
         val buffer = consumers.getBuffer(renderLayer)
-
         val matrixEntry = matrices.peek()
-        val matrix = matrices.peek().positionMatrix
 
-        buffer.vertex(matrix, cameraPoint.x.toFloat(), cameraPoint.y.toFloat(), cameraPoint.z.toFloat())
-            .normal(matrixEntry, normal)
+        buffer.vertex(matrixEntry, startPos.x.toFloat(), startPos.y.toFloat(), startPos.z.toFloat())
+            .normal(matrixEntry, nx, ny, nz)
             .color(color[0], color[1], color[2], alpha)
 
-        buffer.vertex(matrix, point.x.toFloat(), point.y.toFloat() + 0.5f, point.z.toFloat())
-            .normal(matrixEntry, normal)
+
+        buffer.vertex(matrixEntry, endPos.x.toFloat(), endPos.y.toFloat(), endPos.z.toFloat())
+            .normal(matrixEntry, nx, ny, nz)
             .color(color[0], color[1], color[2], alpha)
 
         matrices.pop()

@@ -84,6 +84,13 @@ object Diana : CategoryKt("Diana") {
         this.description = Translated("Draws line for burrow, Disable View Bobbing in controls if its buggy")
     }
 
+    var dianaLineWidth by int(5) {
+        this.range = 1..20
+        this.slider = true
+        this.name = Translated("Diana Line Width")
+        this.description = Translated("The width of the lines drawn for Diana waypoints")
+    }
+
     var removeGuessDistance by int(0) {
         this.range = 0..30
         this.slider = true
