@@ -3,37 +3,66 @@ package net.sbo.mod.general
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.sbo.mod.render.WaypointRenderer
+import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.utils.Chat
+import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.SboVec
 import kotlin.math.roundToInt
 
-object WaypointManager { // works
+object WaypointManager {
     var guessWp: Waypoint? = null
     val waypoints = mutableMapOf<String, MutableList<Waypoint>>()
     var closestBurrow: Pair<Waypoint?, Double> = null to 1000.0
 
     init {
         if (guessWp == null) {
-            guessWp = Waypoint("§7Guess", SboVec(100.0, 100.0, 100.0), 0.0, 0.964, 1.0, type = "guess")
+            guessWp = Waypoint("Guess", 100.0, 100.0, 100.0, 0.0f, 0.964f, 1.0f, 0,"guess")
         }
 
         // create test waypoint at 100, 100, 100
-        val testWaypointTreasure = Waypoint("Treasure", SboVec(102.0, 100.0, 100.0), 1.0, 0.666, 0.0, type = "burrow", line = true, beam = true)
-        val testWaypointStart = Waypoint("Start", SboVec(100.0, 100.0, 102.0), 0.333, 1.0, 0.333, type = "burrow", line = true, beam = true)
-        val testWaypointMob = Waypoint("Mob", SboVec(100.0, 100.0, 100.0), 1.0, 0.333, 0.333, type = "burrow", line = true, beam = true)
+        val testWaypointTreasure = Waypoint(
+            "Treasure",
+            102.0, 100.0, 100.0,
+            1.0f, 0.666f, 0.0f,
+            0,
+            "burrow"
+        )
+        val testWaypointStart = Waypoint(
+            "Start",
+            100.0, 100.0, 102.0,
+            0.333f, 1.0f, 0.333f,
+            0,
+            "burrow"
+        )
+        val testWaypointMob = Waypoint(
+            "Mob",
+            100.0, 100.0, 100.0,
+            1.0f, 0.333f, 0.333f,
+            0,
+            "burrow"
+        )
 
-        Register.command("addwp") {
-            addWaypoint(testWaypointMob)
-            addWaypoint(testWaypointTreasure)
-            addWaypoint(testWaypointStart)
-            1
+        Register.command("addinq") {
+            val playerPos = Player.getLastPosition()
+            addWaypoint(Waypoint("Inquisitor", playerPos.x, playerPos.y, playerPos.z, 1.0f, 0.84f, 0.0f, 45, "inq"))
         }
 
-        Register.command("removeburrowwps") {
-            removeAllOfType("burrow")
-            1
+        Register.command("addMob") {
+            val playerPos = Player.getLastPosition()
+            addWaypoint(Waypoint("Mob", playerPos.x, playerPos.y, playerPos.z, 1.0f, 0.333f, 0.333f, 0, "burrow"))
+        }
+
+        Register.command("removeAllInq") {
+            removeAllOfType("inq")
+            Chat.chat("Removed all Inquisitor waypoints.")
+        }
+
+        Register.command("moveGuessToPlayer") {
+            val playerPos = Player.getLastPosition()
+            updateGuess(playerPos.x, playerPos.y, playerPos.z)
+            Chat.chat("Moved guess waypoint to your position: ${playerPos.x.roundToInt()}, ${playerPos.y.roundToInt()}, ${playerPos.z.roundToInt()}")
         }
 
         Register.command("sendcoords") {
@@ -41,7 +70,7 @@ object WaypointManager { // works
             Chat.command("cc x: ${playerPos.x.roundToInt()}, y: ${playerPos.y.roundToInt()}, z: ${playerPos.z.roundToInt()}")
         }
 
-        Register.onChatMessage(
+        Register.onChatMessage( // todo: add inq detection and always inq setting
             Regex("^(?<channel>.*> )?(?<playerName>.+?)[§&]f: (?:[§&]r)?x: (?<x>[^ ,]+),? y: (?<y>[^ ,]+),? z: (?<z>[^ ,]+)$")
         ) { message, match ->
             val playerName = match.groups["playerName"]?.value ?: "Unknown"
@@ -53,20 +82,28 @@ object WaypointManager { // works
             val channel = match.groups["channel"]?.value ?: "Unknown"
 
             if (!channel.contains("Guild")) {
-//                Chat.chat("Added waypoint for $playerName at ($x, $y, $z) channel: $channel")
-//                Chat.chat(message)
-                // show title to player
+                addWaypoint(Waypoint(playerName, x+2, y, z, 1.0f, 0.84f, 0.0f, 45, type = "inq"))
 
-                addWaypoint(Waypoint(playerName, SboVec(x+2, y, z), 1.0, 0.84, 0.0, 45, type = "inq"))
-
-                addWaypoint(Waypoint(playerName, SboVec(x, y, z), 0.0, 0.2, 1.0, 30))
-
+                addWaypoint(Waypoint(playerName, x, y, z, 0.0f, 0.2f, 1.0f, 30))
             }
             1
         }
 
         Register.onTick(5) { _ ->
-            this.formatAllWaypoints()
+            closestBurrow = getClosestWaypoint(Player.getLastPosition(), "burrow") ?: (null to 1000.0)
+            val inqWps = getWaypointsOfType("inq")
+
+            this.forEachWaypoint { waypoint ->
+                if (waypoint.ttl > 0 && waypoint.creation + waypoint.ttl * 1000 < System.currentTimeMillis()) {
+                    removeWaypoint(waypoint)
+                }
+
+                waypoint.line = closestBurrow.first == waypoint && Diana.burrowLine && closestBurrow.second <= 60 && inqWps.isEmpty()
+
+                waypoint.format(inqWps, closestBurrow.second)
+            }
+
+            guessWp?.format(inqWps, closestBurrow.second)
         }
 
         WorldRenderEvents.AFTER_TRANSLUCENT.register(WaypointRenderer)
@@ -115,18 +152,6 @@ object WaypointManager { // works
         if (waypoint != null) {
             removeWaypoint(waypoint)
         }
-    }
-
-    /**
-     * Formats all waypoints, including distance calculations and warp information.
-     */
-    private fun formatAllWaypoints() {
-        val inqWps = getWaypointsOfType("inq")
-
-        forEachWaypoint { waypoint ->
-            waypoint.format(inqWps, closestBurrow.second)
-        }
-        guessWp?.format(inqWps, closestBurrow.second)
     }
 
     /**
@@ -180,9 +205,101 @@ object WaypointManager { // works
         return waypoints[type.lowercase()] ?: emptyList()
     }
 
-    // not implemented yet
-    fun getClosestWarp(pos: SboVec): String? {
+    /**
+     * Gets the closest waypoint of a specific type to a given position.
+     * @param pos The position to find the closest waypoint to.
+     * @param type The type of waypoint to search for.
+     * @return The closest waypoint of the specified type, or null if none are found.
+     */
+    fun getClosestWaypoint(pos: SboVec, type: String): Pair<Waypoint, Double>? {
+        val waypointsOfType = getWaypointsOfType(type)
+        if (waypointsOfType.isEmpty()) return null
 
-        return null
+        var closestWaypoint: Waypoint? = null
+        var closestDistance = Double.MAX_VALUE
+
+        for (waypoint in waypointsOfType) {
+            val distance = pos.distanceTo(waypoint.pos)
+            if (distance < closestDistance) {
+                closestDistance = distance
+                closestWaypoint = waypoint
+            }
+        }
+
+        return closestWaypoint?.let { it to closestDistance }
+    }
+
+    /**
+     * Gets the closest warp point to a given position.
+     * @param pos The position to find the closest warp to.
+     * @return The name of the closest warp, or null if no warps are available.
+     */
+    fun getClosestWarp(pos: SboVec): String? {
+        var warps = hubWarps.filter { it.value.unlocked }.mapValues { it.value }
+        for (warp in Diana.allowedWarps) {
+            if (additionalHubWarps.containsKey(warp.name.lowercase())) {
+                val additionalWarp = additionalHubWarps[warp.name.lowercase()]
+                if (additionalWarp != null && additionalWarp.unlocked) {
+                    warps = warps + (warp.name.lowercase() to additionalWarp)
+                }
+            }
+        }
+
+        var closestWarp: String? = null
+        var closestDistance = Double.MAX_VALUE
+        val playerDistance = pos.distanceTo(Player.getLastPosition())
+        for ((name, warp) in warps) {
+            val distance = pos.distanceTo(warp.pos)
+            if (distance < closestDistance) {
+                closestDistance = distance
+                closestWarp = name
+            }
+        }
+
+        val condition1 = playerDistance > (closestDistance + Diana.warpDiff)
+        val condition2 = condition1 && (closestBurrow.second > 60 || getWaypointsOfType("inq").isNotEmpty())
+
+        val condition = if (Diana.dontWarpIfBurrowClose) condition2 else condition1
+
+        return if (condition) closestWarp else null
+    }
+
+    fun warpToGuess() {
+        val warp = getClosestWarp(guessWp?.pos ?: SboVec(0.0, 0.0, 0.0))
+        if (warp != null) {
+            executeWarpCommand(warp)
+            Chat.chat("Warping to guess waypoint at $warp")
+        } else {
+            Chat.chat("No valid warp found for guess waypoint.")
+        }
+    }
+
+    fun warpToInq() {
+        val newestInq = getWaypointsOfType("inq").maxByOrNull { it.creation }
+        if (newestInq == null) return
+
+        val warp = getClosestWarp(newestInq.pos)
+        if (warp == null) return
+
+        executeWarpCommand(warp)
+    }
+
+    fun warpBoth() {
+        if (getWaypointsOfType("inq").isEmpty()) {
+            warpToGuess()
+        } else {
+            warpToInq()
+        }
+    }
+
+    var tryWarp: Boolean = false
+    fun executeWarpCommand(warp: String) {
+        if (warp.isNotEmpty() && !tryWarp) {
+            tryWarp = true
+            Chat.command("warp $warp")
+            sleep(500) {
+                tryWarp = false
+            }
+        }
     }
 }

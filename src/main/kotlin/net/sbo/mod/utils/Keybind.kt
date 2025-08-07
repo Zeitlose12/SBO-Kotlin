@@ -6,17 +6,21 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
 import net.minecraft.text.Text
+import net.sbo.mod.general.WaypointManager
 import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.utils.Chat.chat
 import org.lwjgl.glfw.GLFW
 
 object SboKeyBinds {
 
+    private data class KeyPressState(var isHeldDown: Boolean = false, var lastActivation: Long = 0)
+    private val keyStates = mutableMapOf<KeyBinding, KeyPressState>()
+
     val guessWarpKey: KeyBinding = KeyBinding(
-    "key.sbo-kotlin.guess_warp",
-    InputUtil.Type.KEYSYM,
-    GLFW.GLFW_KEY_UNKNOWN,
-    "key.category.sbo-kotlin.keybinds"
+        "key.sbo-kotlin.guess_warp",
+        InputUtil.Type.KEYSYM,
+        GLFW.GLFW_KEY_UNKNOWN,
+        "key.category.sbo-kotlin.keybinds"
     )
 
     val inqWarpKey: KeyBinding = KeyBinding(
@@ -33,27 +37,56 @@ object SboKeyBinds {
         "key.category.sbo-kotlin.keybinds"
     )
 
+    val sendCoordsKey: KeyBinding = KeyBinding(
+        "key.sbo-kotlin.send_coords",
+        InputUtil.Type.KEYSYM,
+        GLFW.GLFW_KEY_UNKNOWN,
+        "key.category.sbo-kotlin.keybinds"
+    )
 
     fun register() {
         KeyBindingHelper.registerKeyBinding(guessWarpKey)
         KeyBindingHelper.registerKeyBinding(inqWarpKey)
+        KeyBindingHelper.registerKeyBinding(generalWarpKey)
+        KeyBindingHelper.registerKeyBinding(sendCoordsKey)
+    }
+
+    private fun handlePressAction(keyBinding: KeyBinding, action: () -> Unit) {
+        handlePressAction(keyBinding, 0L, action)
+    }
+
+    private fun handlePressAction(keyBinding: KeyBinding, cooldownMillis: Long, action: () -> Unit) {
+        val state = keyStates.getOrPut(keyBinding) { KeyPressState() }
+
+        if (keyBinding.wasPressed()) {
+            val currentTime = System.currentTimeMillis()
+            if (!state.isHeldDown && currentTime - state.lastActivation > cooldownMillis) {
+                action()
+                state.lastActivation = currentTime
+                state.isHeldDown = true
+            }
+        } else {
+            state.isHeldDown = false
+        }
     }
 
     fun registerKeyBindListener() {
         ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick { client: MinecraftClient ->
-            while (guessWarpKey.wasPressed()) {
-                chat("Guess Warp Key Pressed! key: ${guessWarpKey.boundKey.code}")
-                if (Diana.guessWarp != guessWarpKey.boundKey.code) Diana.guessWarp = guessWarpKey.boundKey.code
+            handlePressAction(guessWarpKey) {
+                WaypointManager.warpToGuess()
             }
 
-            while (inqWarpKey.wasPressed()) {
-                chat("Inquisitor Warp Key Pressed!")
-                if (Diana.inqWarp != inqWarpKey.boundKey.code) Diana.inqWarp = inqWarpKey.boundKey.code
+            handlePressAction(inqWarpKey) {
+                WaypointManager.warpToInq()
             }
 
-            while (generalWarpKey.wasPressed()) {
-                chat("General Warp Key Pressed!")
-                if (Diana.generalWarp != generalWarpKey.boundKey.code) Diana.generalWarp = generalWarpKey.boundKey.code
+            handlePressAction(generalWarpKey) {
+                WaypointManager.warpBoth()
+            }
+
+            handlePressAction(sendCoordsKey, 500L) {
+                val playerPos = Player.getLastPosition()
+                Chat.say("x: ${playerPos.x.toInt()}, y: ${playerPos.y.toInt()}, z: ${playerPos.z.toInt()}")
             }
         })
     }

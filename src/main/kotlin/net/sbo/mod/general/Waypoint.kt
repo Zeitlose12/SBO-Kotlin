@@ -16,7 +16,9 @@ import kotlin.math.roundToInt
  * @class Waypoint
  * @description A class to create waypoints in the game.
  * @param text The text to display on the waypoint.
- * @param pos The position of the waypoint in the game world.
+ * @param x The x-coordinate of the waypoint.
+ * @param y The y-coordinate of the waypoint.
+ * @param z The z-coordinate of the waypoint.
  * @param r The red color component of the waypoint.
  * @param g The green color component of the waypoint.
  * @param b The blue color component of the waypoint.
@@ -28,17 +30,21 @@ import kotlin.math.roundToInt
  */
 class Waypoint(
     var text: String,
-    var pos: SboVec,
-    var r: Double,
-    var g: Double,
-    var b: Double,
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val r: Float,
+    val g: Float,
+    val b: Float,
     val ttl: Int = 0,
     val type: String = "normal",
     var line: Boolean = false,
     var beam: Boolean = true,
     var distance: Boolean = true
 ) {
-    var hexCode: Int = Color(r.toFloat(), g.toFloat(), b.toFloat()).rgb
+    var pos: SboVec = SboVec(this.x, this.y, this.z)
+    var color: Color = Color(this.r, this.g, this.b)
+    var hexCode: Int = this.color.rgb
     val alpha: Double = 0.5
     var hidden: Boolean = false
     val creation: Long = System.currentTimeMillis()
@@ -58,23 +64,6 @@ class Waypoint(
         this.formattedText = this.warp?.let { "$text§7 (warp $it)${this.distanceText}" } ?: "${this.text}${this.distanceText}"
     }
 
-    private fun formatGuess(
-        closestBurrowDistance: Double,
-        inqWaypoints: List<Waypoint>
-    ) {
-        this.line =  Diana.guessLine && (closestBurrowDistance > 60) && inqWaypoints.isEmpty()
-        val guessColor = Color(Customization.guessColor)
-        this.r = guessColor.red / 255.0
-        this.g = guessColor.green / 255.0
-        this.b = guessColor.blue / 255.0
-        this.hexCode = guessColor.rgb
-
-        val (exists, wp) = WaypointManager.waypointExists("burrow", this.pos)
-        if (exists && wp != null) {
-            this.hidden = wp.distanceToPlayer() < 60
-        }
-    }
-
     fun format(
         inqWaypoints: List<Waypoint>,
         closestBurrowDistance: Double
@@ -82,23 +71,23 @@ class Waypoint(
         this.distanceRaw = this.distanceToPlayer()
         this.distanceText = if (this.distance) " §b[${this.distanceRaw.roundToInt()}m]" else ""
 
-        if (this.type == "guess" || (this.type == "inq" && inqWaypoints.lastOrNull() == this)) {
+        if (this.type == "guess") {
+            this.line =  Diana.guessLine && (closestBurrowDistance > 60) && inqWaypoints.isEmpty()
+            this.color =  Color(Customization.guessColor)
+            this.hexCode = color.rgb
+
+            val (exists, wp) = WaypointManager.waypointExists("burrow", this.pos)
+            if (exists && wp != null) {
+                this.hidden = wp.distanceToPlayer() < 60
+            }
+
             this.setWarpText()
+        } else if (this.type == "inq" && inqWaypoints.lastOrNull() == this) {
+            this.setWarpText()
+            this.line = Diana.inqLine
         } else {
-            this.warp = null
             this.formattedText = "${this.text}${this.distanceText}"
         }
-
-        if (this.type.lowercase() == "guess") {
-            this.formatGuess(closestBurrowDistance, inqWaypoints)
-        }
-
-//        if (this.distanceRaw >= 230) {
-//            val playerPos = Player.getLastPosition()
-//            val scale = 230 / this.distanceRaw
-//            this.fx = playerPos.x + (this.fx - playerPos.x) * scale
-//            this.fz = playerPos.z + (this.fz - playerPos.z) * scale
-//        }
 
         this.formatted = true
     }
@@ -122,7 +111,7 @@ class Waypoint(
             context,
             this.formattedText,
             this.pos,
-            floatArrayOf(this.r.toFloat(), this.g.toFloat(), this.b.toFloat()),
+            floatArrayOf(this.r, this.g, this.b),
             this.hexCode,
             this.alpha.toFloat(),
             true,

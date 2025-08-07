@@ -38,4 +38,12 @@ object Chat {
     fun chat(text: Text) {
         client.inGameHud.chatHud.addMessage(text)
     }
+
+    /**
+     * Sends a message to the server chat.
+     * @param message The message to send.
+     */
+    fun say(message: String) {
+        client.networkHandler?.sendChatMessage(message)
+    }
 }

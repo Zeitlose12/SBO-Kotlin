@@ -206,7 +206,7 @@ object RenderUtil {
      * @param pos The position in the world where the beacon beam should be rendered.
      * @param colorComponents The RGB color components as a FloatArray (0.0 to
      */
-    fun renderBeaconBeam(
+    fun renderBeaconBeam( // todo: add through walls option
         context: WorldRenderContext,
         pos: SboVec,
         yOffset: Int,
@@ -250,7 +250,7 @@ object RenderUtil {
      * @param throughWalls Whether the line should be drawn through walls.
      * @param alpha The alpha value for transparency (0.0 to 1.0).
      */
-    fun trace(
+    fun trace( // todo: add better line
         context: WorldRenderContext,
         target: SboVec,
         color: FloatArray,

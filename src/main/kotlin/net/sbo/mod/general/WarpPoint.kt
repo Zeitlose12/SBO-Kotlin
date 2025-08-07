@@ -1,30 +1,36 @@
 package net.sbo.mod.general
 
+import net.sbo.mod.utils.SboVec
+
 /**
  * Represents a single warp point with coordinates and optional data.
- * @property x The X-coordinate.
- * @property y The Y-coordinate.
- * @property z The Z-coordinate.
+ * @property pos The position of the warp point in the game world.
  * @property unlocked Indicates if the warp is unlocked.
  * @property setting An optional name for an associated setting.
  */
 data class WarpPoint(
-    val x: Int,
-    val y: Int,
-    val z: Int,
+    val pos: SboVec = SboVec(0.0, 0.0, 0.0),
     val unlocked: Boolean,
     val setting: String? = null // Nullable, since not all warps have a setting
 )
 
 val hubWarps: Map<String, WarpPoint> = mapOf(
-    "hub" to WarpPoint(x = -3, y = 70, z = -70, unlocked = true),
-    "museum" to WarpPoint(x = -76, y = 76, z = 81, unlocked = true)
+    "hub" to WarpPoint(SboVec(-3.0, 70.0, -70.0), true),
+    "museum" to WarpPoint(SboVec(-76.0, 76.0, 81.0), true)
 )
 
 val additionalHubWarps: Map<String, WarpPoint> = mapOf(
-    "wizard" to WarpPoint(x = 42, y = 122, z = 69, unlocked = true, setting = "wizardWarp"),
-    "crypt" to WarpPoint(x = -161, y = 61, z = -99, unlocked = true, setting = "cryptWarp"),
-    "stonks" to WarpPoint(x = -53, y = 72, z = -53, unlocked = true, setting = "stonksWarp"),
-    "da" to WarpPoint(x = 92, y = 75, z = 174, unlocked = true, setting = "darkAuctionWarp"),
-    "castle" to WarpPoint(x = -250, y = 130, z = 45, unlocked = true, setting = "castleWarp")
+    "castle" to WarpPoint(SboVec(-250.0, 130.0, 45.0), true, "castleWarp"),
+    "wizard" to WarpPoint(SboVec(42.0, 122.0, 69.0), true, "wizardWarp"),
+    "crypt" to WarpPoint(SboVec(-161.0, 61.0, -99.0), true, "cryptWarp"),
+    "stonks" to WarpPoint(SboVec(-53.0, 72.0, -53.0), true, "stonksWarp"),
+    "da" to WarpPoint(SboVec(92.0, 75.0, 174.0), true, "darkAuctionWarp")
 )
+
+enum class AdditionalHubWarps {
+    CASTLE,
+    WIZARD,
+    CRYPT,
+    STONKS,
+    DA
+}
