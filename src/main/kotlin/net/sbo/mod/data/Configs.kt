@@ -1,5 +1,11 @@
 package net.sbo.mod.data
 
+interface DianaTracker {
+    val items: DianaItemsData
+    val mobs: DianaMobsData
+    val inquis: DianaInquisData
+}
+
 data class SboConfigBundle(
     val sboData: SboData,
     val achievementsData: AchievementsData,
@@ -78,24 +84,25 @@ data class PastDianaEventsData(
     val events: List<DianaEvent> = emptyList()
 )
 
+// Korrigierte Datenklassen mit 'override'
 data class DianaTrackerTotalData(
-    val items: DianaItemsData = DianaItemsData(),
-    val mobs: DianaMobsData = DianaMobsData(),
-    val inquis: DianaInquisData = DianaInquisData()
-)
+    override val items: DianaItemsData = DianaItemsData(),
+    override val mobs: DianaMobsData = DianaMobsData(),
+    override val inquis: DianaInquisData = DianaInquisData()
+) : DianaTracker
 
 data class DianaTrackerSessionData(
-    val items: DianaItemsData = DianaItemsData(),
-    val mobs: DianaMobsData = DianaMobsData(),
-    val inquis: DianaInquisData = DianaInquisData()
-)
+    override val items: DianaItemsData = DianaItemsData(),
+    override val mobs: DianaMobsData = DianaMobsData(),
+    override val inquis: DianaInquisData = DianaInquisData()
+) : DianaTracker
 
 data class DianaTrackerMayorData(
     val year: Int = 0,
-    val items: DianaItemsData = DianaItemsData(),
-    val mobs: DianaMobsData = DianaMobsData(),
-    val inquis: DianaInquisData = DianaInquisData()
-)
+    override val items: DianaItemsData = DianaItemsData(),
+    override val mobs: DianaMobsData = DianaMobsData(),
+    override val inquis: DianaInquisData = DianaInquisData()
+) : DianaTracker
 
 // ------ Diana Data ------
 data class DianaItemsData(

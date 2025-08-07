@@ -3,17 +3,18 @@ package net.sbo.mod.general
 import net.sbo.mod.utils.Register
 import net.sbo.mod.settings.categories.PartyCommands
 import net.sbo.mod.utils.Chat
-import net.sbo.mod.utils.Chat.chat
 import net.sbo.mod.SBOKotlin
 import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Helper.getPlayerName
 import net.sbo.mod.utils.Helper.calcPercentOne
 import net.sbo.mod.utils.Helper.formatNumber
 import net.sbo.mod.utils.Helper.formatTime
-import java.util.regex.Pattern
+import net.sbo.mod.diana.DianaStats
 
 object PartyCommands {
+
     val commandRegex = Regex("^§[0-9a-fk-or]Party §[0-9a-fk-or]> (.*?)§[0-9a-fk-or]*: ?(.*)\$")
+
     val data = SBOKotlin.SBOConfigBundle.sboData
     val dianaTrackerMayor = SBOKotlin.SBOConfigBundle.dianaTrackerMayorData
     val dianaTrackerTotal = SBOKotlin.SBOConfigBundle.dianaTrackerTotalData
@@ -113,8 +114,7 @@ object PartyCommands {
                     val chimeraLsCount = dianaTrackerMayor.items.ChimeraLs
                     val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "Chimera", "Minos Inquisitor")
                     sleep(200) {
-                        val percentString = percent?.let { "%.2f".format(it) } ?: "0.00"
-                        Chat.command("pc Chimera: $chimeraCount ($percentString%) +$chimeraLsCount LS")
+                        Chat.command("pc Chimera: $chimeraCount ($percent%) +$chimeraLsCount LS")
                     }
                 }
                 "!inqsls", "!inquisitorls", "!inquisls", "!lsinq", "!lsinqs", "!lsinquisitor", "!lsinquis" -> {
@@ -128,8 +128,7 @@ object PartyCommands {
                     val inquisCount = dianaTrackerMayor.mobs.`Minos Inquisitor`
                     val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "Minos Inquisitor")
                     sleep(200) {
-                        val percentString = percent?.let { "%.2f".format(it) } ?: "0.00"
-                        Chat.command("pc Inquisitor: $inquisCount ($percentString%)")
+                        Chat.command("pc Inquisitor: $inquisCount ($percent%)")
                     }
                 }
                 "!burrows", "!burrow" -> {
@@ -146,8 +145,7 @@ object PartyCommands {
                     val relicCount = dianaTrackerMayor.items.MINOS_RELIC
                     val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "MINOS_RELIC", "Minos Champion")
                     sleep(200) {
-                        val percentString = percent?.let { "%.2f".format(it) } ?: "0.00"
-                        Chat.command("pc Relics: $relicCount ($percentString%)")
+                        Chat.command("pc Relics: $relicCount ($percent%)")
                     }
                 }
                 "!chimls", "!chimerals", "!bookls", "!lschim", "!lsbook", "!lootsharechim", "!lschimera" -> {
@@ -156,8 +154,7 @@ object PartyCommands {
                     val inqLs = dianaTrackerMayor.mobs.`Minos Inquisitor Ls`
                     val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "ChimeraLs", "Minos Inquisitor Ls")
                     sleep(200) {
-                        val percentString = percent?.let { "%.2f".format(it) } ?: "0.00"
-                        Chat.command("pc Chimera LS: $chimsLs ($percentString%)")
+                        Chat.command("pc Chimera LS: $chimsLs ($percent%)")
                     }
                 }
                 "!sticks", "!stick" -> {
@@ -165,8 +162,7 @@ object PartyCommands {
                     val stickCount = dianaTrackerMayor.items.`Daedalus Stick`
                     val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "Daedalus Stick", "Minotaur")
                     sleep(200) {
-                        val percentString = percent?.let { "%.2f".format(it) } ?: "0.00"
-                        Chat.command("pc Sticks: $stickCount ($percentString%)")
+                        Chat.command("pc Sticks: $stickCount ($percent%)")
                     }
                 }
                 "!feathers", "!feather" -> {
@@ -216,13 +212,17 @@ object PartyCommands {
                 "!stats", "!stat" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     if (secondArg == playerName) {
-                        // todo: sendPlayerStats()
+                        sleep(200) {
+                            DianaStats.sendPlayerStats(false)
+                        }
                     }
                 }
                 "!totalstats", "!totalstat" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     if (secondArg == playerName) {
-                        // todo: sendPlayerStats(true)
+                        sleep(200) {
+                            DianaStats.sendPlayerStats(true)
+                        }
                     }
                 }
                 "!since" -> {

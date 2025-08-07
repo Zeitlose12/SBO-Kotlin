@@ -12,6 +12,9 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.DrawContext
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+import net.sbo.mod.utils.ChatHandler
 
 
 
@@ -80,6 +83,13 @@ object Register {
                 action(message, result)
             }
         }
+    }
+
+    fun onChatMessageCancable(
+        regex: Pattern,
+        action: (message: Text, matchResult: Matcher) -> Boolean
+    ) {
+        ChatHandler.registerHandler(regex, action)
     }
 
     /**

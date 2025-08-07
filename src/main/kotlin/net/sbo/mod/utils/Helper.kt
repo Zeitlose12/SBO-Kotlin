@@ -5,6 +5,7 @@ import net.sbo.mod.data.DianaItemsData
 import net.sbo.mod.data.DianaMobsData
 import kotlin.reflect.full.memberProperties
 import java.text.DecimalFormat
+import java.util.Locale
 
 object Helper {
     /**
@@ -32,25 +33,25 @@ object Helper {
         return name.trim()
     }
 
-    fun calcPercentOne(items: DianaItemsData, mobs: DianaMobsData, itemName: String, mobName: String? = null): Double? {
-        if (mobName != null) {
+    fun calcPercentOne(items: DianaItemsData, mobs: DianaMobsData, itemName: String, mobName: String? = null): String {
+        val result: Double = if (mobName != null) {
             val itemCount = items::class.memberProperties.firstOrNull { it.name == itemName }
                 ?.call(items) as? Int ?: 0
             val mobCount = mobs::class.memberProperties.firstOrNull { it.name == mobName }
                 ?.call(mobs) as? Int ?: 0
 
-            if (mobCount <= 0) return 0.0
-            return (itemCount.toDouble() / mobCount.toDouble() * 100)
+            if (mobCount <= 0) 0.0
+            else (itemCount.toDouble() / mobCount.toDouble() * 100)
         } else {
             val mobCount = mobs::class.memberProperties.firstOrNull { it.name == itemName }
                 ?.call(mobs) as? Int ?: 0
             val totalMobsCount = mobs.TotalMobs
 
-            if (totalMobsCount <= 0) return 0.0
-            return (mobCount.toDouble() / totalMobsCount.toDouble() * 100)
+            if (totalMobsCount <= 0) 0.0
+            else (mobCount.toDouble() / totalMobsCount.toDouble() * 100)
         }
+        return "%.2f".format(Locale.US, result)
     }
-
     fun formatNumber(number: Number?, withCommas: Boolean = false): String {
         val num = number?.toDouble() ?: 0.0
 

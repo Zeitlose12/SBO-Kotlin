@@ -13,6 +13,7 @@ import net.sbo.mod.utils.World
 import net.sbo.mod.general.PartyCommands
 import net.sbo.mod.data.SboConfigBundle
 import net.sbo.mod.data.SboDataObject
+import net.sbo.mod.event.HandleEvent
 import net.sbo.mod.utils.SboKeyBinds
 
 object SBOKotlin {
