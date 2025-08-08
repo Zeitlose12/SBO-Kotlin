@@ -12,6 +12,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.DrawContext
+import net.sbo.mod.SBOKotlin.logger
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import net.sbo.mod.utils.ChatHandler
@@ -81,6 +82,36 @@ object Register {
         ClientReceiveMessageEvents.GAME.register { message, _ ->
             regex.find(message.string)?.let { result ->
                 action(message, result)
+            }
+        }
+    }
+
+    /**
+     * Registers a listener for chat messages that match a given criteria string.
+     *
+     * @param criteria The pattern to match. Use ${variable} for placeholders.
+     * @param action A lambda function to execute upon a match. It receives a list of the captured strings.
+     */
+    fun onChatMessage(
+        criteria: String,
+        action: (capturedParts: List<String>) -> Unit
+    ) {
+        val processedCriteria = criteria.replace('&', '§')
+        val placeholderRegex = Regex("\\{[^}]+}")
+        val literalParts = processedCriteria.split(placeholderRegex)
+        val finalRegexPattern = literalParts
+            .joinToString(separator = "(.*?)") { Regex.escape(it) }
+        val criteriaRegex = Regex(finalRegexPattern)
+
+        ClientReceiveMessageEvents.GAME.register { message: Text, _ ->
+            val plainTextMessage = message.string
+
+            val matchResult = criteriaRegex.matchEntire(plainTextMessage)
+
+            if (matchResult != null) {
+                val captured = matchResult.groupValues.drop(1)
+
+                action(captured)
             }
         }
     }

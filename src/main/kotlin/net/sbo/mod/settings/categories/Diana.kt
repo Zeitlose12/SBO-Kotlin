@@ -40,7 +40,7 @@ object Diana : CategoryKt("Diana") {
         this.description = Translated("The additional block difference to consider when warping to a waypoint. (0 to disable)")
     }
 
-    var warpDelay by int(0) {
+    var warpDelay by int(0) { // todo: add this
         this.range = 0..1000
         this.slider = true
         this.name = Translated("Warp Delay")
@@ -92,7 +92,7 @@ object Diana : CategoryKt("Diana") {
     }
 
     var removeGuessDistance by int(0) {
-        this.range = 0..30
+        this.range = 0..20
         this.slider = true
         this.name = Translated("Remove Guess When Close")
         this.description = Translated("Removes the guess waypoint when you are within this distance of it (0 to disable)")

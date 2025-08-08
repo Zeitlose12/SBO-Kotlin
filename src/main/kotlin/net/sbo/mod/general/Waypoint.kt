@@ -104,7 +104,7 @@ class Waypoint(
     fun render(context: WorldRenderContext) {
         if (!this.formatted || this.hidden) return
 
-        if ((this.type == "guess" && this.distanceRaw <= Diana.removeGuessDistance) || Diana.removeGuessDistance == 0) return
+        if (this.type == "guess" && this.distanceRaw <= Diana.removeGuessDistance) return
 
         RenderUtil.renderWaypoint(
             context,

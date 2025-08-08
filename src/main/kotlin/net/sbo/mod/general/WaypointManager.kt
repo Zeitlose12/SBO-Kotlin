@@ -43,48 +43,33 @@ object WaypointManager {
             0,
             "burrow"
         )
-
-        Register.command("addinq") {
-            val playerPos = Player.getLastPosition()
-            addWaypoint(Waypoint("Inquisitor", playerPos.x, playerPos.y, playerPos.z, 1.0f, 0.84f, 0.0f, 45, "inq"))
-        }
-
-        Register.command("addMob") {
-            val playerPos = Player.getLastPosition()
-            addWaypoint(Waypoint("Mob", playerPos.x, playerPos.y, playerPos.z, 1.0f, 0.333f, 0.333f, 0, "burrow"))
-        }
-
         Register.command("removeAllInq") {
             removeAllOfType("inq")
             Chat.chat("Removed all Inquisitor waypoints.")
         }
 
-        Register.command("moveGuessToPlayer") {
+        Register.command("sbosendinq") {
             val playerPos = Player.getLastPosition()
-            updateGuess(playerPos.x, playerPos.y, playerPos.z)
-            Chat.chat("Moved guess waypoint to your position: ${playerPos.x.roundToInt()}, ${playerPos.y.roundToInt()}, ${playerPos.z.roundToInt()}")
+            Chat.command("pc x: ${playerPos.x.roundToInt()}, y: ${playerPos.y.roundToInt() - 1}, z: ${playerPos.z.roundToInt()} | Inquisitor spawned")
         }
 
-        Register.command("sendcoords") {
-            val playerPos = Player.getLastPosition()
-            Chat.command("cc x: ${playerPos.x.roundToInt()}, y: ${playerPos.y.roundToInt()}, z: ${playerPos.z.roundToInt()}")
-        }
-
-        Register.onChatMessage( // todo: add inq detection and always inq setting
-            Regex("^(?<channel>.*> )?(?<playerName>.+?)[§&]f: (?:[§&]r)?x: (?<x>[^ ,]+),? y: (?<y>[^ ,]+),? z: (?<z>[^ ,]+)$")
+        Register.onChatMessage(
+            Regex("^(?<channel>.*> )?(?<playerName>.+?)[§&]f: (?:[§&]r)?x: (?<x>[^ ,]+),? y: (?<y>[^ ,]+),? z: (?<z>[^ ,]+)(?<trailing>.*)$")
         ) { message, match ->
+            val channel = match.groups["channel"]?.value ?: "Unknown"
             val playerName = match.groups["playerName"]?.value ?: "Unknown"
 
-            val x = match.groups["x"]?.value?.toDoubleOrNull() ?: 0.0
-            val y = match.groups["y"]?.value?.toDoubleOrNull() ?: 0.0
-            val z = match.groups["z"]?.value?.toDoubleOrNull() ?: 0.0
+            val x = match.groups["x"]?.value?.toIntOrNull() ?: 0.0
+            val y = match.groups["y"]?.value?.toIntOrNull() ?: 0.0
+            val z = match.groups["z"]?.value?.toIntOrNull() ?: 0.0
 
-            val channel = match.groups["channel"]?.value ?: "Unknown"
+            val trailing = match.groups["trailing"]?.value ?: ""
 
             if (!channel.contains("Guild")) {
-                addWaypoint(Waypoint(playerName, x+2, y, z, 1.0f, 0.84f, 0.0f, 45, type = "inq"))
-
-                addWaypoint(Waypoint(playerName, x, y, z, 0.0f, 0.2f, 1.0f, 30))
+                if (trailing.startsWith(" ") || trailing.lowercase().contains("inquisitor") || Diana.allWaypointsAreInqs)
+                    addWaypoint(Waypoint(playerName, x.toDouble(), y.toDouble(), z.toDouble(), 1.0f, 0.84f, 0.0f, 45, type = "inq"))
+                else
+                    addWaypoint(Waypoint(playerName, x.toDouble(), y.toDouble(), z.toDouble(), 0.0f, 0.2f, 1.0f, 30))
             }
             1
         }

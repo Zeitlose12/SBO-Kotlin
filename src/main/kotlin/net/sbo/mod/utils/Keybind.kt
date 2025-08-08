@@ -86,7 +86,7 @@ object SboKeyBinds {
 
             handlePressAction(sendCoordsKey, 500L) {
                 val playerPos = Player.getLastPosition()
-                Chat.say("x: ${playerPos.x.toInt()}, y: ${playerPos.y.toInt()}, z: ${playerPos.z.toInt()}")
+                Chat.say("x: ${playerPos.x.toInt()}, y: ${playerPos.y.toInt() - 1}, z: ${playerPos.z.toInt()}")
             }
         })
     }

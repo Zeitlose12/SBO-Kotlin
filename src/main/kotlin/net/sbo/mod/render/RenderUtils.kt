@@ -1,19 +1,16 @@
 package net.sbo.mod.render
 
-
 import net.fabricmc.fabric.api.client.rendering.v1.*
-import net.sbo.mod.SBOKotlin.mc
-import net.sbo.mod.mixin.accessor.BeaconBlockEntityRendererInvoker
-import net.sbo.mod.utils.SboVec
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.*
 import net.minecraft.util.math.RotationAxis
 import net.minecraft.util.math.Vec3d
+import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.general.WaypointManager
+import net.sbo.mod.mixin.accessor.BeaconBlockEntityRendererInvoker
 import net.sbo.mod.settings.categories.Customization
-
+import net.sbo.mod.utils.SboVec
 import java.awt.Color
-import kotlin.math.abs
 import kotlin.math.max
 
 object WaypointRenderer : WorldRenderEvents.AfterTranslucent {
@@ -265,12 +262,7 @@ object RenderUtil {
         val lineDir = endPos.subtract(startPos)
         val viewDir = startPos.subtract(cameraPos)
 
-        var sideVec = lineDir.crossProduct(viewDir).normalize()
-
-        if (sideVec.lengthSquared() < 1e-6) {
-            val nonParallelVec = if (abs(lineDir.normalize().y) > 0.99) Vec3d(1.0, 0.0, 0.0) else Vec3d(0.0, 1.0, 0.0)
-            sideVec = lineDir.crossProduct(nonParallelVec).normalize()
-        }
+        val sideVec = lineDir.crossProduct(viewDir).normalize()
 
         val upVec = sideVec.crossProduct(lineDir).normalize()
 
