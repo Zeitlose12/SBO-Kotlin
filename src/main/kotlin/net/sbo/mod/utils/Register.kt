@@ -16,7 +16,7 @@ import net.sbo.mod.SBOKotlin.logger
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import net.sbo.mod.utils.ChatHandler
-
+import net.sbo.mod.utils.Helper.removeFormatting
 
 
 /**
@@ -77,10 +77,14 @@ object Register {
      */
     fun onChatMessage(
         regex: Regex,
+        noFormatting: Boolean = false,
         action: (message: Text, matchResult: MatchResult) -> Unit
     ) {
         ClientReceiveMessageEvents.GAME.register { message, _ ->
-            regex.find(message.string)?.let { result ->
+            var text = message.string
+            if (noFormatting) text = text.removeFormatting()
+
+            regex.find(text)?.let { result ->
                 action(message, result)
             }
         }

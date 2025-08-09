@@ -54,6 +54,20 @@ object WaypointManager {
         }
 
         Register.onChatMessage(
+            Regex("^LOOT SHARE You received loot for assisting (.+)$"),
+            true
+        ) { message, match ->
+            Chat.chat("sbo-kotlin: Loot share message detected, adding guess waypoint.")
+            removeWithinDistance("inq", 30)
+            1
+        }
+
+        Register.onWorldChange {
+            guessWp?.hide()
+            removeAllOfType("world")
+        }
+
+        Register.onChatMessage(
             Regex("^(?<channel>.*> )?(?<playerName>.+?)[§&]f: (?:[§&]r)?x: (?<x>[^ ,]+),? y: (?<y>[^ ,]+),? z: (?<z>[^ ,]+)(?<trailing>.*)$")
         ) { message, match ->
             val channel = match.groups["channel"]?.value ?: "Unknown"
@@ -69,7 +83,7 @@ object WaypointManager {
                 if (trailing.startsWith(" ") || trailing.lowercase().contains("inquisitor") || Diana.allWaypointsAreInqs)
                     addWaypoint(Waypoint(playerName, x.toDouble(), y.toDouble(), z.toDouble(), 1.0f, 0.84f, 0.0f, 45, type = "inq"))
                 else
-                    addWaypoint(Waypoint(playerName, x.toDouble(), y.toDouble(), z.toDouble(), 0.0f, 0.2f, 1.0f, 30))
+                    addWaypoint(Waypoint(playerName, x.toDouble(), y.toDouble(), z.toDouble(), 0.0f, 0.2f, 1.0f, 30, type = "world"))
             }
             1
         }
@@ -140,6 +154,23 @@ object WaypointManager {
     }
 
     /**
+     * Removes all waypoints of a specific type.
+     * @param type The type of waypoints to remove.
+     */
+    fun removeAllOfType(type: String) {
+        waypoints[type.lowercase()]?.clear()
+    }
+
+    /**
+     * Removes all waypoints of a specific type that are within a certain distance from the player's last position.
+     * @param type The type of waypoints to remove.
+     */
+    fun removeWithinDistance(type: String, distance: Int) {
+        val playerPos = Player.getLastPosition()
+        waypoints[type] = getWaypointsOfType(type).filterNot { it.pos.distanceTo(playerPos) < distance }.toMutableList()
+    }
+
+    /**
      * Updates the guess waypoint position.
      * @param x The new X coordinate.
      * @param y The new Y coordinate.
@@ -171,14 +202,6 @@ object WaypointManager {
      */
     fun forEachWaypoint(action: (Waypoint) -> Unit) {
         waypoints.values.flatten().forEach(action)
-    }
-
-    /**
-     * Removes all waypoints of a specific type.
-     * @param type The type of waypoints to remove.
-     */
-    fun removeAllOfType(type: String) {
-        waypoints[type.lowercase()]?.clear()
     }
 
     /**

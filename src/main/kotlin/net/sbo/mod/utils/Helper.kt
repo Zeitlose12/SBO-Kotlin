@@ -100,4 +100,8 @@ object Helper {
 
         return builder.toString().trim()
     }
+
+    fun String.removeFormatting(): String {
+        return this.replace(Regex("§."), "")
+    }
 }
