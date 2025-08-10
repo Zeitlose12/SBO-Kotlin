@@ -13,7 +13,6 @@ import net.sbo.mod.utils.World
 import net.sbo.mod.general.PartyCommands
 import net.sbo.mod.data.SboConfigBundle
 import net.sbo.mod.data.SboDataObject
-import net.sbo.mod.event.HandleEvent
 import net.sbo.mod.utils.SboKeyBinds
 
 object SBOKotlin {
@@ -33,10 +32,7 @@ object SBOKotlin {
 		// Load configuration and data
 		SBOConfigBundle = SboDataObject.loadAllData("SBO")
 		SboDataObject.saveAllDataThreaded("SBO")
-		Register.onTick(20 * 60 * 10) { client ->
-			// Save data every 10 minutes
-			SboDataObject.saveAllDataThreaded("SBO")
-		}
+		SboDataObject.savePeriodically(10)
 		ServerLifecycleEvents.SERVER_STOPPING.register {
 			SboDataObject.saveAndBackupAllDataThreaded("SBO")
 		}

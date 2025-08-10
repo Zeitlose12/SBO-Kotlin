@@ -6,6 +6,7 @@ import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import net.fabricmc.loader.api.FabricLoader
 import net.sbo.mod.SBOKotlin
+import net.sbo.mod.utils.Register
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
@@ -197,6 +198,16 @@ object SboDataObject {
             saveAllData(modName)
             SBOKotlin.logger.info("[$modName] All data saved successfully.")
             createBackup(modName)
+        }
+    }
+
+    /**
+     * Saves all data periodically based on the specified interval in minutes.
+     * @param interval The interval in minutes at which to save the data.
+     */
+    fun savePeriodically(interval: Int) {
+        Register.onTick(20 * 60 * interval) { client ->
+            saveAllDataThreaded("SBO")
         }
     }
 
