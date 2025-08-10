@@ -3,13 +3,16 @@ package net.sbo.mod.guis.partyfinder
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.components.UIBlock
+import gg.essential.elementa.components.UIRoundedRectangle
+import gg.essential.elementa.constraints.CenterConstraint
+import gg.essential.elementa.constraints.ColorConstraint
 import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.percent
 import gg.essential.universal.UKeyboard
+import net.sbo.mod.utils.EventBus
 import net.sbo.mod.SBOKotlin.mc
 import java.awt.Color
-import net.sbo.mod.utils.EventBus
 
 class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
 
@@ -26,15 +29,12 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
 
 
     init {
-
-        UIBlock(Color(0, 0, 0, 100))
-            .constrain {
-                width = 100.percent()
-                height = 100.percent()
-            } childOf window
-
         _registers()
         _create()
+
+        EventBus.on("refreshPartyList") {
+            updateCurrentPartyList(true)
+        }
 
         window.onKeyType { typedChar, keyCode ->
             if (keyCode == UKeyboard.KEY_ESCAPE) {
@@ -50,7 +50,12 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
     }
 
     private fun _create() {
-
+        var base = UIRoundedRectangle(10f).constrain {
+            width = 60.percent()
+            height = 65.percent()
+            x = CenterConstraint()
+            y = CenterConstraint()
+        }.setColor(Color(30, 30, 30, 240)) childOf window
     }
 
 

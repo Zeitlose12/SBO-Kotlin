@@ -7,7 +7,7 @@ import net.sbo.mod.utils.Register
 
 object Main {
     fun register() {
-        Register.command("sboTest") {
+        Register.command("sbopf") {
             mc.send {
                 UScreen.displayScreen(PartyFinderGUI())
             }
