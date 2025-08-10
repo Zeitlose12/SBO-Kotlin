@@ -2,7 +2,7 @@
 	"schemaVersion": 1,
 	"id": "sbo-kotlin",
 	"version": "${version}",
-	"name": "SBO-Kotlin",
+	"name": "SBO",
 	"description": "SBO is the ultimate diana mod for diana nons! FPS friendly, and packed with QOL features!",
 	"authors": [
 		"D4rkSwift/Saotzuri",
@@ -16,21 +16,14 @@
 	"icon": "assets/sbo-kotlin/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
+		"client": [
 			{
-				"value": "net.sbo.mod.SBOKotlin",
-				"adapter": "kotlin"
-			}
-		],
-		"fabric-datagen": [
-			{
-				"value": "net.sbo.mod.SBOKotlinDataGenerator",
-				"adapter": "kotlin"
+				"value": "net.sbo.mod.SBOKotlin::onInitializeClient"
 			}
 		]
 	},
 	"mixins": [
-		"sbo-kotlin.mixins.json"
+		"mixins.sbo-kotlin.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.16.14",

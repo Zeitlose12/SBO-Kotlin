@@ -2,8 +2,11 @@
 	"required": true,
 	"package": "net.sbo.mod.mixin",
 	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"ExampleMixin"
+	"client": [
+		"MinecraftClientMixin",
+		"ScreenMixin",
+		"ChatHudMixin",
+		"accessor.BeaconBlockEntityRendererInvoker"
 	],
 	"injectors": {
 		"defaultRequire": 1
