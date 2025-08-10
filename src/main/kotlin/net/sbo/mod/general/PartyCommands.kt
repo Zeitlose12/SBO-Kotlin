@@ -10,6 +10,9 @@ import net.sbo.mod.utils.Helper.calcPercentOne
 import net.sbo.mod.utils.Helper.formatNumber
 import net.sbo.mod.utils.Helper.formatTime
 import net.sbo.mod.diana.DianaStats
+import java.util.concurrent.TimeUnit
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 object PartyCommands {
 
@@ -41,7 +44,7 @@ object PartyCommands {
     )
 
     fun registerPartyChatListeners() {
-
+        DianaStats.registerReplaceStatsMessage()
         Register.onChatMessage(commandRegex) { message, matchResult ->
             val unformattedPlayerName = matchResult.groupValues[1]
             val fullMessage = matchResult.groupValues[2]
@@ -49,6 +52,7 @@ object PartyCommands {
             val command = messageParts.getOrNull(0)?.lowercase() ?: return@onChatMessage
             val secondArg = messageParts.getOrNull(1)
             val playerName = getPlayerName(unformattedPlayerName)
+            val user = SBOKotlin.mc.player?.name?.string ?: "unknown"
             val commandsWithArgs = setOf("!since", "!demote", "!promote", "!ptme", "!transfer", "!stats", "!totalstats")
 
             if (!settings.partyCommands) return@onChatMessage
@@ -134,10 +138,13 @@ object PartyCommands {
                 "!burrows", "!burrow" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     val burrows = dianaTrackerMayor.items.`Total Burrows`
-                    // todo: implement burrows per hour calculation
-                    val burrowsPerHrTxt = ""
+                    val playTimeHrs = dianaTrackerMayor.items.mayorTime / TimeUnit.HOURS.toMillis(1)
+                    val burrowsPerHr = if (playTimeHrs > 0) {
+                        val result = burrows.toDouble() / playTimeHrs
+                        BigDecimal(result).setScale(2, RoundingMode.HALF_UP).toDouble()
+                    }  else 0.0
                     sleep(200) {
-                        Chat.command("pc Burrows: $burrows ($burrowsPerHrTxt/h)")
+                        Chat.command("pc Burrows: $burrows ($burrowsPerHr/h)")
                     }
                 }
                 "!relic", "!relics" -> {
@@ -181,10 +188,13 @@ object PartyCommands {
                 "!mobs", "!mob" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     val totalMobs = dianaTrackerMayor.mobs.TotalMobs
-                    // todo: getMobsPerHour()
-                    val mobsPerHrTxt = ""
+                    val playTimeHrs = dianaTrackerMayor.items.mayorTime / TimeUnit.HOURS.toMillis(1)
+                    val mobsPerHr = if (playTimeHrs > 0) {
+                        val result = totalMobs.toDouble() / playTimeHrs
+                        BigDecimal(result).setScale(2, RoundingMode.HALF_UP).toDouble()
+                    } else 0.0
                     sleep(200) {
-                        Chat.command("pc Mobs: $totalMobs ($mobsPerHrTxt/h)")
+                        Chat.command("pc Mobs: $totalMobs ($mobsPerHr/h)")
                     }
                 }
                 "!mf", "!magicfind" -> {
@@ -211,7 +221,7 @@ object PartyCommands {
                 }
                 "!stats", "!stat" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
-                    if (secondArg == playerName) {
+                    if (secondArg == user) {
                         sleep(200) {
                             DianaStats.sendPlayerStats(false)
                         }
@@ -219,7 +229,7 @@ object PartyCommands {
                 }
                 "!totalstats", "!totalstat" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
-                    if (secondArg == playerName) {
+                    if (secondArg == user) {
                         sleep(200) {
                             DianaStats.sendPlayerStats(true)
                         }

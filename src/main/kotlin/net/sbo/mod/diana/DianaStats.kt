@@ -6,6 +6,7 @@ import net.sbo.mod.utils.Helper
 import net.sbo.mod.data.DianaTracker
 import java.util.concurrent.TimeUnit
 import net.sbo.mod.settings.categories.Diana
+import net.sbo.mod.utils.Register
 import java.util.regex.Pattern
 import java.util.Locale
 
@@ -31,9 +32,28 @@ data class PlayerStats(
 
 object DianaStats {
     val STATS_PATTERN = Pattern.compile(
-        "^§r§9Party §8> (.*?)§f: §rPlaytime: (.*?) - Profit: (.*?) - (.*?) - Burrows: (.*?) \\((.*?)/h\\) - Mobs: (.*?) \\((.*?)/h\\) - Inquisitors: (.*?) \\((.*?)\\) - LS Inqs: (.*?) - Chimeras: (.*?) \\((.*?)\\) - LS: (.*?) \\((.*?)\\) - Sticks: (.*?) (.*?) - Relics: (.*?) (.*?)§r$"
+        "§9Party §8> (.*?)§f: Playtime: (.*?) - Profit: (.*?) \\((.*?)\\) - Burrows: (.*?) \\((.*?)\\) - Mobs: (.*?) \\((.*?)\\) - Inqs: (.*?) \\((.*?)\\) - LS Inqs: (.*?) - Chims: (.*?) \\((.*?)\\) - LS: (.*?) \\((.*?)\\) - Sticks: (.*?) \\((.*?)\\) - Relics: (.*?) \\((.*?)\\)",
+        Pattern.DOTALL
     )
-    // todo: replace send stats message with formatted one and send it with Chat.chat
+
+    fun registerReplaceStatsMessage() {
+        Register.onChatMessageCancable(
+            STATS_PATTERN
+        ) { message, matcher ->
+            val statsMessage = ArrayList<String>()
+            statsMessage.add("§9Party §8> ${matcher.group(1)}§f:")
+            statsMessage.add("§ePlaytime: §b${matcher.group(2)}")
+            statsMessage.add("§aBurrows: §b${matcher.group(5)} §7(${matcher.group(6)}/h)")
+            statsMessage.add("§aMobs: §b${matcher.group(7)} §7(${matcher.group(8)}/h)")
+            statsMessage.add("§dInquisitors: §b${matcher.group(9)} §7(${matcher.group(10)}) §6LS: §b${matcher.group(11)}")
+            statsMessage.add("§dChimeras: §b${matcher.group(12)} §7(${matcher.group(13)}) §6LS: §b${matcher.group(14)} §7(${matcher.group(15)})")
+            statsMessage.add("§6Sticks: §b${matcher.group(16)} §7(${matcher.group(17)})")
+            statsMessage.add("§5Relics: §b${matcher.group(18)} §7(${matcher.group(19)})")
+            statsMessage.add("§6Profit: §b${matcher.group(3)} §7(${matcher.group(4)})")
+            Chat.chat(statsMessage.joinToString("\n"))
+            false
+        }
+    }
 
     fun getPlayerStats(total: Boolean = false): PlayerStats {
         val tracker: DianaTracker = if (total) SBOKotlin.SBOConfigBundle.dianaTrackerTotalData else SBOKotlin.SBOConfigBundle.dianaTrackerMayorData
