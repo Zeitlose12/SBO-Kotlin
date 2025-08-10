@@ -20,7 +20,6 @@ object PartyCommands {
 
     val data = SBOKotlin.SBOConfigBundle.sboData
     val dianaTrackerMayor = SBOKotlin.SBOConfigBundle.dianaTrackerMayorData
-    val dianaTrackerTotal = SBOKotlin.SBOConfigBundle.dianaTrackerTotalData
     val settings = PartyCommands
     val carrot = listOf(
         "As I see it, Carrot",
@@ -158,7 +157,6 @@ object PartyCommands {
                 "!chimls", "!chimerals", "!bookls", "!lschim", "!lsbook", "!lootsharechim", "!lschimera" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     val chimsLs = dianaTrackerMayor.items.ChimeraLs
-                    val inqLs = dianaTrackerMayor.mobs.`Minos Inquisitor Ls`
                     val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "ChimeraLs", "Minos Inquisitor Ls")
                     sleep(200) {
                         Chat.command("pc Chimera LS: $chimsLs ($percent%)")
@@ -206,7 +204,7 @@ object PartyCommands {
                 "!playtime" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     sleep(200) {
-                        Chat.command("pc Playtime: ${formatTime(dianaTrackerMayor.items.mayorTime.toLong())}")
+                        Chat.command("pc Playtime: ${formatTime(dianaTrackerMayor.items.mayorTime)}")
                     }
                 }
                 "!profits", "!profit" -> {
