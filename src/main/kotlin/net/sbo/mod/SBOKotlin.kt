@@ -14,6 +14,7 @@ import net.sbo.mod.general.PartyCommands
 import net.sbo.mod.data.SboConfigBundle
 import net.sbo.mod.data.SboDataObject
 import net.sbo.mod.utils.SboKeyBinds
+import net.sbo.mod.guis.Main
 
 object SBOKotlin {
 	@JvmField
@@ -24,6 +25,7 @@ object SBOKotlin {
 
 	val configurator = Configurator("sbo")
 	val settings = Settings.register(configurator)
+	val guis = Main
 
 	@JvmStatic
 	fun onInitializeClient() {
@@ -46,17 +48,10 @@ object SBOKotlin {
 				mc.setScreen(ResourcefulConfigScreen.getFactory("sbo").apply(null))
 			}
 		}
-		Register.command("sboTest") {
-			logger.info(World.isInSkyblock().toString())
-			logger.info(SBOConfigBundle.sboData.b2bInq.toString())
-//			logger.info(SBOConfigBundle.sboData.toString())
-//			logger.info(SBOConfigBundle.achievementsData.toString())
-//			logger.info(SBOConfigBundle.pastDianaEventsData.toString())
-//			logger.info(SBOConfigBundle.dianaTrackerTotalData.toString())
-//			logger.info(SBOConfigBundle.dianaTrackerSessionData.toString())
-//			logger.info(SBOConfigBundle.dianaTrackerMayorData.toString())
-			logger.info(SBOConfigBundle.dianaTrackerTotalData.items.Chimera.toString())
-		}
+
+		// Registering Guis
+		guis.register()
+
 
 		SboKeyBinds.register()
 		SboKeyBinds.registerKeyBindListener()
