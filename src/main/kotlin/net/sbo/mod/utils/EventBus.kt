@@ -3,8 +3,14 @@ package net.sbo.mod.utils
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
+package net.sbo.mod.utils
+
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.KClass
+
 object EventBus {
     private val listeners = ConcurrentHashMap<KClass<*>, MutableList<(Any) -> Unit>>()
+    private val simpleListeners = ConcurrentHashMap<String, MutableList<(Any?) -> Unit>>()
 
     /**
      * Registers a listener for a specific event type.
@@ -42,6 +48,40 @@ object EventBus {
     fun clear(eventType: KClass<*>) {
         listeners.remove(eventType)
     }
+
+    // --- Simple String-based API ---
+
+    /**
+     * Registers a listener for an event identified by a string.
+     * The callback is a function that takes optional event data.
+     *
+     * @param eventName The name of the event as a string.
+     * @param callback The function to be executed, accepting optional data.
+     */
+    fun on(eventName: String, callback: (Any?) -> Unit) {
+        simpleListeners.computeIfAbsent(eventName) { mutableListOf() }.add(callback)
+    }
+
+    /**
+     * Emits an event identified by a string, with optional data.
+     *
+     * @param eventName The name of the event to emit.
+     * @param data Optional data to pass to the listeners.
+     */
+    fun emit(eventName: String, data: Any? = null) {
+        simpleListeners[eventName]?.forEach { callback ->
+            callback(data)
+        }
+    }
+
+    /**
+     * Clears all listeners for a specific string-based event.
+     *
+     * @param eventName The name of the event to clear.
+     */
+    fun clear(eventName: String) {
+        simpleListeners.remove(eventName)
+    }
 }
 
 // Example usage:
@@ -78,4 +118,14 @@ fun main() {
 
     println("--- Emitting a UserLoggedInEvent again (listeners should be gone) ---")
     EventBus.emit(UserLoggedInEvent(userId = 789, username = "Bob"))
+
+    // 5. Using the simple string-based API.
+    EventBus.on("customEvent") { data ->
+        println("Custom event received with data: $data")
+    }
+
+    EventBus.emit("customEvent", "Hello, World!")
+    EventBus.emit("customEvent") // No data provided, should still work.
+    EventBus.clear("customEvent") // Clear the custom event listeners.
+    EventBus.emit("customEvent", "This should not be printed, as listeners are cleared.")
 }
