@@ -11,7 +11,6 @@ import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.PixelConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
-import gg.essential.elementa.dsl.addChild
 import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.percent
@@ -20,7 +19,10 @@ import gg.essential.universal.UKeyboard
 import net.sbo.mod.utils.EventBus
 import net.sbo.mod.SBOKotlin.mc
 import net.minecraft.util.Util
+import net.minecraft.client.MinecraftClient
+import net.sbo.mod.SBOKotlin
 import java.awt.Color
+import kotlin.properties.Delegates
 
 class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
 
@@ -49,12 +51,14 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
     private lateinit var partyListContainer: UIComponent
     private lateinit var noParties : UIComponent
     private lateinit var partyShowType : UIComponent
+    private var guiScale: Int? = null
 
 
 
     init {
         registers()
         create()
+        onScreenOpen()
 
         EventBus.on("refreshPartyList") {
             updateCurrentPartyList(true)
@@ -67,6 +71,23 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
                 }
             }
         }
+    }
+
+    private fun onScreenOpen() {
+        openGui = true
+        SBOKotlin.logger.info("Party Finder GUI opened")
+        if (mc.options.guiScale.value == 2) return
+        guiScale = mc.options.guiScale.value
+        mc.options.guiScale.value = 2 // this is a workaround for text scaling
+    }
+
+    override fun onScreenClose() {
+        super.onScreenClose()
+        openGui = false
+        SBOKotlin.logger.info("Party Finder GUI closed")
+        if (mc.options.guiScale.value != 2 || guiScale == null) return
+        mc.options.guiScale.value = guiScale // restore original gui scale
+        guiScale = null
     }
 
     private fun registers() {
