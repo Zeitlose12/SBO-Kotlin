@@ -3,11 +3,6 @@ package net.sbo.mod.utils
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
-package net.sbo.mod.utils
-
-import java.util.concurrent.ConcurrentHashMap
-import kotlin.reflect.KClass
-
 object EventBus {
     private val listeners = ConcurrentHashMap<KClass<*>, MutableList<(Any) -> Unit>>()
     private val simpleListeners = ConcurrentHashMap<String, MutableList<(Any?) -> Unit>>()
