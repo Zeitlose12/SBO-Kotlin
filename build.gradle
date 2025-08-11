@@ -19,6 +19,13 @@ repositories {
 		name = "Team Resourceful Maven"
 		url = "https://maven.teamresourceful.com/repository/maven-public/"
 	}
+
+	maven {
+		url = "https://maven.azureaaron.net/releases"
+		content {
+			includeGroup "net.azureaaron"
+		}
+	}
 }
 
 dependencies {
@@ -31,10 +38,13 @@ dependencies {
 	modImplementation(include("gg.essential:elementa:710"))
 	modImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.5:3.5.13"))
 	modImplementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:3.5.13"))
+	modImplementation(include("net.azureaaron:hm-api:1.0.1+1.21.2"))
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 	modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.1")
+
+	implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3"
 }
 
 loom {

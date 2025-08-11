@@ -16,7 +16,7 @@ object WaypointManager {
     val waypoints = mutableMapOf<String, MutableList<Waypoint>>()
     var closestBurrow: Pair<Waypoint?, Double> = null to 1000.0
 
-    init {
+    fun init() {
         if (guessWp == null) {
             guessWp = Waypoint("Guess", 100.0, 100.0, 100.0, 0.0f, 0.964f, 1.0f, 0,"guess")
         }

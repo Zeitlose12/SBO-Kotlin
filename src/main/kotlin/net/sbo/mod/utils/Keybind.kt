@@ -16,6 +16,11 @@ object SboKeyBinds {
     private data class KeyPressState(var isHeldDown: Boolean = false, var lastActivation: Long = 0)
     private val keyStates = mutableMapOf<KeyBinding, KeyPressState>()
 
+    fun init() {
+        register()
+        registerKeyBindListener()
+    }
+
     val guessWarpKey: KeyBinding = KeyBinding(
         "key.sbo-kotlin.guess_warp",
         InputUtil.Type.KEYSYM,

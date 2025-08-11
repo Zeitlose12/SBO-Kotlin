@@ -4,6 +4,8 @@ import net.sbo.mod.utils.Register
 import net.sbo.mod.settings.categories.PartyCommands
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.SBOKotlin
+import net.sbo.mod.data.SboDataObject.sboData
+import net.sbo.mod.data.SboDataObject.dianaTrackerMayor
 import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Helper.getPlayerName
 import net.sbo.mod.utils.Helper.calcPercentOne
@@ -18,8 +20,6 @@ object PartyCommands {
 
     val commandRegex = Regex("^§[0-9a-fk-or]Party §[0-9a-fk-or]> (.*?)§[0-9a-fk-or]*: ?(.*)\$")
 
-    val data = SBOKotlin.SBOConfigBundle.sboData
-    val dianaTrackerMayor = SBOKotlin.SBOConfigBundle.dianaTrackerMayorData
     val settings = PartyCommands
     val carrot = listOf(
         "As I see it, Carrot",
@@ -198,7 +198,7 @@ object PartyCommands {
                 "!mf", "!magicfind" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     sleep(200) {
-                        Chat.command("pc Chims (${data.highestChimMagicFind}% ✯) Sticks (${data.highestStickMagicFind}% ✯)")
+                        Chat.command("pc Chims (${sboData.highestChimMagicFind}% ✯) Sticks (${sboData.highestStickMagicFind}% ✯)")
                     }
                 }
                 "!playtime" -> {
@@ -237,22 +237,22 @@ object PartyCommands {
                     val secondArg = messageParts.getOrNull(1)?.lowercase()
                     when (secondArg) {
                         "chimera", "chim", "chims", "chimeras", "book", "books" -> sleep(200) {
-                            Chat.command("pc Inqs since chim: ${data.inqsSinceChim}")
+                            Chat.command("pc Inqs since chim: ${sboData.inqsSinceChim}")
                         }
                         "stick", "sticks" -> sleep(200) {
-                            Chat.command("pc Minos since stick: ${data.minotaursSinceStick}")
+                            Chat.command("pc Minos since stick: ${sboData.minotaursSinceStick}")
                         }
                         "relic", "relics" -> sleep(200) {
-                            Chat.command("pc Champs since relic: ${data.champsSinceRelic}")
+                            Chat.command("pc Champs since relic: ${sboData.champsSinceRelic}")
                         }
                         "inq", "inqs", "inquisitor", "inquisitors", "inquis" -> sleep(200) {
-                            Chat.command("pc Mobs since inq: ${data.mobsSinceInq}")
+                            Chat.command("pc Mobs since inq: ${sboData.mobsSinceInq}")
                         }
                         "lschim", "chimls", "lschimera", "chimerals", "lsbook", "bookls", "lootsharechim" -> sleep(200) {
-                            Chat.command("pc Inqs since lootshare chim: ${data.inqsSinceLsChim}")
+                            Chat.command("pc Inqs since lootshare chim: ${sboData.inqsSinceLsChim}")
                         }
                         else -> sleep(200) {
-                            Chat.command("pc Mobs since inq: ${data.mobsSinceInq}")
+                            Chat.command("pc Mobs since inq: ${sboData.mobsSinceInq}")
                         }
                     }
                 }

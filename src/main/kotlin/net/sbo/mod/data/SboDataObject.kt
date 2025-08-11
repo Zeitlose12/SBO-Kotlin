@@ -4,8 +4,10 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.sbo.mod.SBOKotlin
+import net.sbo.mod.SBOKotlin.SBOConfigBundle
 import net.sbo.mod.utils.Register
 import java.io.File
 import java.io.FileReader
@@ -19,8 +21,36 @@ import java.util.zip.ZipOutputStream
 import kotlin.concurrent.thread
 
 object SboDataObject {
+    @JvmField
+    var sboData: SboData = SboData()
+
+    @JvmField
+    var achievementsData: AchievementsData = AchievementsData()
+
+    @JvmField
+    var pastDianaEventsData: PastDianaEventsData = PastDianaEventsData()
+
+    @JvmField
+    var dianaTrackerTotal: DianaTrackerTotalData = DianaTrackerTotalData()
+
+    @JvmField
+    var dianaTrackerSession: DianaTrackerSessionData = DianaTrackerSessionData()
+
+    @JvmField
+    var dianaTrackerMayor: DianaTrackerMayorData = DianaTrackerMayorData()
+
     private val gson: Gson = GsonBuilder().setPrettyPrinting().create()
     private const val MAX_BACKUPS = 5
+
+    fun init() {
+        SBOConfigBundle = loadAllData("SBO")
+        sboData = SBOConfigBundle.sboData
+        saveAllDataThreaded("SBO")
+        savePeriodically(10)
+        ServerLifecycleEvents.SERVER_STOPPING.register {
+            saveAndBackupAllDataThreaded("SBO")
+        }
+    }
 
     fun <T> load(modName: String, fileName: String, defaultData: T, type: Class<T>): T {
         val modConfigDir = File(FabricLoader.getInstance().configDir.toFile(), modName)

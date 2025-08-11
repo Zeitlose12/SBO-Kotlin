@@ -34,74 +34,75 @@ data class DianaEvent(
 // ------ Main Data Class ------
 
 data class SboData(
-    val effects: List<Effect> = emptyList(),
-    val resetVersion: String = "0.1.3",
-    val changelogVersion: String = "1.0.0",
-    val downloadMsg: Boolean = true,
-    val mobsSinceInq: Int = 0,
-    val inqsSinceChim: Int = 0,
-    val minotaursSinceStick: Int = 0,
-    val champsSinceRelic: Int = 0,
-    val inqsSinceLsChim: Int = 0,
-    val trackerMigration: Boolean = true,
-    val trackerMigration2: Boolean = true,
-    val highestChimMagicFind: Int = 0,
-    val highestStickMagicFind: Int = 0,
-    val hideTrackerLines: List<String> = emptyList(),
-    val partyBlacklist: List<String> = emptyList(),
-    val crownTimer: Long = 0,
-    val totalCrownCoins: Long = 0,
-    val lastCrownCoins: Long = 0,
-    val totalCrownCoinsGained: Long = 0,
-    val totalCrownCoinsSession: Long = 0,
-    val cronwTimerSession: Long = 0,
-    val ghostKills: Int = 0,
-    val sorrowDrops: Int = 0,
-    val crownOneMilCoins: Int = 0,
-    val achievementFilter: String = "Locked",
-    val achievementFix1: Boolean = true,
-    val dianaStatsUpdated: Long = 0,
-    val lastInqDate: Long = 0,
-    val b2bStick: Boolean = false,
-    val b2bChim: Boolean = false,
-    val b2bChimLs: Boolean = false,
-    val b2bInq: Boolean = false,
-    val avgChimMagicFind: Int = 0,
-    val avgStickMagicFind: Int = 0,
-    val last10ChimMagicFind: List<Int> = emptyList(),
-    val last10StickMagicFind: List<Int> = emptyList(),
-    val backTrack: Boolean = true,
-    val version: String = "0.1.3",
-    val b2bChimLsInq: Boolean = false
+    var effects: List<Effect> = emptyList(),
+    var resetVersion: String = "0.1.3",
+    var changelogVersion: String = "1.0.0",
+    var downloadMsg: Boolean = true,
+    var mobsSinceInq: Int = 0,
+    var inqsSinceChim: Int = 0,
+    var minotaursSinceStick: Int = 0,
+    var champsSinceRelic: Int = 0,
+    var inqsSinceLsChim: Int = 0,
+    var trackerMigration: Boolean = true,
+    var trackerMigration2: Boolean = true,
+    var highestChimMagicFind: Int = 0,
+    var highestStickMagicFind: Int = 0,
+    var hideTrackerLines: List<String> = emptyList(),
+    var partyBlacklist: List<String> = emptyList(),
+    var crownTimer: Long = 0,
+    var totalCrownCoins: Long = 0,
+    var lastCrownCoins: Long = 0,
+    var totalCrownCoinsGained: Long = 0,
+    var totalCrownCoinsSession: Long = 0,
+    var cronwTimerSession: Long = 0,
+    var ghostKills: Int = 0,
+    var sorrowDrops: Int = 0,
+    var crownOneMilCoins: Int = 0,
+    var achievementFilter: String = "Locked",
+    var achievementFix1: Boolean = true,
+    var dianaStatsUpdated: Long = 0,
+    var lastInqDate: Long = 0,
+    var b2bStick: Boolean = false,
+    var b2bChim: Boolean = false,
+    var b2bChimLs: Boolean = false,
+    var b2bInq: Boolean = false,
+    var avgChimMagicFind: Int = 0,
+    var avgStickMagicFind: Int = 0,
+    var last10ChimMagicFind: List<Int> = emptyList(),
+    var last10StickMagicFind: List<Int> = emptyList(),
+    var backTrack: Boolean = true,
+    var version: String = "0.1.3",
+    var b2bChimLsInq: Boolean = false,
+    var sboKey: String = ""
 )
 
 data class AchievementsData(
-    val achievements: Map<String, Boolean> = emptyMap(),
-    val unlocked: List<Int> = emptyList()
+    var achievements: Map<String, Boolean> = emptyMap(),
+    var unlocked: List<Int> = emptyList()
 )
 
 data class PastDianaEventsData(
-    val events: List<DianaEvent> = emptyList()
+    var events: List<DianaEvent> = emptyList()
 )
 
 // Korrigierte Datenklassen mit 'override'
 data class DianaTrackerTotalData(
-    override val items: DianaItemsData = DianaItemsData(),
-    override val mobs: DianaMobsData = DianaMobsData(),
-    override val inquis: DianaInquisData = DianaInquisData()
+    override var items: DianaItemsData = DianaItemsData(),
+    override var mobs: DianaMobsData = DianaMobsData(),
+    override var inquis: DianaInquisData = DianaInquisData()
 ) : DianaTracker
 
 data class DianaTrackerSessionData(
-    override val items: DianaItemsData = DianaItemsData(),
-    override val mobs: DianaMobsData = DianaMobsData(),
-    override val inquis: DianaInquisData = DianaInquisData()
+    override var items: DianaItemsData = DianaItemsData(),
+    override var mobs: DianaMobsData = DianaMobsData(),
+    override var inquis: DianaInquisData = DianaInquisData()
 ) : DianaTracker
 
 data class DianaTrackerMayorData(
     val year: Int = 0,
-    override val items: DianaItemsData = DianaItemsData(),
-    override val mobs: DianaMobsData = DianaMobsData(),
-    override val inquis: DianaInquisData = DianaInquisData()
+    override var items: DianaItemsData = DianaItemsData(),
+    override var mobs: DianaMobsData = DianaMobsData(),
+    override var inquis: DianaInquisData = DianaInquisData()
 ) : DianaTracker
 
 // ------ Diana Data ------

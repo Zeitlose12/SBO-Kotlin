@@ -8,6 +8,8 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
+import net.minecraft.server.command.CommandManager.literal
+import net.minecraft.server.command.CommandManager.argument
 import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
 import net.minecraft.client.gui.screen.Screen
@@ -18,6 +20,8 @@ import java.util.regex.Pattern
 import net.sbo.mod.utils.ChatHandler
 import net.sbo.mod.utils.Helper.removeFormatting
 
+import com.mojang.brigadier.arguments.StringArgumentType
+import com.mojang.brigadier.Command
 
 /**
  * Utility object for registering events
@@ -52,6 +56,22 @@ object Register {
         }
     }
 
+    // user can provide command arguments
+    fun command2(name: String, action: (CommandContext<FabricClientCommandSource>) -> Unit, vararg args: String) {
+        ClientCommandRegistrationCallback.EVENT.register { dispatcher, _ ->
+            dispatcher.register(ClientCommandManager.literal(name)
+                .then(
+                ClientCommandManager.argument("args", StringArgumentType.greedyString())
+                    .executes { context ->
+                        val input = context.getArgument("args", String::class.java)
+                        action(context)
+                        1
+                    }
+                )
+            )
+        }
+    }
+
     /**
      * Registers a tick event that executes an action every specified number of ticks.
      * @param interval The number of ticks after which the action should be executed.
@@ -65,6 +85,18 @@ object Register {
                 action(client)
                 tickCounter = 0
             }
+        }
+    }
+
+    /**
+     * Registers an event that listens for chat messages.
+     * The action receives the message as a `Text` object.
+     */
+    fun onChatMessage(
+        action: (message: Text) -> Unit
+    ) {
+        ClientReceiveMessageEvents.GAME.register { message, _ ->
+            action(message)
         }
     }
 
@@ -86,6 +118,31 @@ object Register {
 
             regex.find(text)?.let { result ->
                 action(message, result)
+            }
+        }
+    }
+
+    /**
+     * Registers an event that listens for chat messages that match a list of regex patterns.
+     * The action receives both the message and the regex match result for easy value extraction.
+     *
+     * @param regexes A list of regular expressions to filter messages with.
+     * @param noFormatting If true, removes formatting from the message before matching.
+     * @param action The action to execute. It receives the message and the `MatchResult
+     */
+    fun onChatMessage(
+        regexes: List<Regex>,
+        noFormatting: Boolean = false,
+        action: (message: Text, matchResult: MatchResult) -> Unit
+    ) {
+        ClientReceiveMessageEvents.GAME.register { message, _ ->
+            var text = message.string
+            if (noFormatting) text = text.removeFormatting()
+
+            regexes.forEach { regex ->
+                regex.find(text)?.let { result ->
+                    action(message, result)
+                }
             }
         }
     }

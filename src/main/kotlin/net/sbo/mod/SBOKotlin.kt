@@ -13,12 +13,15 @@ import net.sbo.mod.utils.World
 import net.sbo.mod.general.PartyCommands
 import net.sbo.mod.data.SboConfigBundle
 import net.sbo.mod.data.SboDataObject
+import net.sbo.mod.diana.PartyFinderManager
 import net.sbo.mod.utils.SboKeyBinds
 import net.sbo.mod.guis.Main
+import net.sbo.mod.utils.HypixelEventApi
 
 object SBOKotlin {
 	@JvmField
 	val mc: MinecraftClient = MinecraftClient.getInstance()
+
 	private const val MOD_ID = "sbo-kotlin"
 	internal val logger = LoggerFactory.getLogger(MOD_ID)
 	lateinit var SBOConfigBundle: SboConfigBundle
@@ -32,16 +35,10 @@ object SBOKotlin {
 		logger.info("Initializing SBO-Kotlin...")
 
 		// Load configuration and data
-		SBOConfigBundle = SboDataObject.loadAllData("SBO")
-		SboDataObject.saveAllDataThreaded("SBO")
-		SboDataObject.savePeriodically(10)
-		ServerLifecycleEvents.SERVER_STOPPING.register {
-			SboDataObject.saveAndBackupAllDataThreaded("SBO")
-		}
+		SboDataObject.init()
 
 		// load Main Features
 		registerHelpCommand()
-		WaypointManager
 		PartyCommands.registerPartyChatListeners()
 		Register.command("sbo") {
 			mc.send{
@@ -52,9 +49,10 @@ object SBOKotlin {
 		// Registering Guis
 		guis.register()
 
-
-		SboKeyBinds.register()
-		SboKeyBinds.registerKeyBindListener()
+		SboKeyBinds.init()
+		WaypointManager.init()
+		HypixelEventApi.init()
+		PartyFinderManager.init()
 		logger.info("SBO-Kotlin initialized successfully!")
 	}
 }
