@@ -79,22 +79,6 @@ object Register {
         }
     }
 
-    // user can provide command arguments
-    fun command2(name: String, action: (CommandContext<FabricClientCommandSource>) -> Unit, vararg args: String) {
-        ClientCommandRegistrationCallback.EVENT.register { dispatcher, _ ->
-            dispatcher.register(ClientCommandManager.literal(name)
-                .then(
-                ClientCommandManager.argument("args", StringArgumentType.greedyString())
-                    .executes { context ->
-                        val input = context.getArgument("args", String::class.java)
-                        action(context)
-                        1
-                    }
-                )
-            )
-        }
-    }
-
     /**
      * Registers a tick event that executes an action every specified number of ticks.
      * @param interval The number of ticks after which the action should be executed.
