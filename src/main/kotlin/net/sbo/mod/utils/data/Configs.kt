@@ -1,34 +1,34 @@
 package net.sbo.mod.utils.data
 
 interface DianaTracker {
-    val items: DianaItemsData
-    val mobs: DianaMobsData
-    val inquis: DianaInquisData
+    var items: DianaItemsData
+    var mobs: DianaMobsData
+    var inquis: DianaInquisData
 }
 
 data class SboConfigBundle(
-    val sboData: SboData,
-    val achievementsData: AchievementsData,
-    val pastDianaEventsData: PastDianaEventsData,
-    val dianaTrackerTotalData: DianaTrackerTotalData,
-    val dianaTrackerSessionData: DianaTrackerSessionData,
-    val dianaTrackerMayorData: DianaTrackerMayorData
+    var sboData: SboData,
+    var achievementsData: AchievementsData,
+    var pastDianaEventsData: PastDianaEventsData,
+    var dianaTrackerTotalData: DianaTrackerTotalData,
+    var dianaTrackerSessionData: DianaTrackerSessionData,
+    var dianaTrackerMayorData: DianaTrackerMayorData
 )
 
 // ------ Data Classes ------
 
 data class Effect(
-    val name: String,
-    val duration: Double,
-    val timeStamp: Long,
-    val loggedOff: Boolean
+    var name: String,
+    var duration: Double,
+    var timeStamp: Long,
+    var loggedOff: Boolean
 )
 
 data class DianaEvent(
-    val year: Any,
-    val items: Map<String, Any>,
-    val mobs: Map<String, Any>,
-    val inquis: Map<String, Any>? = null
+    var year: Any,
+    var items: Map<String, Any>,
+    var mobs: Map<String, Any>,
+    var inquis: Map<String, Any>? = null
 )
 
 // ------ Main Data Class ------
@@ -99,7 +99,7 @@ data class DianaTrackerSessionData(
 ) : DianaTracker
 
 data class DianaTrackerMayorData(
-    val year: Int = 0,
+    var year: Int = 0,
     override var items: DianaItemsData = DianaItemsData(),
     override var mobs: DianaMobsData = DianaMobsData(),
     override var inquis: DianaInquisData = DianaInquisData()
@@ -107,44 +107,44 @@ data class DianaTrackerMayorData(
 
 // ------ Diana Data ------
 data class DianaItemsData(
-    val coins: Long = 0,
-    val `Griffin Feather`: Int = 0,
-    val `Crown of Greed`: Int = 0,
-    val `Washed-up Souvenir`: Int = 0,
-    val Chimera: Int = 0,
-    val ChimeraLs: Int = 0,
-    val `Daedalus Stick`: Int = 0,
-    val DWARF_TURTLE_SHELMET: Int = 0,
-    val ANTIQUE_REMEDIES: Int = 0,
-    val ENCHANTED_ANCIENT_CLAW: Int = 0,
-    val ANCIENT_CLAW: Int = 0,
-    val MINOS_RELIC: Int = 0,
-    val ENCHANTED_GOLD: Int = 0,
-    val ENCHANTED_IRON: Int = 0,
-    val `Total Burrows`: Int = 0,
-    val scavengerCoins: Long  = 0,
-    val fishCoins: Long  = 0,
-    val totalTime: Long  = 0,
-    val sessionTime: Long  = 0,
-    val mayorTime : Long  = 0,
+    var coins: Long = 0,
+    var `Griffin Feather`: Int = 0,
+    var `Crown of Greed`: Int = 0,
+    var `Washed-up Souvenir`: Int = 0,
+    var Chimera: Int = 0,
+    var ChimeraLs: Int = 0,
+    var `Daedalus Stick`: Int = 0,
+    var DWARF_TURTLE_SHELMET: Int = 0,
+    var ANTIQUE_REMEDIES: Int = 0,
+    var ENCHANTED_ANCIENT_CLAW: Int = 0,
+    var ANCIENT_CLAW: Int = 0,
+    var MINOS_RELIC: Int = 0,
+    var ENCHANTED_GOLD: Int = 0,
+    var ENCHANTED_IRON: Int = 0,
+    var `Total Burrows`: Int = 0,
+    var scavengerCoins: Long  = 0,
+    var fishCoins: Long  = 0,
+    var totalTime: Long  = 0,
+    var sessionTime: Long  = 0,
+    var mayorTime : Long  = 0,
 )
 
 data class DianaMobsData(
-    val `Minos Inquisitor`: Int = 0,
-    val `Minos Champion`: Int = 0,
-    val Minotaur: Int = 0,
-    val `Gaia Construct`: Int = 0,
-    val `Siamese Lynxes`: Int = 0,
-    val `Minos Hunter`: Int = 0,
-    val TotalMobs: Int = 0,
-    val `Minos Inquisitor Ls`: Int = 0
+    var `Minos Inquisitor`: Int = 0,
+    var `Minos Champion`: Int = 0,
+    var Minotaur: Int = 0,
+    var `Gaia Construct`: Int = 0,
+    var `Siamese Lynxes`: Int = 0,
+    var `Minos Hunter`: Int = 0,
+    var TotalMobs: Int = 0,
+    var `Minos Inquisitor Ls`: Int = 0
 )
 
 data class DianaInquisData(
-    val DWARF_TURTLE_SHELMET: Int = 0,
-    val CROCHET_TIGER_PLUSHIE: Int = 0,
-    val ANTIQUE_REMEDIES: Int = 0,
-    val DWARF_TURTLE_SHELMET_LS: Int = 0,
-    val CROCHET_TIGER_PLUSHIE_LS: Int = 0,
-    val ANTIQUE_REMEDIES_LS: Int = 0
+    var DWARF_TURTLE_SHELMET: Int = 0,
+    var CROCHET_TIGER_PLUSHIE: Int = 0,
+    var ANTIQUE_REMEDIES: Int = 0,
+    var DWARF_TURTLE_SHELMET_LS: Int = 0,
+    var CROCHET_TIGER_PLUSHIE_LS: Int = 0,
+    var ANTIQUE_REMEDIES_LS: Int = 0
 )

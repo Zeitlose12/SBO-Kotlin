@@ -1,6 +1,7 @@
 package net.sbo.mod.diana
 
 import net.sbo.mod.SBOKotlin
+import net.sbo.mod.utils.data.SboDataObject
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.data.DianaTracker
@@ -56,7 +57,7 @@ object DianaStats {
     }
 
     fun getPlayerStats(total: Boolean = false): PlayerStats {
-        val tracker: DianaTracker = if (total) SBOKotlin.SBOConfigBundle.dianaTrackerTotalData else SBOKotlin.SBOConfigBundle.dianaTrackerMayorData
+        val tracker: DianaTracker = if (total) SboDataObject.dianaTrackerTotal else SboDataObject.dianaTrackerMayor
 
         val playtime = if (total) tracker.items.totalTime else tracker.items.mayorTime
         val playTimeHrs = playtime.toDouble() / TimeUnit.HOURS.toMillis(1)
