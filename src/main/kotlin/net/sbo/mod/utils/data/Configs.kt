@@ -204,7 +204,8 @@ data class Filters(
 
 data class CustomFilters(
     var eman9Filter: Boolean = false,
-    var noteFilter: String = "."
+    var noteFilter: String = ".",
+    var canIjoinFilter: Boolean = false
 )
 
 data class DianaFilters(

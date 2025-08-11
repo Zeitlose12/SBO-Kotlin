@@ -1,5 +1,6 @@
 package net.sbo.mod.guis.partyfinder
 
+import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.WindowScreen
@@ -7,9 +8,11 @@ import gg.essential.elementa.components.ScrollComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIRoundedRectangle
 import gg.essential.elementa.components.UIText
+import gg.essential.elementa.components.UIWrappedText
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.PixelConstraint
+import gg.essential.elementa.constraints.PositionConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
@@ -20,19 +23,23 @@ import net.sbo.mod.utils.EventBus
 import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.settings.categories.PartyFinder
 import net.minecraft.util.Util
-import net.minecraft.client.MinecraftClient
 import net.sbo.mod.SBOKotlin
-import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
+import net.sbo.mod.utils.Helper
+import net.sbo.mod.utils.data.SboDataObject.pfConfigState
 import java.awt.Color
-import kotlin.properties.Delegates
+
+data class HighlightElement(
+    val page: String,
+    val obj: UIComponent,
+    val type: String
+)
 
 class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
 
-    var openGui: Boolean = false
-    val elementToHighlight: MutableList<Any> = mutableListOf()
+    val elementToHighlight: MutableList<HighlightElement> = mutableListOf()
     var selectedPage: String = "Home"
     val pages: MutableMap<String, () -> Unit> = mutableMapOf()
-    val partyCache: MutableMap<String, Any> = mutableMapOf()
+    var partyCache: MutableMap<String, Any> = mutableMapOf()
     var lastRefreshTime: Long = 0L
     var cpWindowOpened: Boolean = false
     var filterWindowOpened: Boolean = false
@@ -45,7 +52,7 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
     private lateinit var cpWindow : UIComponent
     private lateinit var base : UIComponent
     private lateinit var onlineUserBlock: UIComponent
-    private lateinit var onlineUserText: UIComponent
+    private lateinit var onlineUserText: UIText
     private lateinit var titleBlock: UIComponent
     private lateinit var categoryBlock: UIComponent
     private lateinit var contentBlock: UIComponent
@@ -53,7 +60,6 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
     private lateinit var partyListContainer: UIComponent
     private lateinit var noParties : UIComponent
     private lateinit var partyShowType : UIComponent
-    private var settings: CategoryKt
     private var guiScale: Int? = null
 
 
@@ -63,8 +69,6 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
         registers()
         create()
         onScreenOpen()
-
-        settings = PartyFinder
 
         EventBus.on("refreshPartyList") {
             updateCurrentPartyList(true)
@@ -80,8 +84,9 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
     }
 
     private fun onScreenOpen() {
-        openGui = true
-        SBOKotlin.logger.info("Party Finder GUI opened")
+        updateSelectedPage()
+        updatePageHighlight()
+
         if (mc.options.guiScale.value == 2) return
         guiScale = mc.options.guiScale.value
         mc.options.guiScale.value = 2 // this is a workaround for text scaling
@@ -89,8 +94,7 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
 
     override fun onScreenClose() {
         super.onScreenClose()
-        openGui = false
-        SBOKotlin.logger.info("Party Finder GUI closed")
+        partyCache = mutableMapOf() // clear party cache on close
         if (mc.options.guiScale.value != 2 || guiScale == null) return
         mc.options.guiScale.value = guiScale // restore original gui scale
         guiScale = null
@@ -101,11 +105,13 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
     }
 
     private fun getTextScale(base: Float = 1f): PixelConstraint {
-        return base.pixels() // todo: scaletext setting
+        return if (base + PartyFinder.scaleText <= 0f) return 0.1f.pixels()
+        else (base + PartyFinder.scaleText).pixels()
     }
 
     private fun getIconScale(base: Int = 18): PixelConstraint {
-        return base.pixels() // todo: scaleicon setting
+        return if (base + PartyFinder.scaleIcon <= 0) return 1.pixels()
+        else (base + PartyFinder.scaleIcon).pixels()
     }
 
     private fun getMemberColor(members: Int, patySize: Int): Color {
@@ -115,6 +121,244 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
         } else {
             Color(255,165,0,255)
         }
+    }
+
+    private fun openPartyInfoWindow() {
+        base.hide()
+        partyInfoWindow.unhide(false)
+        partyInfoOpened = true
+    }
+
+    private fun closePartyInfoWindow() {
+        partyInfoWindow.hide()
+        checkWindows()
+        base.unhide(true)
+        partyInfoOpened = false
+    }
+
+    private fun openFilterWindow() {
+        filterBackground.unhide(false)
+        filterWindow.unhide(false)
+        filterWindowOpened = true
+    }
+
+    private fun closeFilterWindow() {
+        filterBackground.hide()
+        filterWindow.hide()
+        checkWindows()
+        filterWindowOpened = false
+    }
+
+    private fun openCpWindow() {
+        base.hide()
+        cpWindow.unhide(true)
+        cpWindowOpened = true
+    }
+
+    private fun closeCpWindow() {
+        cpWindow.hide()
+        checkWindows()
+        base.unhide(true)
+        cpWindowOpened = false
+    }
+
+    private fun checkWindows() {
+        // todo: implement logic to check if any windows are open and update the UI accordingly
+    }
+
+    private fun getFilter(pageType: String) {
+        // todo implement filter logic
+    }
+
+    private fun updateSelectedPage() {
+        if (selectedPage.isNotEmpty() && pages.containsKey(selectedPage)) {
+            contentBlock.clearChildren()
+            contentBlock.addChild(partyListContainer)
+            Helper.sleep(100) {
+                pages[selectedPage]?.invoke()
+            }
+        }
+    }
+
+    private fun updatePageHighlight() {
+        elementToHighlight.forEach { element ->
+            if (element.obj is UIBlock) {
+                if (element.page === selectedPage) {
+                    element.obj.setColor(Color(50, 50, 50, 255))
+                } else {
+                    element.obj.setColor(Color(0, 0, 0, 0))
+                }
+            } else {
+                if (element.page === selectedPage) {
+                    element.obj.setColor(Color(50, 50, 255, 200))
+                } else {
+                    element.obj.setColor(Color(255, 255, 255, 255))
+                }
+            }
+        }
+    }
+
+    private fun updateCurrentPartyList(ignoreCooldown: Boolean) {
+
+    }
+
+    private fun updateOnlineUser() {
+        if (!::onlineUserText.isInitialized) return
+        // todo: fetch online user count from server
+    }
+
+    private fun updatePartyCount(count: Int) {
+        if (!::onlineUserText.isInitialized) return
+        onlineUserText.setText("Online: $count")
+    }
+
+    private fun addFilterPage(listName: String, x: PositionConstraint, y: PositionConstraint) {
+        if (filterWindowOpened) {
+            filterWindowOpened = false
+            return
+        }
+        else openFilterWindow()
+
+        when (listName) {
+            "Diana Party List" -> {
+                // todo: dianaPage._addDianaFilter(x, y);
+            }
+
+            "Custom Party List" -> {
+                // todo: customPage._addCustomFilter(x, y);
+            }
+            else -> return
+        }
+    }
+
+    private fun addPage(pageTitle: String, pageContent: () -> Unit, isSubPage: Boolean = false, y1: PositionConstraint? = null, isClickable: Boolean = false) {
+        pages[pageTitle] = pageContent
+        val finalY = y1 ?: if (isSubPage) SiblingConstraint(0f, true) else SiblingConstraint()
+
+        val block = UIBlock().constrain {
+            x = CenterConstraint()
+            y = finalY
+            width = 75.percent()
+            height = 5.percent()
+        }.setColor(Color(0, 0, 0, 0))
+
+        val text = UIText("・ $pageTitle").constrain {
+            y = CenterConstraint()
+            textScale = getTextScale(1f)
+        }.setColor(Color(255, 255, 255, 255))
+
+        block.onMouseClick {
+            if (selectedPage === pageTitle) return@onMouseClick
+            if (isClickable) return@onMouseClick pageContent()
+            selectedPage = pageTitle
+            contentBlock.clearChildren()
+            if (selectedPage != "Home" && selectedPage != "Help" && selectedPage != "Settimgs") contentBlock.addChild(partyListContainer)
+            updatePageHighlight()
+            pageContent()
+        }
+
+        block.addChild(text)
+            .onMouseEnter {
+                if (selectedPage === pageTitle) return@onMouseEnter
+                block.setColor(Color(50, 50, 50, 150))
+            }
+            .onMouseLeave {
+                if (selectedPage === pageTitle) return@onMouseLeave
+                block.setColor(Color(0, 0, 0, 0))
+            }
+
+        categoryBlock.addChild(block)
+            .addChild(GuiHandler.UILine(
+                x = CenterConstraint(),
+                y = if (isSubPage) SiblingConstraint(0f, true) else SiblingConstraint(),
+                width = 75.percent(),
+                height = 0.3f.percent(),
+                color = Color(0, 110, 250, 255)
+            ).get())
+
+        elementToHighlight.add(HighlightElement(pageTitle, text, "pageTitle"))
+        elementToHighlight.add(HighlightElement(pageTitle, block, "pageBlock"))
+    }
+
+    private fun settings() {
+        mc.send{
+            mc.setScreen(ResourcefulConfigScreen.getFactory("sbo").apply(null))
+        }
+    }
+
+    private fun home() {
+        noParties.hide()
+        contentBlock.addChild(ScrollComponent().constrain {
+            x = 0.percent()
+            y = 0.percent()
+            width = 100.percent()
+            height = 100.percent()
+        }.setColor(Color(0, 0, 0, 0))
+            .addChild(UIBlock().constrain {
+                width = 100.percent()
+                height = 9.percent()
+            }.setColor(Color(0, 0, 0, 0))
+                .addChild(UIWrappedText("Welcome to the SBO Party Finder!").constrain {
+                    x = 2.percent()
+                    y = CenterConstraint()
+                    width = 100.percent()
+                    textScale = getTextScale(1.5f)
+                }.setColor(Color(255, 255, 255, 255)))
+            )
+            .addChild(UIWrappedText(
+                "・ Find parties with custom requirements that Hypixel doesn't offer.\n\n" +
+                        "・ Create your own party or join others.\n\n" +
+                        "・ Set custom requirements and wait for players to join.\n\n" +
+                        "・ Made and maintained by the Skyblock Overhaul team.\n\n" +
+                        "・ We rely on a server and appreciate any support to keep it running.")
+                .constrain {
+                    x = 2.percent()
+                    y = SiblingConstraint()
+                    width = 100.percent()
+                    textScale = getTextScale(1f)
+                }.setColor(Color(255, 255, 255, 255))
+            )
+        )
+    }
+
+    private fun help() {
+        noParties.hide()
+        contentBlock.addChild(ScrollComponent().constrain {
+            x = 0.percent()
+            y = 0.percent()
+            width = 100.percent()
+            height = 100.percent()
+        }.setColor(Color(0, 0, 0, 0))
+            .addChild(UIBlock().constrain {
+                width = 100.percent()
+                height = 9.percent()
+            }.setColor(Color(0, 0, 0, 0))
+                .addChild(UIWrappedText("Help Page!").constrain {
+                    x = 2.percent()
+                    y = CenterConstraint()
+                    width = 100.percent()
+                    textScale = getTextScale(1.5f)
+                }.setColor(Color(255, 255, 255, 255)))
+            )
+            .addChild(UIWrappedText(
+                "・ Not Getting any Join Requests?\n\n" +
+                        "   ・ Enable private Messages!\n\n" +
+                        "   ・ /settings -> Social Settings.\n\n" +
+                        "・ Requirements don't update?\n\n" +
+                        "   ・ Wait 10mins and do /ct reload.\n\n" +
+                        "・ Text or Icons too small or too big?\n\n" +
+                        "   ・ Open party finder settings\n\n" +
+                        "・ Not seeing your party in the list?\n\n" +
+                        "   ・ Make sure you have the right filters set.\n\n" +
+                        "・ Still having issues?\n\n" +
+                        "   ・ Join our discord and ask for help."
+            ).constrain {
+                x = 2.percent()
+                y = SiblingConstraint()
+                width = 100.percent()
+                textScale = getTextScale(1f)
+            }.setColor(Color(255, 255, 255, 255)))
+        )
     }
 
     private fun create() {
@@ -413,10 +657,8 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
                 }.setColor(Color(85, 255, 255, 255)))
             )
         //-----------------Pages-----------------
-    }
-
-
-    private fun updateCurrentPartyList(ignoreCooldown: Boolean) {
-
+        addPage("Home", ::home, isSubPage = true, y1 = 93.percent())
+        addPage("Help", ::help, isSubPage = true)
+        addPage("Settings", ::settings, isSubPage = true, y1 = null, isClickable = true)
     }
 }

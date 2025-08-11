@@ -8,10 +8,15 @@ import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.data.SboDataObject
 
 object Main {
+    private var partyFinderGui: PartyFinderGUI? = null
+
     fun register() {
         Register.command("sbopf") {
             mc.send {
-                UScreen.displayScreen(PartyFinderGUI())
+                if (partyFinderGui == null) {
+                    partyFinderGui = PartyFinderGUI()
+                }
+                UScreen.displayScreen(partyFinderGui!!)
             }
         }
     }
