@@ -34,12 +34,5 @@ object Settings : ConfigKt("sbo/config") {
         category(Credits)
     }
 
-    init {
-        separator {
-            this.title = "Test Separator"
-            this.description = "This is a test separator to demonstrate the functionality of the settings system."
-        }
-    }
-
     fun save() = SBOKotlin.settings.save()
 }
