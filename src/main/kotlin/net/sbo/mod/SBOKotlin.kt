@@ -43,7 +43,7 @@ object SBOKotlin {
 			}
 		}
 
-		Register.command("test", "Test Command", "test") { args ->
+		Register.command("test", "Test Command", "tester") { args ->
 			Chat.chat("Test command executed with argument 1: ${args.getOrNull(0) ?: "No argument provided"}")
 			Chat.chat("Test command executed with argument 2: ${args.getOrNull(1) ?: "No second argument provided"}")
 			Chat.chat("This is a test command! Arguments: ${args.joinToString(", ")}")

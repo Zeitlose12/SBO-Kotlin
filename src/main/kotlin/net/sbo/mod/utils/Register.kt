@@ -65,7 +65,6 @@ object Register {
                         ClientCommandManager.argument("args", StringArgumentType.greedyString())
                             .executes {
                                 val argsString = StringArgumentType.getString(it, "args")
-                                // Argumente splitten nach Leerzeichen
                                 val args = argsString.split(' ').filter { s -> s.isNotEmpty() }.toTypedArray()
                                 action(args)
                                 1
