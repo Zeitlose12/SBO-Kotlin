@@ -13,6 +13,7 @@ import net.sbo.mod.utils.data.SboDataObject
 import net.sbo.mod.diana.PartyFinderManager
 import net.sbo.mod.utils.SboKeyBinds
 import net.sbo.mod.guis.Main
+import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.HypixelEventApi
 
 object SBOKotlin {
@@ -40,6 +41,12 @@ object SBOKotlin {
 			mc.send{
 				mc.setScreen(ResourcefulConfigScreen.getFactory("sbo").apply(null))
 			}
+		}
+
+		Register.command("test", "Test Command", "test") { args ->
+			Chat.chat("Test command executed with argument 1: ${args.getOrNull(0) ?: "No argument provided"}")
+			Chat.chat("Test command executed with argument 2: ${args.getOrNull(1) ?: "No second argument provided"}")
+			Chat.chat("This is a test command! Arguments: ${args.joinToString(", ")}")
 		}
 
 		// Registering Guis

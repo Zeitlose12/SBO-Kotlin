@@ -39,6 +39,12 @@ object SboDataObject {
     @JvmField
     var dianaTrackerMayor: DianaTrackerMayorData = DianaTrackerMayorData()
 
+    @JvmField
+    var pfConfigState: PartyFinderConfigState = PartyFinderConfigState()
+
+    @JvmField
+    var partyFinderData: PartyFinderData = PartyFinderData()
+
     lateinit var SBOConfigBundle: SboConfigBundle
     private val gson: Gson = GsonBuilder().setPrettyPrinting().create()
     private const val MAX_BACKUPS = 5
@@ -51,6 +57,8 @@ object SboDataObject {
         dianaTrackerTotal = SBOConfigBundle.dianaTrackerTotalData
         dianaTrackerSession = SBOConfigBundle.dianaTrackerSessionData
         dianaTrackerMayor = SBOConfigBundle.dianaTrackerMayorData
+        pfConfigState = SBOConfigBundle.partyFinderConfigState
+        partyFinderData = SBOConfigBundle.partyFinderData
         saveAllDataThreaded("SBO")
         savePeriodically(10)
         ServerLifecycleEvents.SERVER_STOPPING.register {
@@ -148,7 +156,9 @@ object SboDataObject {
         val dianaTrackerTotalData = load(modName, "dianaTrackerTotal.json", DianaTrackerTotalData(), DianaTrackerTotalData::class.java)
         val dianaTrackerSessionData = load(modName, "dianaTrackerSession.json", DianaTrackerSessionData(), DianaTrackerSessionData::class.java)
         val dianaTrackerMayorData = load(modName, "dianaTrackerMayor.json", DianaTrackerMayorData(), DianaTrackerMayorData::class.java)
-        return SboConfigBundle(sboData, achievementsData, pastDianaEventsData, dianaTrackerTotalData, dianaTrackerSessionData, dianaTrackerMayorData)
+        val partyFinderConfigState = load(modName, "partyFinderConfigState.json", PartyFinderConfigState(), PartyFinderConfigState::class.java)
+        val partyFinderData = load(modName, "partyFinderData.json", PartyFinderData(), PartyFinderData::class.java)
+        return SboConfigBundle(sboData, achievementsData, pastDianaEventsData, dianaTrackerTotalData, dianaTrackerSessionData, dianaTrackerMayorData, partyFinderConfigState, partyFinderData)
     }
 
     private fun zipFolder(folderToZip: File, zipFilePath: File) {
@@ -183,6 +193,8 @@ object SboDataObject {
             saveToFolder(tempBackupDir, bundle.dianaTrackerTotalData, "dianaTrackerTotal.json")
             saveToFolder(tempBackupDir, bundle.dianaTrackerSessionData, "dianaTrackerSession.json")
             saveToFolder(tempBackupDir, bundle.dianaTrackerMayorData, "dianaTrackerMayor.json")
+            saveToFolder(tempBackupDir, bundle.partyFinderConfigState, "partyFinderConfigState.json")
+            saveToFolder(tempBackupDir, bundle.partyFinderData, "partyFinderData.json")
 
             val zipFile = File(backupDir, "SBOBackup_$timestamp.zip")
             zipFolder(tempBackupDir, zipFile)
@@ -217,6 +229,8 @@ object SboDataObject {
         save(modName, bundle.dianaTrackerTotalData, "dianaTrackerTotal.json")
         save(modName, bundle.dianaTrackerSessionData, "dianaTrackerSession.json")
         save(modName, bundle.dianaTrackerMayorData, "dianaTrackerMayor.json")
+        save(modName, bundle.partyFinderConfigState, "partyFinderConfigState.json")
+        save(modName, bundle.partyFinderData, "partyFinderData.json")
     }
 
 

@@ -22,6 +22,7 @@ import net.sbo.mod.utils.Helper.removeFormatting
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.Command
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
 
 /**
  * Utility object for registering events
@@ -40,19 +41,42 @@ object Register {
     fun runGuiKeyActions(client: MinecraftClient, screen: Screen, key: Int) { guiKeyActions.forEach { action -> action(client, screen, key) } }
 
     /**
-     * Registers a client command with the specified name and action.
-     * @param name The name of the command to register.
+     * Registers a command with the specified name and aliases.
+     * The action is executed when the command is invoked, with the provided arguments.
+     *
+     * @param name The name of the command.
+     * @param aliases Optional aliases for the command.
      * @param action The action to execute when the command is invoked.
      */
-    fun command(name: String, action: (CommandContext<FabricClientCommandSource>) -> Unit) {
+    fun command(
+        name: String,
+        vararg aliases: String,
+        action: (Array<String>) -> Unit
+    ) {
         ClientCommandRegistrationCallback.EVENT.register { dispatcher, _ ->
-            dispatcher.register(
-                ClientCommandManager.literal(name)
+
+            fun createLiteral(commandName: String) =
+                ClientCommandManager.literal(commandName)
                     .executes {
-                        action(it)
+                        action(emptyArray())
                         1
                     }
-            )
+                    .then(
+                        ClientCommandManager.argument("args", StringArgumentType.greedyString())
+                            .executes {
+                                val argsString = StringArgumentType.getString(it, "args")
+                                // Argumente splitten nach Leerzeichen
+                                val args = argsString.split(' ').filter { s -> s.isNotEmpty() }.toTypedArray()
+                                action(args)
+                                1
+                            }
+                    )
+
+            dispatcher.register(createLiteral(name))
+
+            aliases.forEach { alias ->
+                dispatcher.register(createLiteral(alias))
+            }
         }
     }
 

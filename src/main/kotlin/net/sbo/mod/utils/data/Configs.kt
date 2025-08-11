@@ -12,7 +12,9 @@ data class SboConfigBundle(
     var pastDianaEventsData: PastDianaEventsData,
     var dianaTrackerTotalData: DianaTrackerTotalData,
     var dianaTrackerSessionData: DianaTrackerSessionData,
-    var dianaTrackerMayorData: DianaTrackerMayorData
+    var dianaTrackerMayorData: DianaTrackerMayorData,
+    var partyFinderConfigState: PartyFinderConfigState,
+    var partyFinderData: PartyFinderData
 )
 
 // ------ Data Classes ------
@@ -105,6 +107,18 @@ data class DianaTrackerMayorData(
     override var inquis: DianaInquisData = DianaInquisData()
 ) : DianaTracker
 
+data class PartyFinderConfigState(
+    var checkboxes: Checkboxes = Checkboxes(),
+    var inputs: Inputs = Inputs(),
+    var filters: Filters = Filters()
+)
+
+data class PartyFinderData(
+    var playerStatsUpdated: Long = 0,
+    var sboKey: String = "",
+    var playerStats: Map<String, PlayerStats> = emptyMap(),
+)
+
 // ------ Diana Data ------
 data class DianaItemsData(
     var coins: Long = 0,
@@ -147,4 +161,75 @@ data class DianaInquisData(
     var DWARF_TURTLE_SHELMET_LS: Int = 0,
     var CROCHET_TIGER_PLUSHIE_LS: Int = 0,
     var ANTIQUE_REMEDIES_LS: Int = 0
+)
+
+// ------ Party Finder ------
+
+data class Checkboxes(
+    var custom: CustomCheckboxes = CustomCheckboxes(),
+    var diana: DianaCheckboxes = DianaCheckboxes()
+)
+
+data class CustomCheckboxes(
+    var eman9: Boolean = false
+)
+
+data class DianaCheckboxes(
+    var eman9: Boolean = false,
+    var looting5: Boolean = false
+)
+
+data class Inputs(
+    var custom: CustomInputs = CustomInputs(),
+    var diana: DianaInputs = DianaInputs()
+)
+
+data class CustomInputs(
+    var lvl: Int = 0,
+    var mp: Int = 0,
+    var partySize: Int = 0,
+    var note: String = "..."
+)
+
+data class DianaInputs(
+    var kills: Int = 0,
+    var lvl: Int = 0,
+    var note: String = "..."
+)
+
+data class Filters(
+    var custom: CustomFilters = CustomFilters(),
+    var diana: DianaFilters = DianaFilters()
+)
+
+data class CustomFilters(
+    var eman9Filter: Boolean = false,
+    var noteFilter: String = "."
+)
+
+data class DianaFilters(
+    var eman9Filter: Boolean = false,
+    var looting5Filter: Boolean = false,
+    var canIjoinFilter: Boolean = false
+)
+
+data class PlayerStats(
+    var name: String = "",
+    var sbLvl: Int = 0,
+    var eman9: Boolean = false,
+    var looting5daxe: Boolean = false,
+    var emanLvl: Int = 0,
+    var warnings: List<String> = emptyList(),
+    var uuid: String = "",
+    var clover: Boolean = false,
+    var daxeLootingLvl: Int = 0,
+    var daxeChimLvl: Int = 0,
+    var invApi: Boolean = false,
+    var magicalPower: Int = 0,
+    var enrichments: Int = 0,
+    var missingEnrichments: Int = 0,
+    var griffinRarity: String = "",
+    var griffinItem: String? = null,
+    var killLeaderboard: Int = 0,
+    var mythosKills: Long = 0L
 )

@@ -18,9 +18,11 @@ import gg.essential.elementa.dsl.pixels
 import gg.essential.universal.UKeyboard
 import net.sbo.mod.utils.EventBus
 import net.sbo.mod.SBOKotlin.mc
+import net.sbo.mod.settings.categories.PartyFinder
 import net.minecraft.util.Util
 import net.minecraft.client.MinecraftClient
 import net.sbo.mod.SBOKotlin
+import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import java.awt.Color
 import kotlin.properties.Delegates
 
@@ -51,7 +53,9 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
     private lateinit var partyListContainer: UIComponent
     private lateinit var noParties : UIComponent
     private lateinit var partyShowType : UIComponent
+    private var settings: CategoryKt
     private var guiScale: Int? = null
+
 
 
 
@@ -59,6 +63,8 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
         registers()
         create()
         onScreenOpen()
+
+        settings = PartyFinder
 
         EventBus.on("refreshPartyList") {
             updateCurrentPartyList(true)

@@ -12,6 +12,7 @@ import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.effects.Effect
 import java.awt.Color
+import java.awt.List
 
 object GuiHandler {
 
@@ -133,4 +134,18 @@ object GuiHandler {
         }
     }
 
+    class Checkbox(
+        private val list: List,
+        private val key: String,
+        private val x: PositionConstraint,
+        private val y: PositionConstraint,
+        private val width: SizeConstraint,
+        private val height: SizeConstraint,
+        private val color: Color,
+        private val checkedColor: Color,
+        private val textString: String? = "",
+        private val rounded: Boolean = false,
+        private val roundness: Float = 10f,
+        private val filter: Boolean = false,
+    )
 }
