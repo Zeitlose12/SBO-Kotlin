@@ -20,6 +20,7 @@ object PartyFinderManager {
 
     private var createPartyTimeStamp = 0L
     private var partySize = 0
+    private var partyMemberCount = 0
     private var partyNote = ""
     private var partyType = ""
     private var partyReqs = ""
@@ -29,7 +30,7 @@ object PartyFinderManager {
 
     private const val API_URL = "https://api.skyblockoverhaul.com"
 
-    private val partyDisbandRegexes = listOf(
+    private val partyDisbandRegexes = listOf( // todo: check if all regexes are correct and maybe move them to a separate file
         Regex("^.+ &r&ehas disbanded the party!&r$"),
         Regex("^&cThe party was disbanded because (.+)$"),
         Regex("^&eYou left the party.&r$"),
@@ -46,6 +47,13 @@ object PartyFinderManager {
     private val partyJoinRegexes = listOf(
         Regex("^(.+) &r&ejoined the party.&r$"),
         Regex("^&eYou have joined &r(.+)'[s]? &r&eparty!&r$")
+    )
+
+    private val partyLeaveRegexes = listOf(
+        Regex("^(.+) &r&ehas been removed from the party.&r$"),
+        Regex("^(.+) &r&ehas left the party.&r$"),
+        Regex("^(.+) &r&ewas removed from your party because they disconnected.&r$"),
+        Regex("^&eKicked (.+) because they were offline.&r$")
     )
 
     fun init() {
@@ -80,11 +88,12 @@ object PartyFinderManager {
             }
         }
 
-        Register.command("sboKey") {
+        Register.command("sboKey") { // todo: add a way to set the key in the settings or over this command
             Chat.chat("§6[SBO] §aKey has been set");
         }
 
         HypixelEventApi.onPartyInfo{ isInParty, isLeader, members ->
+            partyMemberCount = members.size
             queueParty(isInParty, isLeader, members)
             updateParty(isInParty, isLeader, members)
         }
@@ -108,7 +117,6 @@ object PartyFinderManager {
 
     fun queueParty(isInParty: Boolean, isLeader: Boolean, members: List<String>) {
         if (!this.creatingParty) return
-
         if (members.size < partySize && !inQueue) {
             try {
                 Http.sendGetRequest(
@@ -166,6 +174,7 @@ object PartyFinderManager {
         if (updateBool && inQueue && isInParty && isLeader) {
             updateBool = false;
             val currentTime = System.currentTimeMillis()
+            partyMemberCount = members.size
             if (members.size < partySize) {
                 Chat.chat("§6[SBO] §eUpdating party: $partyNote, Type: $partyType, Size: $partySize, Reqs: $partyReqs")
 
@@ -183,17 +192,57 @@ object PartyFinderManager {
             Http.sendGetRequest("$API_URL/unqueueParty?leaderId=${Player.getUUIDString().replace("-", "")}")
                 .result { response ->
                     Chat.chat("§6[SBO] §eParty removed from queue.")
-
                 }.error { error ->
-                    Chat.chat("§6[SBO] §4Unexpected error while removing party from queue: ${error.message}")
+                    Chat.chat("§6[SBO] §4Unexpected error while removing party from queue")
                 }
         }
     }
 
-    fun trackMemberCount() {
+    fun trackRegister() {
         Register.onChatMessage { message ->
+            val text = message.string
+            leaderChangeRegexes.forEach {
+                if (it.matches(text)) {
+                    Chat.chat("§6[SBO] §eParty leader changed")
+                    removePartyFromQueue()
+                }
+            }
+            partyDisbandRegexes.forEach {
+                if (it.matches(text)) {
+                    inQueue = false
+                    creatingParty = false
+                    partyMemberCount = 0
+                    trackMemberCount()
+                    Chat.chat("§6[SBO] §4Party has been disbanded.")
+                }
+            }
+            partyJoinRegexes.forEach {
+                if (it.matches(text)) {
+                    updateBool = true
+                    partyMemberCount += 1
+                    trackMemberCount()
+                    Chat.chat("§6[SBO] §eParty member joined")
+                }
+            }
+            partyLeaveRegexes.forEach {
+                if (it.matches(text)) {
+                    updateBool = true
+                    partyMemberCount -= 1
+                    trackMemberCount()
+                    Chat.chat("§6[SBO] §eParty member left")
+                }
+            }
+        }
+    }
 
-
+    fun trackMemberCount() { // todo: finish this logic
+        if (inQueue) {
+            if (partyMemberCount >= partySize) {
+                Chat.chat("§6[SBO] §4Party is full, removing from queue.")
+                removePartyFromQueue()
+            } else {
+                updateBool = true
+            }
         }
     }
 
