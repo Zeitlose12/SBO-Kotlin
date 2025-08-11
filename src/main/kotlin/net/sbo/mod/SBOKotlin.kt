@@ -9,7 +9,6 @@ import net.sbo.mod.init.registerHelpCommand
 import net.sbo.mod.settings.Settings
 import net.sbo.mod.utils.Register
 import net.sbo.mod.general.PartyCommands
-import net.sbo.mod.utils.data.SboConfigBundle
 import net.sbo.mod.utils.data.SboDataObject
 import net.sbo.mod.diana.PartyFinderManager
 import net.sbo.mod.utils.SboKeyBinds
@@ -22,7 +21,6 @@ object SBOKotlin {
 
 	private const val MOD_ID = "sbo-kotlin"
 	internal val logger = LoggerFactory.getLogger(MOD_ID)
-	lateinit var SBOConfigBundle: SboConfigBundle
 
 	val configurator = Configurator("sbo")
 	val settings = Settings.register(configurator)

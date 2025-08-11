@@ -7,7 +7,6 @@ import com.google.gson.reflect.TypeToken
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.sbo.mod.SBOKotlin
-import net.sbo.mod.SBOKotlin.SBOConfigBundle
 import net.sbo.mod.utils.Register
 import java.io.File
 import java.io.FileReader
@@ -40,12 +39,18 @@ object SboDataObject {
     @JvmField
     var dianaTrackerMayor: DianaTrackerMayorData = DianaTrackerMayorData()
 
+    lateinit var SBOConfigBundle: SboConfigBundle
     private val gson: Gson = GsonBuilder().setPrettyPrinting().create()
     private const val MAX_BACKUPS = 5
 
     fun init() {
         SBOConfigBundle = loadAllData("SBO")
         sboData = SBOConfigBundle.sboData
+        achievementsData = SBOConfigBundle.achievementsData
+        pastDianaEventsData = SBOConfigBundle.pastDianaEventsData
+        dianaTrackerTotal = SBOConfigBundle.dianaTrackerTotalData
+        dianaTrackerSession = SBOConfigBundle.dianaTrackerSessionData
+        dianaTrackerMayor = SBOConfigBundle.dianaTrackerMayorData
         saveAllDataThreaded("SBO")
         savePeriodically(10)
         ServerLifecycleEvents.SERVER_STOPPING.register {
