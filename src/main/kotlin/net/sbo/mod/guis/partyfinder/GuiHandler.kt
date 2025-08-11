@@ -6,12 +6,17 @@ import gg.essential.elementa.components.UIRoundedRectangle
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.components.UIWrappedText
 import gg.essential.elementa.constraints.CenterConstraint
+import gg.essential.elementa.constraints.ChildBasedSizeConstraint
 import gg.essential.elementa.constraints.PositionConstraint
+import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.constraints.SizeConstraint
 import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
+import gg.essential.elementa.dsl.pixels
 import gg.essential.elementa.effects.Effect
+import net.sbo.mod.utils.data.SboDataObject
 import java.awt.Color
+import net.sbo.mod.utils.data.SboDataObject.pfConfigState
 import java.awt.List
 
 object GuiHandler {
@@ -135,7 +140,7 @@ object GuiHandler {
     }
 
     class Checkbox(
-        private val list: List,
+        private val list: String,
         private val key: String,
         private val x: PositionConstraint,
         private val y: PositionConstraint,
@@ -143,9 +148,106 @@ object GuiHandler {
         private val height: SizeConstraint,
         private val color: Color,
         private val checkedColor: Color,
-        private val textString: String? = "",
+        private val text: String = "",
         private val rounded: Boolean = false,
         private val roundness: Float = 10f,
-        private val filter: Boolean = false,
-    )
+        private val filter: Boolean = false
+    ) {
+        private lateinit var onClick: () -> Unit
+
+        var checked: Boolean = if (filter) {
+            when (list) {
+                "diana" -> when (key) {
+                    "eman9Filter" -> pfConfigState.filters.diana.eman9Filter
+                    "looting5Filter" -> pfConfigState.filters.diana.looting5Filter
+                    "canIjoinFilter" -> pfConfigState.filters.diana.canIjoinFilter
+                    else -> false // Default case if key is not found
+                }
+                "custom" -> when (key) {
+                    "eman9Filter" -> pfConfigState.filters.custom.eman9Filter
+                    "canIjoinFilter" -> pfConfigState.filters.custom.canIjoinFilter
+                    else -> false // Default case if key is not found
+                }
+                else -> false // Default case if list is not found
+            }
+        } else {
+            when (list) {
+                "diana" -> when (key) {
+                    "eman9" -> pfConfigState.checkboxes.diana.eman9
+                    "looting5" -> pfConfigState.checkboxes.diana.looting5
+                    else -> false
+                }
+                "custom" -> when (key) {
+                    "eman9" -> pfConfigState.checkboxes.custom.eman9
+                    else -> false
+                }
+                else -> false
+            }
+        }
+
+        private val bgbox = if (rounded) UIRoundedRectangle(roundness) else UIBlock()
+        private val checkbox = if (rounded) UIRoundedRectangle(roundness) else UIBlock()
+        private val outlineBlock = if (rounded) UIRoundedRectangle(roundness) else UIBlock()
+        private lateinit var textObject: UIText
+
+        fun setBgBoxColor(color: Color): Checkbox {
+            bgbox.setColor(color)
+            return this
+        }
+
+        fun setCheckBoxDimensions(width: SizeConstraint, height: SizeConstraint): Checkbox {
+            checkbox.setWidth(width).setHeight(height)
+            return this
+        }
+
+        fun setTextColor(color: Color): Checkbox {
+            textObject.setColor(color)
+            return this
+        }
+
+        fun setOnClick(callback: () -> Unit): Checkbox {
+            onClick = callback
+            return this
+        }
+
+        fun create(): UIComponent {
+            bgbox.constrain {
+                this.x = x
+                this.y = y
+                this.width = width
+                this.height = height
+            }.setColor(Color(0, 0, 0, 0))
+
+            val groupContainer = UIBlock().constrain {
+                x = CenterConstraint()
+                y = CenterConstraint()
+                width = ChildBasedSizeConstraint()
+                height = ChildBasedSizeConstraint()
+            }.setColor(Color(0, 0, 0, 0)) childOf bgbox
+
+            textObject = UIText(text).constrain {
+                x = 0.pixels
+                y = CenterConstraint()
+            } childOf groupContainer
+            textObject.setColor(Color(255, 255, 255, 255))
+
+            checkbox.constrain {
+                x = SiblingConstraint(5f)
+                y = CenterConstraint()
+                width = 16.pixels()
+                height = 16.pixels()
+            }.setColor(if (checked) checkedColor else color) childOf groupContainer
+
+            checkbox.onMouseClick {
+                checked = !checked
+                checkbox.setColor(if (checked) checkedColor else color)
+                SboDataObject.updatePfConfigState(if (filter) "filters" else "checkboxes", list, key, checked)
+                if (this@Checkbox::onClick.isInitialized) {
+                    this@Checkbox.onClick()
+                }
+            }
+
+            return bgbox
+        }
+    }
 }

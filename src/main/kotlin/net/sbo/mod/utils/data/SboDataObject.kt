@@ -19,6 +19,7 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import kotlin.collections.iterator
 import kotlin.concurrent.thread
+import kotlin.reflect.KMutableProperty1
 
 object SboDataObject {
     @JvmField
@@ -92,6 +93,30 @@ object SboDataObject {
             e.printStackTrace()
             save(modName, defaultData, fileName)
             defaultData
+        }
+    }
+
+    internal fun updatePfConfigState(category: String, list: String, key: String, value: Boolean) {
+        val categoryInstance: Any? = when (category) {
+            "filters" -> pfConfigState.filters
+            "checkboxes" -> pfConfigState.checkboxes
+            else -> null
+        }
+
+        if (categoryInstance != null) {
+            val listInstance: Any? = when (list) {
+                "diana" -> if (category == "filters") pfConfigState.filters.diana else pfConfigState.checkboxes.diana
+                "custom" -> if (category == "filters") pfConfigState.filters.custom else pfConfigState.checkboxes.custom
+                else -> null
+            }
+
+            if (listInstance != null) {
+                val property = listInstance::class.members.find { it.name == key }
+                if (property is KMutableProperty1<*, *> && property.getter.call(listInstance) != value) {
+                    property.setter.call(listInstance, value)
+                    save("PartyFinderConfigState")
+                }
+            }
         }
     }
 
