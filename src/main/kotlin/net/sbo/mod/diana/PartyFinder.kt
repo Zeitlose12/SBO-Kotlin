@@ -4,6 +4,7 @@ import net.sbo.mod.utils.HypixelEventApi
 import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Player
+import net.sbo.mod.utils.data.SboDataObject
 import net.sbo.mod.utils.http.Http
 import net.sbo.mod.utils.http.Http.getBoolean
 import net.sbo.mod.utils.http.Http.getMutableMap
@@ -88,8 +89,22 @@ object PartyFinderManager {
             }
         }
 
-        Register.command("sboKey") { // todo: add a way to set the key in the settings or over this command
-            Chat.chat("§6[SBO] §aKey has been set");
+        Register.command("sboKey") { args ->
+            if (args.isEmpty()) {
+                Chat.chat("§6[SBO] §cPlease provide a key")
+            } else if (args[0].startsWith("sbo").not()) {
+                Chat.chat("§6[SBO] §cInvalid key format! get one in our Discord")
+            } else {
+                SboDataObject.partyFinderData.sboKey = args[0]
+                SboDataObject.save("PartyFinderData")
+                Chat.chat("§6[SBO] §aKey has been set")
+            }
+        }
+
+        Register.command("sboClearKey") {
+            SboDataObject.partyFinderData.sboKey = ""
+            SboDataObject.save("PartyFinderData")
+            Chat.chat("§6[SBO] §aKey has been cleared")
         }
 
         HypixelEventApi.onPartyInfo{ isInParty, isLeader, members ->

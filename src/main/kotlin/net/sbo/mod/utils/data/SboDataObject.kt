@@ -215,38 +215,42 @@ object SboDataObject {
         }
     }
 
+    val configMapforSave = mapOf(
+        "SboData" to Pair({ save("SBO", sboData, "SboData.json") }, sboData),
+        "AchievementsData" to Pair({ save("SBO", achievementsData, "sbo_achievements.json") }, achievementsData),
+        "PastDianaEventsData" to Pair({ save("SBO", pastDianaEventsData, "pastDianaEvents.json") }, pastDianaEventsData),
+        "DianaTrackerTotalData" to Pair({ save("SBO", dianaTrackerTotal, "dianaTrackerTotal.json") }, dianaTrackerTotal),
+        "DianaTrackerSessionData" to Pair({ save("SBO", dianaTrackerSession, "dianaTrackerSession.json") }, dianaTrackerSession),
+        "DianaTrackerMayorData" to Pair({ save("SBO", dianaTrackerMayor, "dianaTrackerMayor.json") }, dianaTrackerMayor),
+        "PartyFinderConfigState" to Pair({ save("SBO", pfConfigState, "partyFinderConfigState.json") }, pfConfigState),
+        "PartyFinderData" to Pair({ save("SBO", partyFinderData, "partyFinderData.json") }, partyFinderData)
+    )
+
     private fun <T> saveToFolder(folder: File, data: T, fileName: String) {
         FileWriter(File(folder, fileName)).use { writer ->
             gson.toJson(data, writer)
         }
     }
 
-    private fun saveAllData(modName: String) {
-        val bundle = SBOConfigBundle
-        save(modName, bundle.sboData, "SboData.json")
-        save(modName, bundle.achievementsData, "sbo_achievements.json")
-        save(modName, bundle.pastDianaEventsData, "pastDianaEvents.json")
-        save(modName, bundle.dianaTrackerTotalData, "dianaTrackerTotal.json")
-        save(modName, bundle.dianaTrackerSessionData, "dianaTrackerSession.json")
-        save(modName, bundle.dianaTrackerMayorData, "dianaTrackerMayor.json")
-        save(modName, bundle.partyFinderConfigState, "partyFinderConfigState.json")
-        save(modName, bundle.partyFinderData, "partyFinderData.json")
+    private fun saveAllData() {
+        configMapforSave.forEach { (configName, configData) ->
+            configData.first.invoke()
+        }
     }
-
 
     fun saveAllDataThreaded(modName: String) {
         thread(isDaemon = true) {
             SBOKotlin.logger.info("[$modName] Saving all data to disk...")
-            saveAllData(modName)
+            saveAllData()
             SBOKotlin.logger.info("[$modName] All data saved successfully.")
         }
     }
 
     fun saveAndBackupAllDataThreaded(modName: String) {
         thread(isDaemon = true) {
-            SBOKotlin.logger.info("[$modName] Saving all data to disk and creating backup...")
-            saveAllData(modName)
-            SBOKotlin.logger.info("[$modName] All data saved successfully.")
+            SBOKotlin.logger.info("Saving all data to disk and creating backup...")
+            saveAllData()
+            SBOKotlin.logger.info("All data saved successfully.")
             createBackup(modName)
         }
     }
@@ -261,6 +265,13 @@ object SboDataObject {
         }
     }
 
+    /**
+     * Saves the given data to a file in the mod's config directory.
+     * If the directory does not exist, it will be created.
+     * @param modName The name of the mod.
+     * @param data The data to save.
+     * @param fileName The name of the file to save the data in.
+     */
     fun <T> save(modName: String, data: T, fileName: String) {
         val modConfigDir = File(FabricLoader.getInstance().configDir.toFile(), modName)
         if (!modConfigDir.exists()) {
@@ -270,5 +281,15 @@ object SboDataObject {
         FileWriter(dataFile).use { writer ->
             gson.toJson(data, writer)
         }
+    }
+
+    /**
+     * Saves the specified config by its name.
+     * If the config name is not valid, it will log a warning.
+     * @param configName The name of the config to save.
+     */
+    fun save(configName: String) {
+        configMapforSave[configName]?.first?.invoke()
+            ?: SBOKotlin.logger.warn("[$configName] is not a valid config name. Please use a valid config name")
     }
 }
