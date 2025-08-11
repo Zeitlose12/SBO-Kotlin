@@ -1,4 +1,4 @@
-package net.sbo.mod.general
+package net.sbo.mod.utils.waypoint
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
@@ -9,7 +9,9 @@ import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.SboVec
+import kotlin.collections.iterator
 import kotlin.math.roundToInt
+import kotlin.text.get
 
 object WaypointManager {
     var guessWp: Waypoint? = null

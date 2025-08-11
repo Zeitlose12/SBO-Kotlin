@@ -1,4 +1,4 @@
-package net.sbo.mod.general
+package net.sbo.mod.utils.waypoint
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.sbo.mod.render.RenderUtil

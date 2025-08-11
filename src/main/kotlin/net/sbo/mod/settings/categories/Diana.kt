@@ -1,16 +1,8 @@
 package net.sbo.mod.settings.categories
 
-import com.teamresourceful.resourcefulconfig.api.annotations.ConfigOption
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
-import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
-import net.minecraft.client.option.KeyBinding
-import net.minecraft.client.util.InputUtil
-import net.sbo.mod.general.AdditionalHubWarps
-import net.sbo.mod.general.additionalHubWarps
-import net.sbo.mod.utils.Chat.chat
-import net.sbo.mod.utils.SboKeyBinds
-import org.lwjgl.glfw.GLFW
-import javax.swing.text.JTextComponent
+import net.sbo.mod.utils.waypoint.AdditionalHubWarps
+
 enum class SettingDiana {
     INSTASELL, SELLOFFER
 }

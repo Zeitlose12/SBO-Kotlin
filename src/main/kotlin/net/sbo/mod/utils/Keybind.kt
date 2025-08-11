@@ -5,10 +5,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
-import net.minecraft.text.Text
-import net.sbo.mod.general.WaypointManager
-import net.sbo.mod.settings.categories.Diana
-import net.sbo.mod.utils.Chat.chat
+import net.sbo.mod.utils.waypoint.WaypointManager
 import org.lwjgl.glfw.GLFW
 
 object SboKeyBinds {

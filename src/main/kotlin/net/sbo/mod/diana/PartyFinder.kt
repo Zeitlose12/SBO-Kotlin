@@ -8,7 +8,7 @@ import net.sbo.mod.utils.http.Http
 import net.sbo.mod.utils.http.Http.getBoolean
 import net.sbo.mod.utils.http.Http.getMutableMap
 import net.sbo.mod.utils.http.Http.getString
-import net.sbo.mod.data.SboDataObject.sboData
+import net.sbo.mod.utils.data.SboDataObject.sboData
 
 object PartyFinderManager {
     private var creatingParty = false
@@ -43,8 +43,10 @@ object PartyFinderManager {
         Regex("^(.+) &r&e has promoted &r(.+) &r&eto Party Leader&r$")
     )
 
-//    private val partyJoinRegexes = listOf(
-//    )
+    private val partyJoinRegexes = listOf(
+        Regex("^(.+) &r&ejoined the party.&r$"),
+        Regex("^&eYou have joined &r(.+)'[s]? &r&eparty!&r$")
+    )
 
     fun init() {
         Register.command("sborequeue") {

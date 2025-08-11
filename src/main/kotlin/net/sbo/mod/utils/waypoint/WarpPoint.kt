@@ -1,4 +1,4 @@
-package net.sbo.mod.general
+package net.sbo.mod.utils.waypoint
 
 import net.sbo.mod.utils.SboVec
 

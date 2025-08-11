@@ -4,8 +4,8 @@ import net.sbo.mod.utils.Register
 import net.sbo.mod.settings.categories.PartyCommands
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.SBOKotlin
-import net.sbo.mod.data.SboDataObject.sboData
-import net.sbo.mod.data.SboDataObject.dianaTrackerMayor
+import net.sbo.mod.utils.data.SboDataObject.sboData
+import net.sbo.mod.utils.data.SboDataObject.dianaTrackerMayor
 import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Helper.getPlayerName
 import net.sbo.mod.utils.Helper.calcPercentOne

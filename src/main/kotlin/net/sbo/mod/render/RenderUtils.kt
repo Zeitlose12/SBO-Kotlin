@@ -6,7 +6,7 @@ import net.minecraft.client.render.*
 import net.minecraft.util.math.RotationAxis
 import net.minecraft.util.math.Vec3d
 import net.sbo.mod.SBOKotlin.mc
-import net.sbo.mod.general.WaypointManager
+import net.sbo.mod.utils.waypoint.WaypointManager
 import net.sbo.mod.mixin.accessor.BeaconBlockEntityRendererInvoker
 import net.sbo.mod.settings.categories.Customization
 import net.sbo.mod.utils.SboVec

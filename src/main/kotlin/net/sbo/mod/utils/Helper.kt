@@ -1,8 +1,8 @@
 package net.sbo.mod.utils
 
 import kotlin.concurrent.thread
-import net.sbo.mod.data.DianaItemsData
-import net.sbo.mod.data.DianaMobsData
+import net.sbo.mod.utils.data.DianaItemsData
+import net.sbo.mod.utils.data.DianaMobsData
 import kotlin.reflect.full.memberProperties
 import java.text.DecimalFormat
 import java.util.Locale
