@@ -6,6 +6,7 @@
 		"MinecraftClientMixin",
 		"ScreenMixin",
 		"ChatHudMixin",
+		"MixinMessageHandler",
 		"accessor.BeaconBlockEntityRendererInvoker"
 	],
 	"injectors": {
