@@ -11,6 +11,7 @@ import net.sbo.mod.settings.categories.PartyCommands
 import net.sbo.mod.settings.categories.Customization
 import net.sbo.mod.settings.categories.QOL
 import net.sbo.mod.settings.categories.Credits
+import net.sbo.mod.settings.categories.PartyFinder
 
 object Settings : ConfigKt("sbo/config") {
     override val name: TranslatableValue = Literal("SBO v1.0.0")
@@ -28,6 +29,7 @@ object Settings : ConfigKt("sbo/config") {
         category(Slayer)
         category(PartyCommands)
         category(Customization)
+        category(PartyFinder)
         category(QOL)
         category(Credits)
     }
