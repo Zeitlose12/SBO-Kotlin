@@ -5,14 +5,12 @@ import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.components.SVGComponent
-import gg.essential.elementa.components.UIImage
 import gg.essential.elementa.components.ScrollComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIRoundedRectangle
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.components.UIWrappedText
 import gg.essential.elementa.constraints.CenterConstraint
-import gg.essential.elementa.constraints.ColorConstraint
 import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.PixelConstraint
 import gg.essential.elementa.constraints.PositionConstraint
@@ -30,6 +28,7 @@ import net.minecraft.util.Util
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.partyfinder.PartyFinderManager.createParty
+import net.sbo.mod.partyfinder.PartyFinderManager.removePartyFromQueue
 import net.sbo.mod.guis.partyfinder.pages.DianaPage
 import net.sbo.mod.guis.partyfinder.pages.CustomPage
 import net.sbo.mod.guis.partyfinder.pages.Help
@@ -44,11 +43,6 @@ import net.sbo.mod.partyfinder.PartyFinderManager.sendJoinRequest
 import net.sbo.mod.partyfinder.PartyFinderManager.getAllParties
 import net.sbo.mod.partyfinder.PartyFinderManager.getActiveUsers
 import net.sbo.mod.utils.data.SboDataObject.pfConfigState
-import gg.essential.elementa.svg.SVGParser
-import gg.essential.elementa.svg.data.SVG
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.sbo.mod.utils.Register
-import org.lwjgl.glfw.GLFW
 import java.awt.Color
 class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
 
@@ -282,14 +276,18 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
     }
 
     private fun unqueueParty() {
-        // todo: implement logic below
-//        if (getInQueue()) {
-//            removePartyFromQueue(true, (response) => {
-//                this.dequeued = response
-//                if (this.dequeued) this.updateCurrentPartyList(true)
-//                else ChatLib.chat("&6[SBO] &eFailed to unqueue party.")
-//            });
-//        }
+        if (PartyFinderManager.inQueue) {
+            removePartyFromQueue { success ->
+                dequeued = success
+                if (dequeued) {
+                    updateCurrentPartyList(true)
+                    Chat.chat("§6[SBO] §eYou have been removed from the party queue.")
+                } else {
+                    Chat.chat("§6[SBO] §eFailed to unqueue party.")
+                }
+
+            }
+        }
     }
 
     internal fun partyCreate(reqs: String, note: String, type: String, size: Int = 6) {
@@ -409,10 +407,8 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
             if (isClickable) return@onMouseClick pageContent()
             selectedPage = pageTitle
             contentBlock.clearChildren()
-            println(selectedPage)
             if (selectedPage != "Home" && selectedPage != "Help" && selectedPage != "Settimgs") {
                 contentBlock.addChild(partyListContainer)
-                println("Adding party list container for $selectedPage")
             }
             updatePageHighlight()
             pageContent()
@@ -541,9 +537,8 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
                 .addChild(UIText("${party.partyMembersCount}/${party.partySize}").constrain {
                     x = CenterConstraint()
                     y = CenterConstraint()
-                    color = getMemberColor(party.partyMembersCount, party.partySize) as ColorConstraint
                     textScale = getTextScale(1f)
-                })
+                }.setColor(getMemberColor(party.partyMembersCount, party.partySize)))
             )
             .addChild(GuiHandler.UILine(
                 x = SiblingConstraint(),
@@ -609,14 +604,11 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
 
     private fun renderPartyList(list: List<Party>) {
         if (list.isEmpty()) {
-            noParties.unhide(true)
-            println("No parties found for $selectedPage")
             partyListContainer.clearChildren()
+            noParties.unhide(true)
             return
         }
         partyListContainer.clearChildren()
-        noParties.unhide(false)
-
         list.forEach { party ->
             when (selectedPage) {
                 "Diana" -> dianaPage.getReqsString(party.reqs) { reqsString ->

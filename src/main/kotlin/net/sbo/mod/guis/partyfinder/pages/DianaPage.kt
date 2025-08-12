@@ -275,6 +275,7 @@ class DianaPage(private val parent: PartyFinderGUI) {
             val sboKey = sboData.sboKey
             if (sboKey.isEmpty() && !sboKey.startsWith("sbo")) Chat.chat("§cPlease set your SBO key with /sboKey <key>, if you don't have one, get it in our discord.")
             parent.partyCreate(reqs = reqString, note = note, type = partyType)
+            parent.closeCpWindow()
         }
         createButton.textObject.setTextScale(parent.getTextScale())
     }
