@@ -387,7 +387,7 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
             }
 
             "Custom Party List" -> {
-                // todo: customPage._addCustomFilter(x, y);
+                customPage.addCustomFilter(x, y)
             }
             else -> return
         }
@@ -624,8 +624,9 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
                     val partyBlock = createPartyBlock(party, reqsString)
                     partyListContainer.addChild(partyBlock)
                 }
-                "Custom" -> {
-
+                "Custom" -> customPage.getReqsString(party.reqs) { reqsString ->
+                    val partyBlock = createPartyBlock(party, reqsString)
+                    partyListContainer.addChild(partyBlock)
                 }
                 else -> {
                     val partyBlock = createPartyBlock(party, "No requirements available.")
@@ -828,7 +829,7 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
         createPartyBlock.onMouseLeave {
             createPartyText.setColor(Color(0, 255, 0, 255))
         }
-        // todo: maybe add svgfix if needed
+        // maybe add svgfix if needed
         contentBlock.addChild(line)
         contentBlock.addChild(UIBlock().constrain {
             width = 100.percent()
@@ -865,7 +866,7 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
             .addChild(refreshBlock)
             .addChild(unqueuePartyBlock)
             .addChild(createPartyBlock)
-            // todo: add svgfix here if needed
+            // add svgfix here if needed
         )
     }
 
@@ -1179,5 +1180,6 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
         addPage("Help", helpPage::render, isSubPage = true)
         addPage("Settings", ::settings, isSubPage = true, y1 = null, isClickable = true)
         addPage("Diana", dianaPage::render, y1 = 0.percent())
+        addPage("Custom", customPage::render)
     }
 }
