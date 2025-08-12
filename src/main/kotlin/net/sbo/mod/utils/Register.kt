@@ -24,7 +24,9 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import gg.essential.universal.utils.toFormattedString
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
 /**
@@ -103,7 +105,7 @@ object Register {
      * The action is executed when the client disconnects.
      */
     fun onDisconnect(action: () -> Unit) {
-        ServerLifecycleEvents.SERVER_STOPPING.register {
+        ClientPlayConnectionEvents.DISCONNECT.register { handler, client ->
             action()
         }
     }
