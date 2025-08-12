@@ -6,6 +6,7 @@ import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.data.Party
 import net.sbo.mod.utils.data.PartyInfo
 import net.sbo.mod.utils.data.PartyPlayerStats
 import net.sbo.mod.utils.http.Http
@@ -44,18 +45,24 @@ object PartyCheck {
         }
     }
 
-    fun checkPlayer(playerName: String, readCache: Boolean = true) {
-        Chat.chat("§6[SBO] §eChecking player: §b$playerName")
+    fun checkPlayer(
+        playerName: String,
+        noMessage: Boolean = false,
+        readCache: Boolean = true,
+        onComplete: ((PartyPlayerStats)-> Unit)? = null
+    ) {
+        if (!noMessage) Chat.chat("§6[SBO] §eChecking player: §b$playerName")
         Http.sendGetRequest("$API_URL/partyInfo?party=$playerName&readCache=$readCache")
             .toJson<PartyInfo> { response ->
                 if (response.success) {
                     val partyInfo = response.partyInfo
                     if (partyInfo.firstOrNull() != null) {
-                        if (partyInfo[0].uuid == Player.getUUIDString().replace("-", "")) {
+                        if (!noMessage && partyInfo[0].uuid == Player.getUUIDString().replace("-", "")) {
                             printPartyInfo(partyInfo)
-                        } else {
+                        } else if (!noMessage) {
                             printPartyInfo(partyInfo, true)
                         }
+                        onComplete?.invoke(partyInfo[0])
                     }
                 }
             }

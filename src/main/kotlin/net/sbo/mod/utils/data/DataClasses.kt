@@ -23,6 +23,39 @@ data class PartyInfo(
 )
 
 @Serializable
+data class PartyAddResponse(
+    @SerialName("Success")
+    val success: Boolean,
+
+    @SerialName("Message")
+    val message: String? = null,
+
+    @SerialName("PartyInfo")
+    val partyInfo: List<PartyPlayerStats>,
+
+    @SerialName("PartyReqs")
+    val partyReqs: Reqs,
+
+    @SerialName("Error")
+    val error: String? = null
+)
+
+@Serializable
+data class PartyUpdateResponse(
+    @SerialName("Success")
+    val success: Boolean,
+
+    @SerialName("Message")
+    val message: String? = null,
+
+    @SerialName("PartyReqs")
+    val partyReqs: Reqs,
+
+    @SerialName("Error")
+    val error: String? = null
+)
+
+@Serializable
 data class Party(
     @SerialName("partyinfo")
     val partyInfo: List<PartyPlayerStats>,
@@ -60,11 +93,11 @@ data class PartyPlayerStats(
 
 @Serializable
 data class Reqs(
-    val lvl: Int,
-    val kills: Int,
-    val eman9: Boolean,
-    val looting5: Boolean,
-    val mp: Int
+    val lvl: Int = -1,
+    val kills: Int = 0,
+    val eman9: Boolean = false,
+    val looting5: Boolean = false,
+    val mp: Int = 0
 )
 
 data class HighlightElement(

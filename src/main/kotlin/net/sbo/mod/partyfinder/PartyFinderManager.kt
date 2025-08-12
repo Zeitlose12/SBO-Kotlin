@@ -11,7 +11,6 @@ import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.data.SboDataObject
 import net.sbo.mod.utils.http.Http
 import net.sbo.mod.utils.http.Http.getBoolean
-import net.sbo.mod.utils.http.Http.getMutableMap
 import net.sbo.mod.utils.http.Http.getString
 import net.sbo.mod.utils.data.SboDataObject.sboData
 import net.sbo.mod.SBOKotlin.API_URL
@@ -21,6 +20,8 @@ import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.data.PartyPlayerStats
 import net.sbo.mod.utils.data.GetAllParties
 import net.sbo.mod.utils.data.Party
+import net.sbo.mod.utils.data.PartyAddResponse
+import net.sbo.mod.utils.data.PartyUpdateResponse
 import net.sbo.mod.utils.data.Reqs
 import net.sbo.mod.utils.http.Http.getInt
 import java.util.UUID
@@ -43,7 +44,7 @@ object PartyFinderManager {
     private var partyNote = ""
     private var partyType = ""
     private var partyReqs = ""
-    private var partyReqsMap = mutableMapOf<String, Any>()
+    private var partyReqsMap = Reqs()
     var isInParty = false
 
     private val playersSentRequest = mutableMapOf<String, Long>()
@@ -52,7 +53,7 @@ object PartyFinderManager {
     private val partyDisbandRegexes = listOf(
         Regex("^.+ §r§ehas disbanded the party!$"), // works
         Regex("^§r§cThe party was disbanded because (.+)$"), // works
-        Regex("^§r§eYou left the party.§r$"), // works
+        Regex("^§r§eYou left the party.$"), // works
         Regex("^§r§cYou are not currently in a party.$"), // works
         Regex("^§r§eYou have been kicked from the party by .+$"), // works
     )
@@ -246,12 +247,12 @@ object PartyFinderManager {
                             "&partytype=$partyType" +
                             "&partysize=$partySize" +
                             "&key=${sboData.sboKey}"
-                ).toJsonObject { response ->
-                    if (response.getBoolean("Success")) {
+                ).toJson<PartyAddResponse> { response ->
+                    if (response.success) {
                         val timeTaken = System.currentTimeMillis() - currentTime
                         inQueue = true
                         creatingParty = false
-                        partyReqsMap = response.getMutableMap("Reqs") ?: mutableMapOf()
+                        partyReqsMap = response.partyReqs
                         EventBus.emit("refreshPartyList")
 
                         if (ghostParty) {
@@ -268,7 +269,7 @@ object PartyFinderManager {
 
                         if (isInParty) Chat.command("pc [SBO] Party now in queue.")
                     } else {
-                        val errorMessage = response.getString("Error") ?: "Unknown error"
+                        val errorMessage = response.error ?: "Unknown error"
                         Chat.chat("§6[SBO] §4Failed to create party: $errorMessage")
 
                     }
@@ -297,19 +298,19 @@ object PartyFinderManager {
                         "&partytype=$partyType" +
                         "&partysize=$partySize" +
                         "&key=${sboData.sboKey}"
-            ).toJsonObject { response ->
-                if (response.getBoolean("Success")) {
+            ).toJson<PartyUpdateResponse> { response ->
+                if (response.success) {
                     val timeTaken = System.currentTimeMillis() - currentTime
-                    partyReqsMap = response.getMutableMap("Reqs") ?: mutableMapOf()
+                    partyReqsMap = response.partyReqs
                     Chat.chat("§6[SBO] §eParty updated successfully! Time taken: ${timeTaken}ms")
                 } else {
                     inQueue = false
-                    val errorMessage = response.getString("Error") ?: "Unknown error"
+                    val errorMessage = response.error ?: "Unknown error"
                     Chat.chat("§6[SBO] §4Failed to update party: $errorMessage")
                 }
             }.error { error ->
                 inQueue = false
-                Chat.chat("§6[SBO] §4Unexpected error while updating party")
+                Chat.chat("§6[SBO] §4Unexpected error while updating party: $error")
             }
         }
     }
@@ -341,7 +342,18 @@ object PartyFinderManager {
     }
 
     fun invitePlayerIfMeetsReqs(playerName: String) {
-        Http.sendGetRequest("")
+        PartyCheck.checkPlayer(playerName, true) { stats ->
+            if (checkIfPlayerMeetsReqs(stats, partyReqsMap)) {
+                if (partyMemberCount < partySize) {
+                    Chat.command("p invite $playerName")
+                    Chat.chat("§6[SBO] §eInvited $playerName to the party.")
+                } else {
+                    Chat.chat("§6[SBO] §cParty is full, cannot invite $playerName.")
+                }
+            } else {
+                Chat.chat("§6[SBO] §c$playerName does not meet the requirements to join the party.")
+            }
+        }
     }
 
     fun checkIfPlayerMeetsReqs(
