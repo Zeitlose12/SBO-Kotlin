@@ -154,7 +154,7 @@ object Helper {
         }
     }
 
-    fun matchDianaKillsToColor(kills: Long): String {
+    fun matchDianaKillsToColor(kills: Int): String {
         return when {
             kills >= 200_000 -> "§6${formatNumber(kills, true)}"
             kills >= 150_000 -> "§e${formatNumber(kills, true)}"

@@ -25,6 +25,7 @@ import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import gg.essential.universal.utils.toFormattedString
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
 /**
  * Utility object for registering events
@@ -34,13 +35,13 @@ object Register {
     private val guiCloseActions = mutableListOf<(client: MinecraftClient, screen: Screen) -> Unit>()
     private val guiRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
     private val guiPostRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
-    private val guiKeyActions = mutableListOf<(client: MinecraftClient, screen: Screen, key: Int) -> Unit>()
+    private val guiKeyActions = mutableListOf<(client: MinecraftClient, screen: Screen, key: Int, cir: CallbackInfoReturnable<Boolean>) -> Unit>()
 
     fun runGuiOpenActions(client: MinecraftClient, screen: Screen) { guiOpenActions.forEach { action -> action(client, screen) } }
     fun runGuiCloseActions(client: MinecraftClient, screen: Screen) { guiCloseActions.forEach { action -> action(client, screen) } }
     fun runGuiRenderActions(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
     fun runGuiPostRenderActions( client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiPostRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
-    fun runGuiKeyActions(client: MinecraftClient, screen: Screen, key: Int) { guiKeyActions.forEach { action -> action(client, screen, key) } }
+    fun runGuiKeyActions(client: MinecraftClient, screen: Screen, key: Int, cir: CallbackInfoReturnable<Boolean>) { guiKeyActions.forEach { action -> action(client, screen, key, cir) } }
 
     /**
      * Registers a command with the specified name and aliases.
@@ -267,7 +268,7 @@ object Register {
      * Registers an event that listens for key presses in the GUI and executes an action.
      * @param action The action to execute when a key is pressed in the GUI.
      */
-    fun onGuiKey(action: (client: MinecraftClient, screen: Screen, key: Int) -> Unit) {
+    fun onGuiKey(action: (client: MinecraftClient, screen: Screen, key: Int, cir: CallbackInfoReturnable<Boolean>) -> Unit) {
         guiKeyActions.add(action)
     }
 }

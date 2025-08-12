@@ -120,6 +120,43 @@ object SboDataObject {
         }
     }
 
+    internal fun updatePfConfigState(category: String, list: String, key: String, value: String) {
+        if (category != "inputs") return
+        val listInstance: Any? = when (list) {
+            "diana" -> pfConfigState.inputs.diana
+            "custom" -> pfConfigState.inputs.custom
+            else -> null
+        }
+
+        if (listInstance != null) {
+            val property = listInstance::class.members.find { it.name == key }
+            if (property is KMutableProperty1<*, *>) {
+                @Suppress("UNCHECKED_CAST")
+                val prop = property as KMutableProperty1<Any, Any?>
+
+                val convertedValue = when (prop.returnType.classifier) {
+                    Int::class -> value.toIntOrNull()
+                    String::class -> value
+                    else -> {
+                        SBOKotlin.logger.warn("[$key] hasn an Unsupported type: ${prop.returnType.classifier}")
+                        null
+                    }
+                }
+
+                if (convertedValue != null) {
+                    val currentValue = prop.get(listInstance)
+                    if (currentValue != convertedValue) {
+                        prop.set(listInstance, convertedValue)
+                        save("PartyFinderConfigState")
+                    }
+
+                } else {
+                    SBOKotlin.logger.warn("Failed to convert '$value' to type ${prop.returnType.classifier} for key '$key'")
+                }
+            }
+        }
+    }
+
     private fun loadAchievementsData(modName: String): AchievementsData {
         val modConfigDir = File(FabricLoader.getInstance().configDir.toFile(), modName)
         val dataFile = File(modConfigDir, "sbo_achievements.json")

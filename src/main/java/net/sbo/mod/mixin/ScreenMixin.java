@@ -31,6 +31,6 @@ public abstract class ScreenMixin {
     public void onKeyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
         MinecraftClient client = MinecraftClient.getInstance();
         Screen currentScreen = (Screen)(Object)this;
-        Register.INSTANCE.runGuiKeyActions(client, currentScreen, keyCode);
+        Register.INSTANCE.runGuiKeyActions(client, currentScreen, keyCode, cir);
     }
 }

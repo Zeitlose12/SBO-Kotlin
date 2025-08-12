@@ -115,7 +115,6 @@ data class PartyFinderConfigState(
 
 data class PartyFinderData(
     var playerStatsUpdated: Long = 0,
-    var sboKey: String = "",
     var playerStats: Map<String, PlayerStats> = emptyMap(),
 )
 

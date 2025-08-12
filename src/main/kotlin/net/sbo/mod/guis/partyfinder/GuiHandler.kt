@@ -5,6 +5,7 @@ import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIRoundedRectangle
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.components.UIWrappedText
+import gg.essential.elementa.components.input.UITextInput
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.ChildBasedSizeConstraint
 import gg.essential.elementa.constraints.PositionConstraint
@@ -14,17 +15,20 @@ import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.pixels
 import gg.essential.elementa.effects.Effect
+import net.minecraft.client.MinecraftClient
+import net.minecraft.client.util.InputUtil
+import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.data.SboDataObject
 import java.awt.Color
 import net.sbo.mod.utils.data.SboDataObject.pfConfigState
-import java.awt.List
+import org.lwjgl.glfw.GLFW
 
 object GuiHandler {
 
     fun addHoverEffect(
         uiObject: UIComponent,
         baseColor: Color,
-        hoverColor: Color = Color(50,50,50,200)
+        hoverColor: Color = Color(50, 50, 50, 200)
     ) {
         uiObject.onMouseEnter {
             uiObject.setColor(hoverColor)
@@ -36,7 +40,7 @@ object GuiHandler {
     fun addTextHoverEffect(
         textObject: UIComponent,
         baseColor: Color,
-        hoverColor: Color = Color(50,50,50,200)
+        hoverColor: Color = Color(50, 50, 50, 200)
     ) {
         textObject.onMouseEnter {
             textObject.setColor(hoverColor)
@@ -163,11 +167,13 @@ object GuiHandler {
                     "canIjoinFilter" -> pfConfigState.filters.diana.canIjoinFilter
                     else -> false // Default case if key is not found
                 }
+
                 "custom" -> when (key) {
                     "eman9Filter" -> pfConfigState.filters.custom.eman9Filter
                     "canIjoinFilter" -> pfConfigState.filters.custom.canIjoinFilter
                     else -> false // Default case if key is not found
                 }
+
                 else -> false // Default case if list is not found
             }
         } else {
@@ -177,10 +183,12 @@ object GuiHandler {
                     "looting5" -> pfConfigState.checkboxes.diana.looting5
                     else -> false
                 }
+
                 "custom" -> when (key) {
                     "eman9" -> pfConfigState.checkboxes.custom.eman9
                     else -> false
                 }
+
                 else -> false
             }
         }
@@ -188,7 +196,7 @@ object GuiHandler {
         private val bgbox = if (rounded) UIRoundedRectangle(roundness) else UIBlock()
         private val checkbox = if (rounded) UIRoundedRectangle(roundness) else UIBlock()
         private val outlineBlock = if (rounded) UIRoundedRectangle(roundness) else UIBlock()
-        private lateinit var textObject: UIText
+        internal lateinit var textObject: UIText
 
         fun setBgBoxColor(color: Color): Checkbox {
             bgbox.setColor(color)
@@ -212,10 +220,10 @@ object GuiHandler {
 
         fun create(): UIComponent {
             bgbox.constrain {
-                this.x = x
-                this.y = y
-                this.width = width
-                this.height = height
+                this.x = this@Checkbox.x
+                this.y = this@Checkbox.y
+                this.width = this@Checkbox.width
+                this.height = this@Checkbox.height
             }.setColor(Color(0, 0, 0, 0))
 
             val groupContainer = UIBlock().constrain {
@@ -248,6 +256,128 @@ object GuiHandler {
             }
 
             return bgbox
+        }
+    }
+
+    class TextInput(
+        private val list: String,
+        private val key: String,
+        private val x: PositionConstraint,
+        private val y: PositionConstraint,
+        private val width: SizeConstraint,
+        private val height: SizeConstraint,
+        private val inputWidth: SizeConstraint,
+        private val color: Color,
+        private val textColor: Color,
+        private val rounded: Boolean = false,
+        private val roundness: Float = 5f
+    ) {
+        internal var onlyNumbers = false
+        internal var onlyText = false
+        internal var lastValidText = getValue()
+        internal var maxChars = 0
+
+        internal var text = ""
+        internal var textSet = false
+        internal val textInput = if (rounded) UIRoundedRectangle(roundness) else UIBlock()
+        internal val textInputText = UITextInput("", true)
+
+        fun getValue(): String {
+            return when (list) {
+                "custom" -> {
+                    val custom = pfConfigState.inputs.custom
+                    when (key) {
+                        "lvl" -> custom.lvl.toString()
+                        "mp" -> custom.mp.toString()
+                        "partySize" -> custom.partySize.toString()
+                        "note" -> custom.note
+                        else -> ""
+                    }
+                }
+                "diana" -> {
+                    val diana = pfConfigState.inputs.diana
+                    when (key) {
+                        "kills" -> diana.kills.toString()
+                        "lvl" -> diana.lvl.toString()
+                        "note" -> diana.note
+                        else -> ""
+                    }
+                }
+                else -> ""
+            }
+        }
+
+        fun create(): UIComponent {
+            textInput.constrain {
+                x = this@TextInput.x
+                y = this@TextInput.y
+                width = this@TextInput.width
+                height = this@TextInput.height
+            }.setColor(color)
+
+            textInputText.constrain {
+                x = CenterConstraint()
+                y = CenterConstraint()
+                width = inputWidth
+                height = 10.pixels
+            }.setColor(textColor) childOf textInput
+
+            textInputText.onFocusLost {
+                if (text.isNotEmpty()) return@onFocusLost
+            }
+
+            textInput.onMouseClick {
+                if (!textSet) {
+                    if (getValue().isEmpty()) {
+                        text = textInputText.getText()
+                    } else {
+                        text = getValue()
+                    }
+                    textInputText.setText(text)
+                    textSet = true
+                }
+                textInputText.grabWindowFocus()
+                textInputText.focus()
+            }
+
+            textInputText.onMouseClick {
+                if (!textSet) {
+                    if (getValue().isEmpty()) {
+                        text = textInputText.getText()
+                    } else {
+                        text = getValue()
+                    }
+                    textInputText.setText(text)
+                    textSet = true
+                }
+                textInputText.grabWindowFocus()
+                textInputText.focus()
+            }
+
+            textInputText.onKeyType { typedChar, keyCode ->
+                if (maxChars > 0 && textInputText.getText().length > maxChars && keyCode != GLFW.GLFW_KEY_BACKSPACE && keyCode != GLFW.GLFW_KEY_DELETE) {
+                    textInputText.setText(lastValidText)
+                    return@onKeyType
+                }
+                if (keyCode == GLFW.GLFW_KEY_BACKSPACE || keyCode == GLFW.GLFW_KEY_DELETE) {
+                    text = textInputText.getText()
+                    lastValidText = text
+                    SboDataObject.updatePfConfigState("textInputTexts", list, key, text)
+                    return@onKeyType
+                }
+                if (onlyNumbers && !typedChar.isDigit()) {
+                    textInputText.setText(lastValidText)
+                    return@onKeyType
+                }
+                if (onlyText && (!typedChar.isLetterOrDigit() && typedChar != ' ')) {
+                    textInputText.setText(lastValidText)
+                    return@onKeyType
+                }
+                text = textInputText.getText()
+                lastValidText = text
+                SboDataObject.updatePfConfigState("inputs", list, key, text)
+            }
+            return textInput
         }
     }
 }
