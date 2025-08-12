@@ -1,5 +1,6 @@
 package net.sbo.mod.utils.data
 
+import gg.essential.elementa.UIComponent
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -64,4 +65,10 @@ data class Reqs(
     val eman9: Boolean,
     val looting5: Boolean,
     val mp: Int
+)
+
+data class HighlightElement(
+    val page: String,
+    val obj: UIComponent,
+    val type: String
 )
