@@ -180,6 +180,12 @@ object PartyFinderManager {
             }
         }
 
+        Register.onDisconnect {
+            if (inQueue) {
+                removePartyFromQueue()
+            }
+        }
+
         HypixelModApi.onPartyInfo{ isInParty, isLeader, members ->
             this.isInParty = isInParty
             this.isLeader = isLeader
@@ -364,11 +370,12 @@ object PartyFinderManager {
         }
     }
 
-    fun removePartyFromQueue() {
+    fun removePartyFromQueue(onComplete: ((Boolean) -> Unit)? = null) {
         if (inQueue) {
             inQueue = false
             Http.sendGetRequest("$API_URL/unqueueParty?leaderId=${Player.getUUIDString().replace("-", "")}")
                 .result { response ->
+                    onComplete?.invoke(true)
                     Chat.chat("§6[SBO] §eParty removed from queue.")
                 }.error { error ->
                     Chat.chat("§6[SBO] §4Unexpected error while removing party from queue")

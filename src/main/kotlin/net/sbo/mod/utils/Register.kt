@@ -24,6 +24,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import gg.essential.universal.utils.toFormattedString
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 
 /**
  * Utility object for registering events
@@ -93,6 +94,16 @@ object Register {
                 action(client)
                 tickCounter = 0
             }
+        }
+    }
+
+    /**
+     * Registers an event that listens for the client disconnecting from the server.
+     * The action is executed when the client disconnects.
+     */
+    fun onDisconnect(action: () -> Unit) {
+        ServerLifecycleEvents.SERVER_STOPPING.register {
+            action()
         }
     }
 
