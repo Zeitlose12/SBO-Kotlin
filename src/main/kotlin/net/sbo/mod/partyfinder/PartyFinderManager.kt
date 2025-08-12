@@ -119,8 +119,8 @@ object PartyFinderManager {
             } else if (args[0].startsWith("sbo").not()) {
                 Chat.chat("§6[SBO] §cInvalid key format! get one in our Discord")
             } else {
-                SboDataObject.partyFinderData.sboKey = args[0]
-                SboDataObject.save("PartyFinderData")
+                sboData.sboKey = args[0]
+                SboDataObject.save("SboData")
                 Chat.chat("§6[SBO] §aKey has been set")
             }
         }
