@@ -54,17 +54,24 @@ class HttpRequestHandle {
     /**
      * The `onSuccess` block only runs for 2xx responses with a valid JSON body.
      * Any error (network, HTTP error code, or parsing failure) is routed to the .error() block.
+     *
+     * @param ignoreUnknownKeys If true, the JSON parser will ignore properties in the JSON
+     * that do not exist in the target data class. Defaults to false (strict parsing).
+     * @param onSuccess The callback to execute with the parsed data object.
      */
-    inline fun <reified T> toJson(crossinline onSuccess: (T) -> Unit): HttpRequestHandle {
+    inline fun <reified T> toJson(
+        ignoreUnknownKeys: Boolean = false,
+        crossinline onSuccess: (T) -> Unit
+    ): HttpRequestHandle {
         this.onResult = { response ->
             if (response.isSuccessful) {
                 val body = response.body?.string()
                 if (body.isNullOrBlank()) {
                     this.fail(Exception("Cannot parse JSON: Response body was empty."))
-
                 } else {
                     try {
-                        val data = Json.decodeFromString<T>(body)
+                        val jsonParser = Json { this.ignoreUnknownKeys = ignoreUnknownKeys }
+                        val data = jsonParser.decodeFromString<T>(body)
                         onSuccess(data)
                     } catch (e: Exception) {
                         this.fail(e)

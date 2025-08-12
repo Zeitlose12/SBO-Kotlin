@@ -1,14 +1,14 @@
 package net.sbo.mod.utils
 
-import net.azureaaron.hmapi.events.HypixelPacketEvents;
-import net.azureaaron.hmapi.network.HypixelNetworking;
-import net.azureaaron.hmapi.network.packet.s2c.ErrorS2CPacket;
-import net.azureaaron.hmapi.network.packet.s2c.HelloS2CPacket;
-import net.azureaaron.hmapi.network.packet.s2c.HypixelS2CPacket;
-import net.azureaaron.hmapi.network.packet.v1.s2c.LocationUpdateS2CPacket;
+import net.azureaaron.hmapi.events.HypixelPacketEvents
+import net.azureaaron.hmapi.network.HypixelNetworking
+import net.azureaaron.hmapi.network.packet.s2c.ErrorS2CPacket
+import net.azureaaron.hmapi.network.packet.s2c.HelloS2CPacket
+import net.azureaaron.hmapi.network.packet.s2c.HypixelS2CPacket
+import net.azureaaron.hmapi.network.packet.v1.s2c.LocationUpdateS2CPacket
 import net.azureaaron.hmapi.network.packet.v2.s2c.PartyInfoS2CPacket
 
-object HypixelEventApi {
+object HypixelModApi {
     var isOnHypixel: Boolean = false
     var isOnSkyblock: Boolean = false
     var isLeader: Boolean = false
@@ -16,21 +16,15 @@ object HypixelEventApi {
     var partyMembers: List<String> = emptyList()
     var mode: String = ""
 
+    // listeners
     private val partyInfoListeners = mutableListOf<(isInParty: Boolean, isLeader: Boolean, members: List<String>) -> Unit>()
+    private val errorListeners = mutableListOf<(packet: ErrorS2CPacket) -> Unit>()
 
 
     fun init() {
         HypixelPacketEvents.HELLO.register(::handlePacket)
         HypixelPacketEvents.PARTY_INFO.register(::handlePacket)
         HypixelPacketEvents.LOCATION_UPDATE.register(::handlePacket)
-
-        Register.command("sboapitest") {
-            if (isOnHypixel) {
-                Chat.chat("[SBO] You are on Hypixel, Skyblock mode: $isOnSkyblock, current mode: $mode")
-            } else {
-                Chat.chat("[SBO] You are not on Hypixel")
-            }
-        }
     }
 
     private fun handlePacket(packet: HypixelS2CPacket) {
@@ -62,7 +56,6 @@ object HypixelEventApi {
 
     private fun onHelloPacket(packet: HelloS2CPacket) {
         isOnHypixel = true
-        Chat.chat("[SBO] Connected to Hypixel")
     }
 
     private fun onPartyInfoPacket(packet: PartyInfoS2CPacket) {
@@ -81,15 +74,22 @@ object HypixelEventApi {
         partyInfoListeners.add(listener)
     }
 
-
     private fun onErrorPacket(packet: ErrorS2CPacket) {
         if (packet.id == LocationUpdateS2CPacket.ID) {
             isOnSkyblock = false
             mode = ""
         }
+
+        errorListeners.forEach { listener ->
+            listener(packet)
+        }
+    }
+
+    fun onError(listener: (packet: ErrorS2CPacket) -> Unit) {
+        errorListeners.add(listener)
     }
 
     fun sendPartyInfoPacket() {
-        HypixelNetworking.sendPartyInfoC2SPacket(2);
+        HypixelNetworking.sendPartyInfoC2SPacket(2)
     }
 }

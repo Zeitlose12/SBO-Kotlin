@@ -9,7 +9,8 @@ import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import kotlin.collections.mutableMapOf
+import kotlinx.serialization.json.jsonArray
+
 
 object Http {
     val jsonParser = Json { ignoreUnknownKeys = true }
@@ -126,5 +127,14 @@ object Http {
                 else -> value.jsonPrimitive.contentOrNull ?: value
             }
         }?.toMutableMap()
+    }
+
+    fun JsonObject.getArray(key: String): List<Any>? {
+        return this[key]?.jsonArray?.map { element ->
+            when (element) {
+                is JsonObject -> element.toMutableMap()
+                else -> element.jsonPrimitive.contentOrNull ?: element
+            }
+        }
     }
 }

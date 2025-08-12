@@ -10,15 +10,20 @@ import net.sbo.mod.settings.Settings
 import net.sbo.mod.utils.Register
 import net.sbo.mod.general.PartyCommands
 import net.sbo.mod.utils.data.SboDataObject
-import net.sbo.mod.diana.PartyFinderManager
+import net.sbo.mod.partyfinder.PartyFinderManager
 import net.sbo.mod.utils.SboKeyBinds
 import net.sbo.mod.guis.Main
+import net.sbo.mod.partyfinder.PartyPlayer
 import net.sbo.mod.utils.Chat
-import net.sbo.mod.utils.HypixelEventApi
+import net.sbo.mod.utils.ClickActionManager
+import net.sbo.mod.utils.HypixelModApi
 
 object SBOKotlin {
 	@JvmField
 	val mc: MinecraftClient = MinecraftClient.getInstance()
+
+	const val API_URL: String = "https://api.skyblockoverhaul.com"
+
 
 	private const val MOD_ID = "sbo-kotlin"
 	internal val logger = LoggerFactory.getLogger(MOD_ID)
@@ -52,10 +57,17 @@ object SBOKotlin {
 		// Registering Guis
 		guis.register()
 
+		ClickActionManager.inti()
 		SboKeyBinds.init()
 		WaypointManager.init()
-		HypixelEventApi.init()
+		HypixelModApi.init()
 		PartyFinderManager.init()
+
+		Register.onTick(1000) { // todo: unregister this register when player is loaded
+			if (mc.player != null) {
+				PartyPlayer.init()
+			}
+		}
 		logger.info("SBO-Kotlin initialized successfully!")
 	}
 }

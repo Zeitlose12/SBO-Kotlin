@@ -23,6 +23,7 @@ import net.sbo.mod.utils.Helper.removeFormatting
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import gg.essential.universal.utils.toFormattedString
 
 /**
  * Utility object for registering events
@@ -120,7 +121,7 @@ object Register {
         action: (message: Text, matchResult: MatchResult) -> Unit
     ) {
         ClientReceiveMessageEvents.GAME.register { message, _ ->
-            var text = message.string
+            var text = message.toFormattedString()
             if (noFormatting) text = text.removeFormatting()
 
             regex.find(text)?.let { result ->
@@ -143,7 +144,7 @@ object Register {
         action: (message: Text, matchResult: MatchResult) -> Unit
     ) {
         ClientReceiveMessageEvents.GAME.register { message, _ ->
-            var text = message.string
+            var text = message.toFormattedString()
             if (noFormatting) text = text.removeFormatting()
 
             regexes.forEach { regex ->
@@ -162,7 +163,8 @@ object Register {
      */
     fun onChatMessage(
         criteria: String,
-        action: (capturedParts: List<String>) -> Unit
+        noFormatting: Boolean,
+        action: (message: Text, capturedParts: List<String>) -> Unit
     ) {
         val processedCriteria = criteria.replace('&', '§')
         val placeholderRegex = Regex("\\{[^}]+}")
@@ -172,14 +174,15 @@ object Register {
         val criteriaRegex = Regex(finalRegexPattern)
 
         ClientReceiveMessageEvents.GAME.register { message: Text, _ ->
-            val plainTextMessage = message.string
+            var text = message.toFormattedString()
+            if (noFormatting) text = text.removeFormatting()
 
-            val matchResult = criteriaRegex.matchEntire(plainTextMessage)
+            val matchResult = criteriaRegex.matchEntire(text)
 
             if (matchResult != null) {
                 val captured = matchResult.groupValues.drop(1)
 
-                action(captured)
+                action(message, captured)
             }
         }
     }

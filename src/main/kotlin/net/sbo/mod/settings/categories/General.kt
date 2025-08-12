@@ -2,9 +2,6 @@ package net.sbo.mod.settings.categories
 
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import net.sbo.mod.utils.Chat.chat
-import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil
-import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
-import org.lwjgl.glfw.GLFW
 
 enum class TestColor {
     RED, GREEN, BLUE, YELLOW, PURPLE

@@ -26,16 +26,13 @@ import net.sbo.mod.utils.EventBus
 import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.settings.categories.PartyFinder
 import net.minecraft.util.Util
-import net.sbo.mod.SBOKotlin
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Helper
-import net.sbo.mod.diana.PartyFinderManager.createParty
+import net.sbo.mod.partyfinder.PartyFinderManager.createParty
 import net.sbo.mod.guis.partyfinder.pages.DianaPage
 import net.sbo.mod.guis.partyfinder.pages.CustomPage
 import net.sbo.mod.guis.partyfinder.pages.Help
 import net.sbo.mod.guis.partyfinder.pages.Home
-import net.sbo.mod.utils.data.SboDataObject.pfConfigState
-import org.apache.logging.log4j.core.tools.picocli.CommandLine
 import java.awt.Color
 class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
 
