@@ -145,7 +145,7 @@ object PartyFinderManager {
             Regex("^§d(?<toFrom>.*?) (?<player>.*?)§r§7: §r§7[SBO] join party request - (?<id>.*?)$"),
             false
         ) { _, matcher ->
-            if (matcher.groups["toFrom"]?.value?.contains("from") ?: false) {
+            if (matcher.groups["toFrom"]?.value?.contains("From") ?: false) {
                 if (partyMemberCount < partySize) {
                     val playerName = Helper.getPlayerName(matcher.groups["player"]?.value ?: "no name")
 
