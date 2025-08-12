@@ -24,6 +24,7 @@ import net.sbo.mod.utils.data.Party
 import net.sbo.mod.utils.data.Reqs
 import net.sbo.mod.utils.http.Http.getInt
 import java.util.UUID
+import java.util.regex.Pattern
 import kotlin.collections.mutableMapOf
 
 object PartyFinderManager {
@@ -141,14 +142,12 @@ object PartyFinderManager {
             }
         }
 
-        Register.onChatMessage(
-            Regex("^§r§d(?<toFrom>.*?) (?<player>.*?)§r§7: §r§7SBO join party request - (?<id>.*?)$"),
-            true
-        ) { _, matcher ->
-            Chat.chat("match")
-            if (matcher.groups["toFrom"]?.value?.contains("From") ?: false) {
+        Register.onChatMessageCancable(
+            Pattern.compile("§r§d(.*?) (.*?)§r§7: §r§7SBO join party request - id:(.*)", Pattern.DOTALL)
+        ) { message, matchResult ->
+            if (matchResult.group(1).contains("From")) {
                 if (partyMemberCount < partySize) {
-                    val playerName = Helper.getPlayerName(matcher.groups["player"]?.value ?: "no name")
+                    val playerName = Helper.getPlayerName(matchResult.group(2) ?: "no name")
 
                     if (PartyFinder.autoInvite) {
                         Chat.command("p invite $playerName")
@@ -163,6 +162,19 @@ object PartyFinderManager {
                     }
                 }
             }
+            false
+        }
+
+        Register.onChatMessageCancable(
+            Pattern.compile("^§r§m§9(.*?) §r§ehas invited you to join their party!(.*?)$", Pattern.DOTALL)
+        ) { message, matchResult ->
+            val playername = Helper.getPlayerName(matchResult.group(1) ?: "")
+            if (playersSentRequest.containsKey(playername)) {
+                Chat.chat("§6[SBO] §eJoining party of §b$playername§e...")
+                Chat.command("p accept $playername")
+                playersSentRequest.remove(playername)
+            }
+            true
         }
 
         Register.onTick(20 * 60 * 4) { // every 4 minutes
