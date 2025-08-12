@@ -5,7 +5,7 @@ import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.Register
-import net.sbo.mod.utils.data.PartyInfoByUuids
+import net.sbo.mod.utils.data.PartyInfo
 import net.sbo.mod.utils.data.PartyPlayerStats
 import net.sbo.mod.utils.http.Http
 
@@ -48,7 +48,7 @@ object PartyPlayer {
     fun getPartyPlayerStats(forceRefresh: Boolean = false, callback: (PartyPlayerStats) -> Unit) {
         if (forceRefresh || System.currentTimeMillis() - lastUpdate > 10 * 60 * 1000) { // 10 minutes
             Http.sendGetRequest("$API_URL/partyInfoByUuids?uuids=${Player.getUUIDString().replace("-", "")}&readcache=false")
-                .toJson<PartyInfoByUuids> { response ->
+                .toJson<PartyInfo> { response ->
                     if (response.success) {
                         lastUpdate = System.currentTimeMillis()
                         stats = response.partyInfo.firstOrNull() ?: PartyPlayerStats()

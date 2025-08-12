@@ -13,7 +13,7 @@ data class GetAllParties(
 )
 
 @Serializable
-data class PartyInfoByUuids(
+data class PartyInfo(
     @SerialName("Success")
     val success: Boolean,
 

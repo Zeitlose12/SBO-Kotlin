@@ -90,6 +90,10 @@ object HypixelModApi {
     }
 
     fun sendPartyInfoPacket() {
-        HypixelNetworking.sendPartyInfoC2SPacket(2)
+        if (isOnHypixel) {
+            HypixelNetworking.sendPartyInfoC2SPacket(2)
+        } else {
+            Chat.chat("§6[SBO] §eYou are not on Hypixel. You can only use this feature on Hypixel.")
+        }
     }
 }

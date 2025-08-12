@@ -44,10 +44,9 @@ object PartyFinderManager {
     private var partyReqsMap = mutableMapOf<String, Any>()
     var isInParty = false
 
-    // also save the time when the request got sent
     private val playersSentRequest = mutableMapOf<String, Long>()
 
-    // todo: partycheck api, playercheck api, remove party on diconnect, check all onTick register because if i used the intavale like ms but its ticks lol
+    // todo: partycheck api, playercheck api, add fun invitePlayerIfMeetsReqs
     private val partyDisbandRegexes = listOf(
         Regex("^.+ §r§ehas disbanded the party!$"), // works
         Regex("^§r§cThe party was disbanded because (.+)$"), // works
@@ -94,10 +93,11 @@ object PartyFinderManager {
             }
 
             Chat.chat(Chat.getChatBreak())
-            Chat.chat("§6[SBO] §bRolexDE §ewants to join your party.")
-            Chat.clickableChat("§7[§aInvite§7]", "Click to invite §bRolexDE") {
-                Chat.command("p invite RolexDE")
-            }
+            Chat.chat(
+                Chat.textComponent("§6[SBO] §bRolexDE §ewants to join your party.\n"),
+                Chat.textComponent("§7[§aInvite§7]", "/p RolexDE", "/p invite RolexDE"),
+                Chat.textComponent(" §7[§eCheck Stats§7]", "/sboc RolexDE", "/sbocheck RolexDE"),
+            )
             Chat.chat(Chat.getChatBreak())
         }
 
@@ -126,8 +126,8 @@ object PartyFinderManager {
         }
 
         Register.command("sboClearKey") {
-            SboDataObject.partyFinderData.sboKey = ""
-            SboDataObject.save("PartyFinderData")
+            sboData.sboKey = ""
+            SboDataObject.save("SboData")
             Chat.chat("§6[SBO] §aKey has been cleared")
         }
 
@@ -152,10 +152,11 @@ object PartyFinderManager {
                         Chat.command("p invite $playerName")
                     } else { // todo: make it more like the ct version
                         Chat.chat(Chat.getChatBreak())
-                        Chat.chat("§6[SBO] §b$playerName §ewants to join your party.")
-                        Chat.clickableChat("§7[§aInvite§7]", "Click to invite $playerName") {
-                            Chat.command("p invite $playerName")
-                        }
+                        Chat.chat(
+                            Chat.textComponent("§6[SBO] §b$playerName §ewants to join your party.\n"),
+                            Chat.textComponent("§7[§aInvite§7]", "/p $playerName", "/p invite $playerName"),
+                            Chat.textComponent(" §7[§eCheck Stats§7]", "/sboc $playerName", "/sbocheck $playerName"),
+                        )
                         Chat.chat(Chat.getChatBreak())
                     }
                 }

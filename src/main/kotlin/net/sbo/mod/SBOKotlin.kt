@@ -13,6 +13,7 @@ import net.sbo.mod.utils.data.SboDataObject
 import net.sbo.mod.partyfinder.PartyFinderManager
 import net.sbo.mod.utils.SboKeyBinds
 import net.sbo.mod.guis.Main
+import net.sbo.mod.partyfinder.PartyCheck
 import net.sbo.mod.partyfinder.PartyPlayer
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.ClickActionManager
@@ -62,9 +63,10 @@ object SBOKotlin {
 		WaypointManager.init()
 		HypixelModApi.init()
 		PartyFinderManager.init()
+		PartyCheck.init()
 
 		Register.onTick(100) { // todo: unregister this register when player is loaded
-			if (mc.player != null && PartyPlayer.stats.sbLvl == -1) {
+			if (mc.player != null && PartyPlayer.stats.sbLvl == -1 && HypixelModApi.isOnHypixel) {
 				PartyPlayer.init()
 			}
 		}

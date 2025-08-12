@@ -77,6 +77,80 @@ object Chat {
     }
 
     /**
+     * Sends a simple clickable chat message with a command action.
+     * This version doesn't require a callback.
+     * @param message The text to display in the message.
+     * @param hover The text to show when the player hovers over the message.
+     * @param command The command to execute when the player clicks the message.
+     */
+    fun clickableChat(
+        message: String,
+        hover: String,
+        command: String
+    ) {
+        val hoverText = Text.literal(hover).formatted(Formatting.YELLOW)
+
+        val clickEvent = ClickEvent.RunCommand(command)
+        val hoverEvent = HoverEvent.ShowText(hoverText)
+
+        val styledText = Text.literal(message).setStyle(
+            Style.EMPTY
+                .withClickEvent(clickEvent)
+                .withHoverEvent(hoverEvent)
+                .withUnderline(true)
+        )
+
+        mc.inGameHud.chatHud.addMessage(styledText)
+    }
+
+    /**
+     * Sends a chat message with multiple text components.
+     * This is useful for combining multiple Text objects into one message.
+     * @param textComponents The list of Text components to combine and send.
+     */
+    fun chat(vararg textComponents: Text) {
+        if (textComponents.isEmpty()) return
+
+        val combinedText = Text.literal("")
+
+        textComponents.forEach { component ->
+            combinedText.append(component)
+        }
+
+        mc.inGameHud.chatHud.addMessage(combinedText)
+    }
+
+    /**
+     * Creates a styled text component with optional hover and click events.
+     * @param message The main text of the component.
+     * @param hover Optional hover text to show when the player hovers over the component.
+     * @param command Optional command to run when the player clicks the component.
+     * @return A Text object with the specified style and events.
+     */
+    fun textComponent(
+        message: String,
+        hover: String? = null,
+        command: String? = null
+    ): Text {
+        val styledText = Text.literal(message).setStyle(
+            Style.EMPTY
+                .withUnderline(true)
+        )
+
+        if (hover != null) {
+            val hoverText = Text.literal(hover).formatted(Formatting.YELLOW)
+            styledText.style = styledText.style.withHoverEvent(HoverEvent.ShowText(hoverText))
+        }
+
+        if (command != null) {
+            val clickEvent = ClickEvent.RunCommand(command)
+            styledText.style = styledText.style.withClickEvent(clickEvent)
+        }
+
+        return styledText
+    }
+
+    /**
      * Gets a message that fills one line of chat by repeating the separator.
      * @param separator The string to repeat. Defaults to "-".
      * @return The message string that fills the chat line.
