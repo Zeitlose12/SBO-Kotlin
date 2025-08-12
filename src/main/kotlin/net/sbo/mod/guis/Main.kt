@@ -6,6 +6,7 @@ import net.sbo.mod.guis.partyfinder.PartyFinderGUI
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.EventBus
 import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.World
 import net.sbo.mod.utils.data.SboDataObject
 
 object Main {
@@ -13,6 +14,10 @@ object Main {
 
     fun register() {
         Register.command("sbopf") {
+            if (!World.isInSkyblock()) {
+                Chat.chat("§6[SBO] §cYou can only use this command in Skyblock.")
+                return@command
+            }
             mc.send {
                 if (partyFinderGui == null) {
                     partyFinderGui = PartyFinderGUI()
