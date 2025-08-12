@@ -1,12 +1,16 @@
 package net.sbo.mod.guis.partyfinder.pages
 
 import gg.essential.elementa.components.UIBlock
+import gg.essential.elementa.components.UIRoundedRectangle
 import gg.essential.elementa.components.UIText
+import gg.essential.elementa.components.Window
 import gg.essential.elementa.constraints.CenterConstraint
+import gg.essential.elementa.constraints.PositionConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.percent
+import gg.essential.elementa.dsl.pixels
 import net.sbo.mod.guis.partyfinder.GuiHandler
 import net.sbo.mod.utils.data.PartyPlayerStats
 import net.sbo.mod.guis.partyfinder.PartyFinderGUI
@@ -42,6 +46,14 @@ class DianaPage(private val parent: PartyFinderGUI) {
             formattedInfoString += "$key$value\n\n"
         }
         return formattedInfoString
+    }
+
+    private fun setFilter() {
+        parent.getFilter(parent.selectedPage) { filter ->
+            Window.enqueueRenderOperation {
+                parent.filterPartyList(filter)
+            }
+        }
     }
 
     internal fun getReqsString(reqs: Reqs?, callback: (String) -> Unit) {
@@ -81,8 +93,10 @@ class DianaPage(private val parent: PartyFinderGUI) {
     }
 
     internal fun render() {
-        parent.addPartyListFunctions("Diana Party List", ::createParty)
-        parent.updateCurrentPartyList(true)
+        Window.enqueueRenderOperation {
+            parent.addPartyListFunctions("Diana Party List", ::createParty)
+            parent.updateCurrentPartyList(true)
+        }
     }
 
     private fun createParty() {
@@ -278,5 +292,104 @@ class DianaPage(private val parent: PartyFinderGUI) {
             parent.closeCpWindow()
         }
         createButton.textObject.setTextScale(parent.getTextScale())
+    }
+
+    internal fun addDianaFilter(x1: PositionConstraint, y1: PositionConstraint) {
+        parent.filterWindow.constrain {
+            x = x1
+            y = y1
+            width = 15.percent()
+            height = 20.percent()
+        }.setColor(Color(0, 0, 0, 0))
+        parent.filterWindow.setX((parent.filterWindow.getLeft() - parent.filterWindow.getWidth()).pixels())
+
+        parent.filterBox = UIRoundedRectangle(10f).constrain {
+            x = 0.percent()
+            y = 0.percent()
+            width = 100.percent()
+            height = 100.percent()
+        }.setColor(Color(50,50,50,255)) childOf parent.filterWindow
+        parent.filterBox.grabWindowFocus()
+        parent.filterBox.onMouseClick {
+            this.grabWindowFocus()
+        }
+        parent.filterBox.onFocusLost {
+            this@DianaPage.parent.closeFilterWindow()
+        }
+
+        val row1 = UIBlock().constrain {
+            x = CenterConstraint()
+            y = 0.percent()
+            width = 100.percent()
+            height = (33.33f).percent()
+        }.setColor(Color(0, 0, 0, 0)) childOf parent.filterBox
+        val row2 = UIBlock().constrain {
+            x = CenterConstraint()
+            y = SiblingConstraint()
+            width = 100.percent()
+            height = (33.33f).percent()
+        }.setColor(Color(0, 0, 0, 0)) childOf parent.filterBox
+        val row3 = UIBlock().constrain {
+            x = CenterConstraint()
+            y = SiblingConstraint()
+            width = 100.percent()
+            height = (33.33f).percent()
+        }.setColor(Color(0, 0, 0, 0)) childOf parent.filterBox
+        val eman9Filter = GuiHandler.Checkbox(
+            list = "diana",
+            key = "eman9Filter",
+            x = CenterConstraint(),
+            y = CenterConstraint(),
+            width = 80.percent(),
+            height = 80.percent(),
+            color = Color(0, 0, 0, 150),
+            checkedColor = Color(0, 110, 250, 255),
+            text = "Eman9",
+            rounded = true,
+            roundness = 5f,
+            filter = true
+        )
+        eman9Filter.create().setChildOf(row1)
+        eman9Filter.setBgBoxColor(Color(25, 25, 25, 200))
+        eman9Filter.textObject.setTextScale(parent.getTextScale())
+        eman9Filter.setOnClick { setFilter() }
+
+        val looting5Filter = GuiHandler.Checkbox(
+            list = "diana",
+            key = "looting5Filter",
+            x = CenterConstraint(),
+            y = CenterConstraint(),
+            width = 80.percent(),
+            height = 80.percent(),
+            color = Color(0, 0, 0, 150),
+            checkedColor = Color(0, 110, 250, 255),
+            text = "Looting 5",
+            rounded = true,
+            roundness = 5f,
+            filter = true
+        )
+        looting5Filter.create().setChildOf(row2)
+        looting5Filter.setBgBoxColor(Color(25, 25, 25, 200))
+        looting5Filter.textObject.setTextScale(parent.getTextScale())
+        looting5Filter.setOnClick { setFilter() }
+
+        val canIjoinFilter = GuiHandler.Checkbox(
+            list = "diana",
+            key = "canIjoinFilter",
+            x = CenterConstraint(),
+            y = CenterConstraint(),
+            width = 80.percent(),
+            height = 80.percent(),
+            color = Color(0, 0, 0, 150),
+            checkedColor = Color(0, 110, 250, 255),
+            text = "Can I Join?",
+            rounded = true,
+            roundness = 5f,
+            filter = true
+        )
+        canIjoinFilter.create().setChildOf(row3)
+        canIjoinFilter.setBgBoxColor(Color(25, 25, 25, 200))
+        canIjoinFilter.textObject.setTextScale(parent.getTextScale())
+        canIjoinFilter.setOnClick { setFilter() }
     }
 }

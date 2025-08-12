@@ -33,7 +33,7 @@ data class PlayerStats(
 
 object DianaStats {
     val STATS_PATTERN = Pattern.compile(
-        "§9Party §8> (.*?)§f: Playtime: (.*?) - Profit: (.*?) \\((.*?)\\) - Burrows: (.*?) \\((.*?)\\) - Mobs: (.*?) \\((.*?)\\) - Inqs: (.*?) \\((.*?)\\) - LS Inqs: (.*?) - Chims: (.*?) \\((.*?)\\) - LS: (.*?) \\((.*?)\\) - Sticks: (.*?) \\((.*?)\\) - Relics: (.*?) \\((.*?)\\)",
+        "§r§9Party §r§8> (.*?)§r§f: §rPlaytime: (.*?) - Profit: (.*?) \\((.*?)\\) - Burrows: (.*?) \\((.*?)\\) - Mobs: (.*?) \\((.*?)\\) - Inqs: (.*?) \\((.*?)\\) - LS Inqs: (.*?) - Chims: (.*?) \\((.*?)\\) - LS: (.*?) \\((.*?)\\) - Sticks: (.*?) \\((.*?)\\) - Relics: (.*?) \\((.*?)\\)",
         Pattern.DOTALL
     )
 
