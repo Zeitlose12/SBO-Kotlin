@@ -51,61 +51,39 @@ object PartyFinderManager {
 
     // todo: add fun invitePlayerIfMeetsReqs
     private val partyDisbandRegexes = listOf(
-        Regex("^.+ §r§ehas disbanded the party!$"), // works
-        Regex("^§r§cThe party was disbanded because (.+)$"), // works
-        Regex("^§r§eYou left the party.$"), // works
-        Regex("^§r§cYou are not currently in a party.$"), // works
-        Regex("^§r§eYou have been kicked from the party by .+$"), // works
+        Regex("^.+ §r§ehas disbanded the party!$"),
+        Regex("^§r§cThe party was disbanded because (.+)$"),
+        Regex("^§r§eYou left the party.$"),
+        Regex("^§r§cYou are not currently in a party.$"),
+        Regex("^§r§eYou have been kicked from the party by .+$"),
     )
 
     private val leaderChangeRegexes = listOf(
-        Regex("^§r§eYou have joined §r(.+)'s* §r§eparty!$"), // works
-        Regex("^§r§eThe party was transferred to §r(.+) §r§eby §r.+$"), // works
-        Regex("^(.+)§r§e has promoted §r(.+) §r§eto Party Leader$") // works
+        Regex("^§r§eYou have joined §r(.+)'s* §r§eparty!$"),
+        Regex("^§r§eThe party was transferred to §r(.+) §r§eby §r.+$"),
+        Regex("^(.+)§r§e has promoted §r(.+) §r§eto Party Leader$")
     )
 
     private val partyJoinRegexes = listOf(
-        Regex("^(.+) §r§ejoined the party.$"), // works
-        Regex("^§r§eYou have joined §r(.+)'s? §r§eparty!$") // works
+        Regex("^(.+) §r§ejoined the party.$"),
+        Regex("^§r§eYou have joined §r(.+)'s? §r§eparty!$")
     )
 
     private val partyLeaveRegexes = listOf(
-        Regex("^(.+) §r§ehas been removed from the party.$"), // works
-        Regex("^(.+) §r§ehas left the party.$"), // works
-        Regex("^(.+) §r§ewas removed from your party because they disconnected.$"),
-        Regex("^§r§eKicked (.+) because they were offline.$") // works
+        Regex("^(.+) §r§ehas been removed from the party.$"),
+        Regex("^(.+) §r§ehas left the party.$"),
+        Regex("^(.+) §r§ewas removed from your party because they disconnected.$"), // not tested
+        Regex("^§r§eKicked (.+) because they were offline.$")
     )
 
     fun init() {
         trackMemberRegister()
 
-        Register.command("sbotestrequest") {
-            getAllParties("Diana") { parties ->
-                if (parties.isEmpty()) {
-                    Chat.chat("§6[SBO] §cNo parties found.")
-                } else {
-                    Chat.chat("§6[SBO] §eFound ${parties.size} parties:")
-                    parties.forEach { party ->
-                        Chat.chat("§6[SBO] §eParty: ${party.leader} - ${party.partyMembersCount} members - ${party.reqs}")
-                    }
-                }
+        Register.command("sborequeue") {
+            if (!inQueue) {
+                Chat.chat("§6[SBO] §eRequeuing party with last used requirements...")
+                createParty(partyReqs, partyNote, partyType, partySize)
             }
-
-            getActiveUsers { activeUsers ->
-                Chat.chat("§6[SBO] §eActive users: $activeUsers")
-            }
-
-            Chat.chat(Chat.getChatBreak())
-            Chat.chat(
-                Chat.textComponent("§6[SBO] §bRolexDE §ewants to join your party.\n"),
-                Chat.textComponent("§7[§aInvite§7]", "/p RolexDE", "/p invite RolexDE"),
-                Chat.textComponent(" §7[§eCheck Stats§7]", "/sboc RolexDE", "/sbocheck RolexDE"),
-            )
-            Chat.chat(Chat.getChatBreak())
-        }
-
-        Register.command("sborequeue") { // todo: change it to sboRequeue like in old sbo when finished with the new party finder
-            createParty("", "This","Diana", 6)
         }
 
         Register.command("sbodequeue") {
@@ -132,15 +110,6 @@ object PartyFinderManager {
             sboData.sboKey = ""
             SboDataObject.save("SboData")
             Chat.chat("§6[SBO] §aKey has been cleared")
-        }
-
-        Register.command("testclickchat") {
-            Chat.clickableChat(
-                "§6[SBO] §eClick to requeue party with last used requirements.",
-                "Requeue Party",
-            ) {
-                createParty(partyReqs, partyNote, partyType, partySize)
-            }
         }
 
         Register.onChatMessageCancable(
@@ -310,7 +279,7 @@ object PartyFinderManager {
                 }
             }.error { error ->
                 inQueue = false
-                Chat.chat("§6[SBO] §4Unexpected error while updating party: $error")
+                Chat.chat("§6[SBO] §4Unexpected error while updating party: ${error.message}")
             }
         }
     }
@@ -341,17 +310,15 @@ object PartyFinderManager {
         }
     }
 
+    // todo: test this function, implement it into auto invite,
+    //  add a way to prevent inviting more player then party has space (maybe every user has 10 seconds to accept else next player gets invited)
     fun invitePlayerIfMeetsReqs(playerName: String) {
         PartyCheck.checkPlayer(playerName, true) { stats ->
             if (checkIfPlayerMeetsReqs(stats, partyReqsMap)) {
                 if (partyMemberCount < partySize) {
                     Chat.command("p invite $playerName")
                     Chat.chat("§6[SBO] §eInvited $playerName to the party.")
-                } else {
-                    Chat.chat("§6[SBO] §cParty is full, cannot invite $playerName.")
                 }
-            } else {
-                Chat.chat("§6[SBO] §c$playerName does not meet the requirements to join the party.")
             }
         }
     }
@@ -480,12 +447,7 @@ object PartyFinderManager {
                         Chat.chat("§6[SBO] §eRequeuing party with last used requirements...")
                         createParty(partyReqs, partyNote, partyType, partySize)
                     } else {
-                        Chat.clickableChat(
-                            "§6[SBO] §eClick to requeue party with last used requirements.",
-                            "Requeue Party"
-                        ) {
-                            createParty(partyReqs, partyNote, partyType, partySize)
-                        }
+                        Chat.clickableChat("§6[SBO] §eClick to requeue party with last used requirements.", "/sborequeue", "/sborequeue")
                     }
                 }
             }
