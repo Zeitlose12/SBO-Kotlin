@@ -416,6 +416,7 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
             if (isClickable) return@onMouseClick pageContent()
             selectedPage = pageTitle
             contentBlock.clearChildren()
+            partyListContainer.clearChildren()
             if (selectedPage != "Home" && selectedPage != "Help" && selectedPage != "Settimgs") {
                 contentBlock.addChild(partyListContainer)
             }
