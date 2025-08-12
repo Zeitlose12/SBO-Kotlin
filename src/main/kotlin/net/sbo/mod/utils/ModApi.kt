@@ -60,10 +60,20 @@ object HypixelModApi {
 
     private fun onPartyInfoPacket(packet: PartyInfoS2CPacket) {
         this.isInParty = packet.inParty
-        this.partyMembers = packet.members?.keys?.map { it.toString() } ?: emptyList()
 
-        if (this.isInParty) this.isLeader = packet.members?.get(Player.getUUID())?.toString() == "LEADER" else this.isLeader = true
-        if (this.partyMembers.isEmpty()) this.partyMembers += Player.getUUIDString()
+        val membersList = packet.members?.map { it.key.toString() }?.toMutableList() ?: mutableListOf()
+        if (isInParty) {
+            val leaderUUID = packet.members?.entries?.find { it.value.toString() == "LEADER" }?.key.toString()
+
+            membersList.remove(leaderUUID)
+            membersList.add(0, leaderUUID)
+
+            this.isLeader = packet.members?.get(Player.getUUID())?.toString() == "LEADER"
+        } else {
+            this.isLeader = true
+            membersList.add(Player.getUUIDString())
+        }
+        this.partyMembers = membersList
 
         partyInfoListeners.forEach { listener ->
             listener(this.isInParty, this.isLeader, this.partyMembers)

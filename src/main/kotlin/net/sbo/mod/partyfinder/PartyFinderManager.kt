@@ -48,7 +48,7 @@ object PartyFinderManager {
 
     private val playersSentRequest = mutableMapOf<String, Long>()
 
-    // todo: partycheck api, playercheck api, add fun invitePlayerIfMeetsReqs
+    // todo: add fun invitePlayerIfMeetsReqs
     private val partyDisbandRegexes = listOf(
         Regex("^.+ §r§ehas disbanded the party!$"), // works
         Regex("^§r§cThe party was disbanded because (.+)$"), // works
@@ -261,12 +261,7 @@ object PartyFinderManager {
 
                         if (requeue) {
                             requeue = false
-                            Chat.clickableChat(
-                                "§6[SBO] §eClick to dequeue party",
-                                "Dequeue Party",
-                            ) {
-                                removePartyFromQueue()
-                            }
+                            Chat.clickableChat("§6[SBO] §eClick to dequeue party", "Dequeue Party", "/sbodequeue")
                         }
 
                         Chat.chat("§6[SBO] §eParty created successfully! Time taken: ${timeTaken}ms")
@@ -466,12 +461,12 @@ object PartyFinderManager {
                 requeue = true
                 sleep(200) {
                     if (PartyFinder.autoRequeue) {
-                        Chat.chat("&6[SBO] &eRequeuing party with last used requirements...")
+                        Chat.chat("§6[SBO] §eRequeuing party with last used requirements...")
                         createParty(partyReqs, partyNote, partyType, partySize)
                     } else {
                         Chat.clickableChat(
-                            "&6[SBO] &eClick to requeue party with last used requirements.",
-                            "Requeue Party",
+                            "§6[SBO] §eClick to requeue party with last used requirements.",
+                            "Requeue Party"
                         ) {
                             createParty(partyReqs, partyNote, partyType, partySize)
                         }
