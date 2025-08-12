@@ -142,16 +142,17 @@ object PartyFinderManager {
         }
 
         Register.onChatMessage(
-            Regex("^§d(?<toFrom>.*?) (?<player>.*?)§r§7: §r§7[SBO] join party request - (?<id>.*?)$"),
-            false
+            Regex("^§r§d(?<toFrom>.*?) (?<player>.*?)§r§7: §r§7SBO join party request - (?<id>.*?)$"),
+            true
         ) { _, matcher ->
+            Chat.chat("match")
             if (matcher.groups["toFrom"]?.value?.contains("From") ?: false) {
                 if (partyMemberCount < partySize) {
                     val playerName = Helper.getPlayerName(matcher.groups["player"]?.value ?: "no name")
 
                     if (PartyFinder.autoInvite) {
                         Chat.command("p invite $playerName")
-                    } else { // todo: make it more like the ct version
+                    } else {
                         Chat.chat(Chat.getChatBreak())
                         Chat.chat(
                             Chat.textComponent("§6[SBO] §b$playerName §ewants to join your party.\n"),
@@ -364,7 +365,7 @@ object PartyFinderManager {
                     Chat.chat("§6[SBO] §cYou have already sent a request to this player recently.")
                 } else {
                     Chat.chat("§6[SBO] §eSending join request to $partyLeader...")
-                    Chat.command("msg $partyLeader [SBO] join party request - id:${UUID.randomUUID()}")
+                    Chat.command("msg $partyLeader SBO join party request - id:${UUID.randomUUID()}")
                     playersSentRequest[partyLeader] = System.currentTimeMillis()
                 }
             } else {
