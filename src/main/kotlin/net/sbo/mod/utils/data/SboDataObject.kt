@@ -62,7 +62,7 @@ object SboDataObject {
         partyFinderData = SBOConfigBundle.partyFinderData
         saveAllDataThreaded("SBO")
         savePeriodically(10)
-        ServerLifecycleEvents.SERVER_STOPPING.register {
+        Register.onDisconnect {
             saveAndBackupAllDataThreaded("SBO")
         }
     }
