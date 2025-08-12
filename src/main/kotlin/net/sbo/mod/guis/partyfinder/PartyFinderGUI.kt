@@ -22,29 +22,31 @@ import gg.essential.elementa.dsl.percent
 import gg.essential.elementa.dsl.pixels
 import gg.essential.elementa.effects.OutlineEffect
 import gg.essential.universal.UKeyboard
-import net.sbo.mod.utils.EventBus
-import net.sbo.mod.SBOKotlin.mc
-import net.sbo.mod.settings.categories.PartyFinder
 import net.minecraft.util.Util
-import net.sbo.mod.utils.Chat
-import net.sbo.mod.utils.Helper
-import net.sbo.mod.partyfinder.PartyFinderManager.createParty
-import net.sbo.mod.partyfinder.PartyFinderManager.removePartyFromQueue
-import net.sbo.mod.guis.partyfinder.pages.DianaPage
+import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.guis.partyfinder.pages.CustomPage
+import net.sbo.mod.guis.partyfinder.pages.DianaPage
 import net.sbo.mod.guis.partyfinder.pages.Help
 import net.sbo.mod.guis.partyfinder.pages.Home
-import net.sbo.mod.utils.data.Party
-import net.sbo.mod.utils.data.Reqs
-import net.sbo.mod.utils.data.PartyPlayerStats
-import net.sbo.mod.utils.data.HighlightElement
-import net.sbo.mod.partyfinder.PartyPlayer.getPartyPlayerStats
 import net.sbo.mod.partyfinder.PartyFinderManager
-import net.sbo.mod.partyfinder.PartyFinderManager.sendJoinRequest
-import net.sbo.mod.partyfinder.PartyFinderManager.getAllParties
+import net.sbo.mod.partyfinder.PartyFinderManager.createParty
 import net.sbo.mod.partyfinder.PartyFinderManager.getActiveUsers
+import net.sbo.mod.partyfinder.PartyFinderManager.getAllParties
+import net.sbo.mod.partyfinder.PartyFinderManager.removePartyFromQueue
+import net.sbo.mod.partyfinder.PartyFinderManager.sendJoinRequest
+import net.sbo.mod.partyfinder.PartyPlayer.getPartyPlayerStats
+import net.sbo.mod.settings.categories.PartyFinder
+import net.sbo.mod.utils.Chat
+import net.sbo.mod.utils.EventBus
+import net.sbo.mod.utils.Helper
+import net.sbo.mod.utils.data.HighlightElement
+import net.sbo.mod.utils.data.Party
+import net.sbo.mod.utils.data.PartyPlayerStats
+import net.sbo.mod.utils.data.Reqs
 import net.sbo.mod.utils.data.SboDataObject.pfConfigState
 import java.awt.Color
+
+
 class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
 
     internal val elementToHighlight: MutableList<HighlightElement> = mutableListOf()

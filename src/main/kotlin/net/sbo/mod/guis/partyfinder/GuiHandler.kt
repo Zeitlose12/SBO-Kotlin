@@ -15,13 +15,10 @@ import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.pixels
 import gg.essential.elementa.effects.Effect
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.util.InputUtil
-import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.data.SboDataObject
-import java.awt.Color
 import net.sbo.mod.utils.data.SboDataObject.pfConfigState
 import org.lwjgl.glfw.GLFW
+import java.awt.Color
 
 object GuiHandler {
 
