@@ -87,10 +87,13 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
     init {
         registers()
         create()
-        onScreenOpen()
 
         EventBus.on("refreshPartyList") {
             updateCurrentPartyList(true)
+        }
+
+        EventBus.on("gui_opened") {
+            onScreenOpen()
         }
 
         window.onKeyType { typedChar, keyCode ->
@@ -165,7 +168,7 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
         }
     }
 
-    private fun getFilter(pageType: String, callback: (((Party) -> Boolean)?) -> Unit) {
+    internal fun getFilter(pageType: String, callback: (((Party) -> Boolean)?) -> Unit) {
         getPartyPlayerStats { stats ->
             val filter = when (pageType) {
                 "Diana" -> {
@@ -249,7 +252,7 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
         filterWindowOpened = true
     }
 
-    private fun closeFilterWindow() {
+    internal fun closeFilterWindow() {
         filterBackground.hide()
         filterWindow.hide()
         checkWindows()
@@ -301,7 +304,7 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
         )
     }
 
-    private fun filterPartyList(filterPredicate: ((Party) -> Boolean)? = null) {
+    internal fun filterPartyList(filterPredicate: ((Party) -> Boolean)? = null) {
         val partyList = partyCache[selectedPage] ?: run {
             updateCurrentPartyList(true)
             return
@@ -368,7 +371,7 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
 
     private fun updatePartyCount(count: Int) {
         if (!::partyCount.isInitialized) return
-        partyCount.setText(" $count")
+        partyCount.setText("Parties: $count")
     }
 
     private fun addFilterPage(listName: String, x: PositionConstraint, y: PositionConstraint) {
@@ -380,7 +383,7 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
 
         when (listName) {
             "Diana Party List" -> {
-                // todo: dianaPage._addDianaFilter(x, y);
+                dianaPage.addDianaFilter(x,y)
             }
 
             "Custom Party List" -> {
@@ -715,95 +718,115 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
             textScale = getTextScale(1f)
         }
         partyCount.setColor(Color(255, 255, 255, 255))
-        val filterSvgComp = SVGComponent.ofResource("/assets/sbo-kotlin/svgs/filter.svg").constrain {
+//        val filterSvgComp = SVGComponent.ofResource("/assets/sbo-kotlin/svgs/filter.svg").constrain {
+//            x = CenterConstraint()
+//            y = CenterConstraint()
+//            width = getIconScale()
+//            height = getIconScale()
+//        }.setColor(Color(0, 110, 250, 255))
+        val filterText = UIText("Filter").constrain {
             x = CenterConstraint()
             y = CenterConstraint()
-            width = getIconScale()
-            height = getIconScale()
+            textScale = getTextScale(1f)
         }.setColor(Color(0, 110, 250, 255))
         val filterBlock = UIBlock().constrain {
             x = SiblingConstraint()
             y = CenterConstraint()
-            width = 4.percent()
+            width = 8.percent()
             height = 80.percent()
         }.setColor(Color(0, 0, 0, 0))
-        filterBlock.addChild(filterSvgComp)
+        filterBlock.addChild(filterText)
         filterBlock.onMouseClick {
             val x = filterBlock.getLeft() + (filterBlock.getWidth() / 2f)
             val y = line.getBottom()
             addFilterPage(listName, x.pixels(), y.pixels())
         }
         filterBlock.onMouseEnter {
-            filterSvgComp.setColor(Color(50, 50, 255, 200))
+            filterText.setColor(Color(50, 50, 255, 200))
         }
         filterBlock.onMouseLeave {
-            filterSvgComp.setColor(Color(0, 110, 250, 255))
+            filterText.setColor(Color(0, 110, 250, 255))
         }
-        val refreshSvgComp = SVGComponent.ofResource("/assets/sbo-kotlin/svgs/refresh.svg").constrain {
+//        val refreshSvgComp = SVGComponent.ofResource("/assets/sbo-kotlin/svgs/refresh.svg").constrain {
+//            x = CenterConstraint()
+//            y = CenterConstraint()
+//            width = getIconScale()
+//            height = getIconScale()
+//        }.setColor(Color(0, 110, 250, 255))
+        val refreshText = UIText("Refresh").constrain {
             x = CenterConstraint()
             y = CenterConstraint()
-            width = getIconScale()
-            height = getIconScale()
+            textScale = getTextScale(1f)
         }.setColor(Color(0, 110, 250, 255))
         val refreshBlock = UIBlock().constrain {
             x = SiblingConstraint(5f)
             y = CenterConstraint()
-            width = 4.percent()
+            width = 8.percent()
             height = 80.percent()
-        }.setColor(Color(50, 110, 250, 255))
-        refreshBlock.addChild(refreshSvgComp)
+        }.setColor(Color(0, 0, 0, 0))
+        refreshBlock.addChild(refreshText)
         refreshBlock.onMouseClick {
             updateCurrentPartyList()
         }
         refreshBlock.onMouseEnter {
-            refreshSvgComp.setColor(Color(50, 50, 255, 200))
+            refreshText.setColor(Color(50, 50, 255, 200))
         }
         refreshBlock.onMouseLeave {
-            refreshSvgComp.setColor(Color(0, 110, 250, 255))
+            refreshText.setColor(Color(0, 110, 250, 255))
         }
-        val unqueuePartySvgComp = SVGComponent.ofResource("/assets/sbo-kotlin/svgs/user-minus.svg").constrain {
+//        val unqueuePartySvgComp = SVGComponent.ofResource("/assets/sbo-kotlin/svgs/user-minus.svg").constrain {
+//            x = CenterConstraint()
+//            y = CenterConstraint()
+//            width = getIconScale()
+//            height = getIconScale()
+//        }.setColor(Color(0, 110, 250, 255))
+        val unqueuePartyText = UIText("Delete").constrain {
             x = CenterConstraint()
             y = CenterConstraint()
-            width = getIconScale()
-            height = getIconScale()
-        }.setColor(Color(0, 110, 250, 255))
+            textScale = getTextScale(1f)
+        }.setColor(Color(255, 0, 0, 255))
         val unqueuePartyBlock = UIBlock().constrain {
             x = SiblingConstraint(5f)
             y = CenterConstraint()
-            width = 4.percent()
+            width = 8.percent()
             height = 80.percent()
-        }.setColor(Color(255, 0, 0, 150))
-        unqueuePartyBlock.addChild(unqueuePartySvgComp)
+        }.setColor(Color(0, 0, 0, 0))
+        unqueuePartyBlock.addChild(unqueuePartyText)
         unqueuePartyBlock.onMouseClick {
             unqueueParty()
         }
         unqueuePartyBlock.onMouseEnter {
-            unqueuePartySvgComp.setColor(Color(50, 50, 255, 200))
+            unqueuePartyText.setColor(Color(50, 50, 255, 200))
         }
         unqueuePartyBlock.onMouseLeave {
-            unqueuePartySvgComp.setColor(Color(255, 0, 0, 255))
+            unqueuePartyText.setColor(Color(255, 0, 0, 255))
         }
-        val createPartySvgComp = SVGComponent.ofResource("/assets/sbo-kotlin/svgs/user-plus.svg").constrain {
+//        val createPartySvgComp = SVGComponent.ofResource("/assets/sbo-kotlin/svgs/user-plus.svg").constrain {
+//            x = CenterConstraint()
+//            y = CenterConstraint()
+//            width = getIconScale()
+//            height = getIconScale()
+//        }.setColor(Color(0, 255, 0, 255))
+        val createPartyText = UIText("Create").constrain {
             x = CenterConstraint()
             y = CenterConstraint()
-            width = getIconScale()
-            height = getIconScale()
+            textScale = getTextScale(1f)
         }.setColor(Color(0, 255, 0, 255))
         val createPartyBlock = UIBlock().constrain {
             x = SiblingConstraint(5f)
             y = CenterConstraint()
-            width = 4.percent()
+            width = 8.percent()
             height = 80.percent()
-        }.setColor(Color(0, 255, 0, 255))
-        createPartyBlock.addChild(createPartySvgComp)
+        }.setColor(Color(0, 0, 0, 0))
+        createPartyBlock.addChild(createPartyText)
         createPartyBlock.onMouseClick {
             createParty()
         }
         createPartyBlock.onMouseEnter {
-            createPartySvgComp.setColor(Color(50, 50, 255, 200))
+            createPartyText.setColor(Color(50, 50, 255, 200))
         }
         createPartyBlock.onMouseLeave {
-            createPartySvgComp.setColor(Color(0, 255, 0, 255))
+            createPartyText.setColor(Color(0, 255, 0, 255))
         }
         // todo: maybe add svgfix if needed
         contentBlock.addChild(line)
@@ -814,21 +837,22 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
             .addChild(UIBlock().constrain {
                 x = 1.percent()
                 y = CenterConstraint()
-                width = 4.percent()
+                width = 20.percent()
                 height = 70.percent()
-            }.setColor(Color(200, 200, 200, 200))
-                .addChild(SVGComponent.ofResource("/assets/sbo-kotlin/svgs/users-group.svg").constrain {
-                    x = CenterConstraint()
-                    y = CenterConstraint()
-                    width = getIconScale()
-                    height = getIconScale()
-                }.setColor(Color(0, 110, 250, 255)))
+            }.setColor(Color(0, 0, 0, 0))
+//                .addChild(SVGComponent.ofResource("/assets/sbo-kotlin/svgs/users-group.svg").constrain {
+//                    x = CenterConstraint()
+//                    y = CenterConstraint()
+//                    width = getIconScale()
+//                    height = getIconScale()
+//                }.setColor(Color(0, 110, 250, 255)))
+                .addChild(partyCount)
             )
-            .addChild(partyCount)
+
             .addChild(UIBlock().constrain {
                 x = SiblingConstraint()
                 y = CenterConstraint()
-                width = 70.percent()
+                width = 42.percent()
                 height = 100.percent()
             }.setColor(Color(0, 0, 0, 0))
                 .addChild(UIText(listName).constrain {
