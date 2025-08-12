@@ -74,6 +74,7 @@ object WaypointManager {
         ) { message, match ->
             val channel = match.groups["channel"]?.value ?: "Unknown"
             val playerName = match.groups["playerName"]?.value ?: "Unknown"
+            Chat.chat("playername: $playerName")
 
             val x = match.groups["x"]?.value?.toIntOrNull() ?: 0.0
             val y = match.groups["y"]?.value?.toIntOrNull() ?: 0.0

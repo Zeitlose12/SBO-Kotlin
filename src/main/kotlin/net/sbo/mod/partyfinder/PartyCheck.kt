@@ -2,6 +2,7 @@ package net.sbo.mod.partyfinder
 
 import net.sbo.mod.SBOKotlin.API_URL
 import net.sbo.mod.utils.Chat
+import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.Register
@@ -85,12 +86,11 @@ object PartyCheck {
     }
 
     fun printPartyInfo(partyInfo: List<PartyPlayerStats>, inviteButton: Boolean = false) {
-        Chat.chat("§6[SBO] §eParty Info:")
         partyInfo.forEach { player ->
             Chat.chat(
                 "§6[SBO] §eName: §b${player.name} §9│ §eLvL: §6${player.sbLvl} " +
                 "§9│ §eEman 9: §f${if (player.eman9) "§a✓" else "§4✗"} §9│ §eL5 Daxe: ${if (player.looting5daxe) "§a✓" else "§4✗"} " +
-                "§9│ §eKills: §6${player.mythosKills}"
+                "§9│ §eKills: §6${Helper.formatNumber(player.mythosKills)}"
             )
             if (inviteButton) Chat.clickableChat("§7[§eClick to invite§7]", "/p ${player.name}", "/p invite ${player.name}")
         }

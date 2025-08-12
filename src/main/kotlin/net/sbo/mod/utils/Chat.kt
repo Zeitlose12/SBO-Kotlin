@@ -70,7 +70,6 @@ object Chat {
             Style.EMPTY
                 .withClickEvent(clickEvent)
                 .withHoverEvent(hoverEvent)
-                .withUnderline(true)
         )
 
         mc.inGameHud.chatHud.addMessage(styledText)
@@ -97,7 +96,6 @@ object Chat {
             Style.EMPTY
                 .withClickEvent(clickEvent)
                 .withHoverEvent(hoverEvent)
-                .withUnderline(true)
         )
 
         mc.inGameHud.chatHud.addMessage(styledText)
@@ -134,7 +132,6 @@ object Chat {
     ): Text {
         val styledText = Text.literal(message).setStyle(
             Style.EMPTY
-                .withUnderline(true)
         )
 
         if (hover != null) {
@@ -156,7 +153,6 @@ object Chat {
      * @return The message string that fills the chat line.
      */
     fun getChatBreak(separator: String = "-", colorcodes: String = "§b"): String {
-        // Return early if the separator is empty to avoid errors
         if (separator.isEmpty()) {
             return ""
         }

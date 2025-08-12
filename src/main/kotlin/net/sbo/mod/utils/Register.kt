@@ -133,7 +133,13 @@ object Register {
         action: (message: Text, matchResult: MatchResult) -> Unit
     ) {
         ClientReceiveMessageEvents.GAME.register { message, _ ->
-            var text = message.toFormattedString()
+            var text = ""
+            if (message.siblings.isEmpty()) {
+                text = message.toFormattedString()
+            } else {
+                text = message.string
+            }
+
             if (noFormatting) text = text.removeFormatting()
 
             regex.find(text)?.let { result ->
@@ -156,7 +162,13 @@ object Register {
         action: (message: Text, matchResult: MatchResult) -> Unit
     ) {
         ClientReceiveMessageEvents.GAME.register { message, _ ->
-            var text = message.toFormattedString()
+            var text = ""
+            if (message.siblings.isEmpty()) {
+                text = message.toFormattedString()
+            } else {
+                text = message.string
+            }
+
             if (noFormatting) text = text.removeFormatting()
 
             regexes.forEach { regex ->
@@ -186,7 +198,13 @@ object Register {
         val criteriaRegex = Regex(finalRegexPattern)
 
         ClientReceiveMessageEvents.GAME.register { message: Text, _ ->
-            var text = message.toFormattedString()
+            var text = ""
+            if (message.siblings.isEmpty()) {
+                text = message.toFormattedString()
+            } else {
+                text = message.string
+            }
+
             if (noFormatting) text = text.removeFormatting()
 
             val matchResult = criteriaRegex.matchEntire(text)
