@@ -243,8 +243,8 @@ object PartyFinderManager {
                     "$API_URL/createParty?uuids=${partyMember.joinToString(",").replace("-", "")}" +
                             "&reqs=$partyReqs" +
                             "&note=$partyNote" +
-                            "&type=$partyType" +
-                            "&size=$partySize" +
+                            "&partytype=$partyType" +
+                            "&partysize=$partySize" +
                             "&key=${sboData.sboKey}"
                 ).toJsonObject { response ->
                     if (response.getBoolean("Success")) {
@@ -294,8 +294,8 @@ object PartyFinderManager {
                 "$API_URL/queuePartyUpdate?uuids=${partyMember.joinToString(",").replace("-", "")}" +
                         "&reqs=$partyReqs" +
                         "&note=$partyNote" +
-                        "&type=$partyType" +
-                        "&size=$partySize" +
+                        "&partytype=$partyType" +
+                        "&partysize=$partySize" +
                         "&key=${sboData.sboKey}"
             ).toJsonObject { response ->
                 if (response.getBoolean("Success")) {
@@ -338,6 +338,10 @@ object PartyFinderManager {
         }.error { error ->
             Chat.chat("§6[SBO] §4Unexpected error while getting active users: ${error.message}")
         }
+    }
+
+    fun invitePlayerIfMeetsReqs(playerName: String) {
+        Http.sendGetRequest("")
     }
 
     fun checkIfPlayerMeetsReqs(
