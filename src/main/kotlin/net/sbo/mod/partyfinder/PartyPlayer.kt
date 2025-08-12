@@ -2,6 +2,7 @@ package net.sbo.mod.partyfinder
 
 import net.sbo.mod.SBOKotlin.API_URL
 import net.sbo.mod.utils.Chat
+import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.data.PartyInfoByUuids
@@ -20,14 +21,25 @@ object PartyPlayer {
         }
 
         Register.command("sboreloadstats") {
-            // if cooldown is 2 min
-            if (System.currentTimeMillis() - cooldown < 2 * 60 * 1000) {
+            if (System.currentTimeMillis() - cooldown < 2 * 60 * 1000) { // if cooldown is 2 min
                 Chat.chat("§6[SBO] §cPlease wait before reloading stats again.")
                 return@command
             } else {
                 cooldown = System.currentTimeMillis()
                 getPartyPlayerStats(true) { stats ->
                     Chat.chat("§6[SBO] §aParty player stats reloaded: ${stats.name} (SB Level: ${stats.sbLvl})")
+                }
+            }
+        }
+
+        Register.onChatMessage(
+            Regex("^§r§7Switching to profile (.*)$"),
+            false
+        ) { _, _ ->
+            Chat.chat("§6[SBO] §aProfile switched detected, updating stats...")
+            sleep(1000) {
+                getPartyPlayerStats(true) { stats ->
+                    Chat.chat("§6[SBO] §aParty player stats updated: ${stats.name} (SB Level: ${stats.sbLvl})")
                 }
             }
         }

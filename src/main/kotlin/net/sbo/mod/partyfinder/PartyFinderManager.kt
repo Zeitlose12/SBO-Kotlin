@@ -27,7 +27,7 @@ import kotlin.collections.mutableMapOf
 
 object PartyFinderManager {
     private var creatingParty = false
-    private var inQueue = false
+    var inQueue = false
     private var updateBool = false
     private var requeue = false
     private var ghostParty = false
@@ -42,7 +42,7 @@ object PartyFinderManager {
     private var partyType = ""
     private var partyReqs = ""
     private var partyReqsMap = mutableMapOf<String, Any>()
-    private var isInParty = false
+    var isInParty = false
 
     // also save the time when the request got sent
     private val playersSentRequest = mutableMapOf<String, Long>()
@@ -144,7 +144,6 @@ object PartyFinderManager {
             Regex("^§d(?<toFrom>.*?) (?<player>.*?)§r§7: §r§7[SBO] join party request - (?<id>.*?)$"),
             false
         ) { _, matcher ->
-            // check if toFrom contains "from"
             if (matcher.groups["toFrom"]?.value?.contains("from") ?: false) {
                 if (partyMemberCount < partySize) {
                     val playerName = Helper.getPlayerName(matcher.groups["player"]?.value ?: "no name")
@@ -163,7 +162,7 @@ object PartyFinderManager {
             }
         }
 
-        Register.onTick(240000) {
+        Register.onTick(20 * 60 * 4) { // every 4 minutes
             Http.sendGetRequest("$API_URL/countActiveUsers")
 
             if (inQueue) {
