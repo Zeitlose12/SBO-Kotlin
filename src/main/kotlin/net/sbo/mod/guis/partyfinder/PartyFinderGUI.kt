@@ -10,6 +10,7 @@ import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIRoundedRectangle
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.components.UIWrappedText
+import gg.essential.elementa.components.Window
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.PixelConstraint
@@ -278,14 +279,15 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
     private fun unqueueParty() {
         if (PartyFinderManager.inQueue) {
             removePartyFromQueue { success ->
-                dequeued = success
-                if (dequeued) {
-                    updateCurrentPartyList(true)
-                    Chat.chat("§6[SBO] §eYou have been removed from the party queue.")
-                } else {
-                    Chat.chat("§6[SBO] §eFailed to unqueue party.")
+                Window.enqueueRenderOperation {
+                    dequeued = success
+                    if (dequeued) {
+                        updateCurrentPartyList(true)
+                        Chat.chat("§6[SBO] §eYou have been removed from the party queue.")
+                    } else {
+                        Chat.chat("§6[SBO] §eFailed to unqueue party.")
+                    }
                 }
-
             }
         }
     }
@@ -346,10 +348,12 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
         getAllParties(selectedPage) { parties ->
             partyCache[selectedPage] = parties
             getFilter(selectedPage) { filter ->
-                if (filter != null) {
-                    filterPartyList(filter)
-                } else {
-                    addPartyList(parties)
+                Window.enqueueRenderOperation {
+                    if (filter != null) {
+                        filterPartyList(filter)
+                    } else {
+                        addPartyList(parties)
+                    }
                 }
             }
         }
@@ -443,7 +447,9 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
             list = partyCache[selectedPage]!!
         }
         updatePartyCount(list.size)
-        renderPartyList(list)
+        Window.enqueueRenderOperation {
+            renderPartyList(list)
+        }
     }
 
     private fun createPartyBlock(party: Party, reqsString: String): UIComponent {
