@@ -14,6 +14,7 @@ object PartyPlayer {
     var cooldown: Long = 0
 
     fun init() {
+        // todo: register profile swap message and reload stats
         getPartyPlayerStats(true) { stats ->
             Chat.chat("§6[SBO] §aParty player stats initialized: ${stats.name} (SB Level: ${stats.sbLvl})")
         }

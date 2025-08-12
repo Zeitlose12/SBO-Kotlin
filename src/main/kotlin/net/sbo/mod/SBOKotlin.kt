@@ -63,8 +63,8 @@ object SBOKotlin {
 		HypixelModApi.init()
 		PartyFinderManager.init()
 
-		Register.onTick(1000) { // todo: unregister this register when player is loaded
-			if (mc.player != null) {
+		Register.onTick(100) { // todo: unregister this register when player is loaded
+			if (mc.player != null && PartyPlayer.stats.sbLvl == -1) {
 				PartyPlayer.init()
 			}
 		}

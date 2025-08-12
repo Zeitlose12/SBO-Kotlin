@@ -47,7 +47,7 @@ object PartyFinderManager {
     // also save the time when the request got sent
     private val playersSentRequest = mutableMapOf<String, Long>()
 
-    // todo: partycheck api, playercheck api, remove party on diconnect
+    // todo: partycheck api, playercheck api, remove party on diconnect, check all onTick register because if i used the intavale like ms but its ticks lol
     private val partyDisbandRegexes = listOf(
         Regex("^.+ §r§ehas disbanded the party!$"), // works
         Regex("^§r§cThe party was disbanded because (.+)$"), // works
