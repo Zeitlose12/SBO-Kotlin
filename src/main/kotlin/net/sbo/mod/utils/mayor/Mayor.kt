@@ -1,28 +1,14 @@
-package net.sbo.mod.utils
+package net.sbo.mod.utils.mayor
 
 import net.sbo.mod.SBOKotlin
+import net.sbo.mod.utils.Chat
+import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.World
 import net.sbo.mod.utils.http.Http
 import java.util.*
 import kotlin.math.floor
 import kotlin.math.round
 import net.sbo.mod.utils.data.MayorResponse
-
-object MayorState {
-    var dateMayorElected: Date? = null
-    var newMayorAtDate: Date? = null
-    var mayor: String? = null
-    var perks: MutableSet<String> = mutableSetOf()
-    var mayorApiError: Boolean = false
-    var apiLastUpdated: Long? = null
-    var minister: String? = null
-    var ministerPerk: String? = null
-    var skyblockDate: Date? = null
-    var skyblockDateString: String = ""
-    var refreshingMayor: Boolean = false
-    var newMayor: Boolean = false
-    var outDatedApi: Boolean = false
-    var sbYear: Int = 0
-}
 
 object Mayor {
     fun init() {
@@ -64,23 +50,16 @@ object Mayor {
         MayorState.mayor = null
         MayorState.perks.clear()
         MayorState.refreshingMayor = true
-        SBOKotlin.logger.info("Attempting to fetch mayor data...")
 
         Http.sendGetRequest("https://api.hypixel.net/resources/skyblock/election")
             .toJson<MayorResponse> { response ->
-                SBOKotlin.logger.info("Successfully received API response.")
                 MayorState.refreshingMayor = false
-
                 if (response.success) {
                     MayorState.apiLastUpdated = response.lastUpdated
                     MayorState.mayor = response.mayor.name
                     MayorState.perks = response.mayor.perks.map { it.name }.toMutableSet()
                     MayorState.minister = response.mayor.minister?.name
                     MayorState.ministerPerk = response.mayor.minister?.perk?.name
-
-                    SBOKotlin.logger.info("Found mayor: ${MayorState.mayor} with perks: ${MayorState.perks.joinToString()}")
-                    SBOKotlin.logger.info("Minister: ${MayorState.minister} with perk: ${MayorState.ministerPerk}")
-
                     MayorState.mayorApiError = false
                     MayorState.apiLastUpdated?.let { apiTimeStamp ->
                         val apiDate = convertStringToDate(calcSkyblockDate(apiTimeStamp))
