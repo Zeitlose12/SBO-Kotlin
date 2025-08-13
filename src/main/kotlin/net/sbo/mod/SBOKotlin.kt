@@ -3,6 +3,7 @@ package net.sbo.mod
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import net.minecraft.client.MinecraftClient
+import net.sbo.mod.diana.DianaGuessHandler
 import net.sbo.mod.utils.waypoint.WaypointManager
 import org.slf4j.LoggerFactory
 import net.sbo.mod.init.registerHelpCommand
@@ -64,6 +65,7 @@ object SBOKotlin {
 		HypixelModApi.init()
 		PartyFinderManager.init()
 		PartyCheck.init()
+		DianaGuessHandler.init()
 
 		Register.onTick(100) { // todo: unregister this register when player is loaded
 			if (mc.player != null && PartyPlayer.stats.sbLvl == -1 && HypixelModApi.isOnHypixel) {

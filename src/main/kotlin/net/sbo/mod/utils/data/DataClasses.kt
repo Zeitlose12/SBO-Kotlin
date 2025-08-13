@@ -3,6 +3,8 @@ package net.sbo.mod.utils.data
 import gg.essential.elementa.UIComponent
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.world.World
 
 @Serializable
 data class GetAllParties(
@@ -104,4 +106,10 @@ data class HighlightElement(
     val page: String,
     val obj: UIComponent,
     val type: String
+)
+
+data class PlayerInteractEvent(
+    val player: PlayerEntity,
+    val world: World,
+    var isCanceled: Boolean = false
 )

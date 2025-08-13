@@ -19,6 +19,7 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 import net.sbo.mod.utils.ChatHandler
 import net.sbo.mod.utils.Helper.removeFormatting
+import net.sbo.mod.utils.data.PlayerInteractEvent
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.Command
@@ -28,6 +29,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.minecraft.network.packet.Packet
+import net.minecraft.util.math.BlockPos
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
 /**
@@ -40,6 +42,7 @@ object Register {
     private val guiPostRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
     private val guiKeyActions = mutableListOf<(client: MinecraftClient, screen: Screen, key: Int, cir: CallbackInfoReturnable<Boolean>) -> Unit>()
     private val PacketReceivedActions = mutableListOf<(packet: Packet<*>) -> Unit>()
+    private val playerInteractActions = mutableListOf<(action: String, pos: BlockPos?, event: PlayerInteractEvent) -> Unit>()
 
     fun runGuiOpenActions(client: MinecraftClient, screen: Screen) { guiOpenActions.forEach { action -> action(client, screen) } }
     fun runGuiCloseActions(client: MinecraftClient, screen: Screen) { guiCloseActions.forEach { action -> action(client, screen) } }
@@ -47,6 +50,21 @@ object Register {
     fun runGuiPostRenderActions( client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiPostRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
     fun runGuiKeyActions(client: MinecraftClient, screen: Screen, key: Int, cir: CallbackInfoReturnable<Boolean>) { guiKeyActions.forEach { action -> action(client, screen, key, cir) } }
     fun runPacketReceivedActions(packet: Packet <*>) { PacketReceivedActions.forEach { action -> action(packet) } }
+    fun runPlayerInteractActions(action: String, pos: BlockPos?, event: PlayerInteractEvent?): Boolean {
+        var canceled = false
+        playerInteractActions.forEach { a ->
+            if (event != null) {
+                a(action, pos, event)
+            }
+
+            if (event != null && event.isCanceled) {
+                canceled = true
+            }
+        }
+        return canceled
+    }
+
+
     /**
      * Registers a command with the specified name and aliases.
      * The action is executed when the command is invoked, with the provided arguments.
@@ -296,5 +314,9 @@ object Register {
 
     fun onPacketReceived(action: (packet: Packet<*>) -> Unit) {
         PacketReceivedActions.add(action)
+    }
+
+    fun onPlayerInteract(action: (action: String, pos: BlockPos?, event: PlayerInteractEvent?) -> Unit) {
+        playerInteractActions.add(action)
     }
 }

@@ -61,7 +61,7 @@ data class SboVec(var x: Double, var y: Double, var z: Double) {
     }
 
     companion object {
-        fun fromArray(arr: DoubleArray): SboVec {
+        fun fromArray(arr: List<Double>): SboVec {
             require(arr.size >= 3) { "Array must contain at least 3 elements for x, y, z." }
             return SboVec(arr[0], arr[1], arr[2])
         }

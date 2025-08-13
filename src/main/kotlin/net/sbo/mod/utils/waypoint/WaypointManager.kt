@@ -175,16 +175,14 @@ object WaypointManager {
 
     /**
      * Updates the guess waypoint position.
-     * @param x The new X coordinate.
-     * @param y The new Y coordinate.
-     * @param z The new Z coordinate.
+     * @param pos The new position for the guess waypoint.
      */
-    fun updateGuess(x: Double, y: Double, z: Double) {
+    fun updateGuess(pos: SboVec?) {
         guessWp?.apply {
             show()
-            pos.x = x
-            pos.y = y
-            pos.z = z
+            if (pos != null) {
+                this.pos = pos
+            }
         }
     }
 
