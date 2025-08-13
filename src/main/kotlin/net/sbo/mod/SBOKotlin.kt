@@ -4,6 +4,7 @@ import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import net.minecraft.client.MinecraftClient
 import net.sbo.mod.diana.DianaGuessHandler
+import net.sbo.mod.diana.DianaTracker
 import net.sbo.mod.utils.waypoint.WaypointManager
 import org.slf4j.LoggerFactory
 import net.sbo.mod.init.registerHelpCommand
@@ -11,6 +12,7 @@ import net.sbo.mod.settings.Settings
 import net.sbo.mod.utils.mayor.Mayor
 import net.sbo.mod.utils.Register
 import net.sbo.mod.general.PartyCommands
+import net.sbo.mod.general.Pickuplog
 import net.sbo.mod.utils.data.SboDataObject
 import net.sbo.mod.partyfinder.PartyFinderManager
 import net.sbo.mod.utils.SboKeyBinds
@@ -20,6 +22,7 @@ import net.sbo.mod.partyfinder.PartyPlayer
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.ClickActionManager
 import net.sbo.mod.utils.HypixelModApi
+import net.sbo.mod.utils.World
 
 object SBOKotlin {
 	@JvmField
@@ -34,6 +37,8 @@ object SBOKotlin {
 	val configurator = Configurator("sbo")
 	val settings = Settings.register(configurator)
 	val guis = Main
+
+	private var loaded: Boolean = false
 
 	@JvmStatic
 	fun onInitializeClient() {
@@ -68,10 +73,14 @@ object SBOKotlin {
 		PartyCheck.init()
 		DianaGuessHandler.init()
 		Mayor.init()
+		DianaTracker.init()
+		PartyPlayer.init()
+		Pickuplog.init()
 
 		Register.onTick(100) { // todo: unregister this register when player is loaded
-			if (mc.player != null && PartyPlayer.stats.sbLvl == -1 && HypixelModApi.isOnHypixel) {
-				PartyPlayer.init()
+			if (mc.player != null && World.isInSkyblock() && !loaded) {
+				PartyPlayer.load()
+				loaded = true
 			}
 		}
 		logger.info("SBO-Kotlin initialized successfully!")

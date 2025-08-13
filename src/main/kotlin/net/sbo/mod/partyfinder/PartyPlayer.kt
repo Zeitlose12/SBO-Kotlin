@@ -11,15 +11,11 @@ import net.sbo.mod.utils.http.Http
 
 object PartyPlayer {
     var stats: PartyPlayerStats = PartyPlayerStats()
-    var lastUpdate: Long = 0
-    var cooldown: Long = 0
+    private var lastUpdate: Long = 0
+    private var cooldown: Long = 0
+    private var refreshing: Boolean = false
 
     fun init() {
-        // todo: register profile swap message and reload stats
-        getPartyPlayerStats(true) { stats ->
-            Chat.chat("§6[SBO] §aParty player stats initialized: ${stats.name} (SB Level: ${stats.sbLvl})")
-        }
-
         Register.command("sboreloadstats") {
             if (System.currentTimeMillis() - cooldown < 2 * 60 * 1000) { // if cooldown is 2 min
                 Chat.chat("§6[SBO] §cPlease wait before reloading stats again.")
@@ -33,22 +29,32 @@ object PartyPlayer {
         }
 
         Register.onChatMessage(
-            Regex("^§r§7Switching to profile (.*)$"),
-            false
+            Regex("^Switching to profile (.*)$"),
+            true
         ) { _, _ ->
             Chat.chat("§6[SBO] §aProfile switched detected, updating stats...")
             sleep(1000) {
-                getPartyPlayerStats(true) { stats ->
-                    Chat.chat("§6[SBO] §aParty player stats updated: ${stats.name} (SB Level: ${stats.sbLvl})")
-                }
+                load()
             }
+        }
+    }
+
+    fun load() {
+        getPartyPlayerStats(true) { stats ->
+            Chat.chat("§6[SBO] §aParty player stats loaded: ${stats.name} (SB Level: ${stats.sbLvl})")
         }
     }
 
     fun getPartyPlayerStats(forceRefresh: Boolean = false, callback: (PartyPlayerStats) -> Unit) {
         if (forceRefresh || System.currentTimeMillis() - lastUpdate > 10 * 60 * 1000) { // 10 minutes
+            if (refreshing) {
+                callback(stats)
+                return
+            }
+            refreshing = true
             Http.sendGetRequest("$API_URL/partyInfoByUuids?uuids=${Player.getUUIDString().replace("-", "")}&readcache=false")
                 .toJson<PartyInfo> { response ->
+                    refreshing = false
                     if (response.success) {
                         lastUpdate = System.currentTimeMillis()
                         stats = response.partyInfo.firstOrNull() ?: PartyPlayerStats()
@@ -59,6 +65,7 @@ object PartyPlayer {
                     }
                 }
                 .error { error ->
+                    refreshing = false
                     println("[SBO] Failed to fetch party player stats: $error")
                     callback(stats)
                 }

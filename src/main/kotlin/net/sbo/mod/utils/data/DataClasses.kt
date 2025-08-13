@@ -164,3 +164,11 @@ data class PacketActionPair<T: Packet<*>>(
     val packetClass: Class<T>,
     val action: (packet: T) -> Unit
 )
+
+data class Item(
+    val itemId: String,
+    val itemUUID: String,
+    val name: String,
+    val creation: Long,
+    var count: Int
+)
