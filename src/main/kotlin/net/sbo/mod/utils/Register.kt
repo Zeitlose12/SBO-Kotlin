@@ -115,14 +115,14 @@ object Register {
 
     /**
      * Registers a tick event that executes an action every specified number of ticks.
-     * @param interval The number of ticks after which the action should be executed.
+     * @param tick The number of ticks after which the action should be executed.
      * @param action The action to execute on each tick.
      */
-    fun onTick(interval: Int, action: (MinecraftClient) -> Unit) {
+    fun onTick(tick: Int, action: (MinecraftClient) -> Unit) {
         var tickCounter = 0
         ClientTickEvents.END_CLIENT_TICK.register { client ->
             tickCounter++
-            if (tickCounter >= interval) {
+            if (tickCounter >= tick) {
                 action(client)
                 tickCounter = 0
             }
