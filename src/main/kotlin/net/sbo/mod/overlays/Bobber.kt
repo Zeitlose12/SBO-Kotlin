@@ -7,7 +7,7 @@ import net.minecraft.entity.projectile.FishingBobberEntity
 
 
 object Bobber {
-    private var bobberCount: Int = 0
+    var bobberCount: Int = 0
 
     fun init() {
         Register.onTick(20) { client ->

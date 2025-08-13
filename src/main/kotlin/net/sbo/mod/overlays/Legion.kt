@@ -7,7 +7,7 @@ import net.sbo.mod.utils.World
 import java.util.UUID
 
 object Legion {
-    private var legionCount: Int = 0
+    var legionCount: Int = 0
 
     fun init () {
         Register.onTick(20) { client ->
