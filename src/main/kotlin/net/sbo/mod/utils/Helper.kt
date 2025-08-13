@@ -166,4 +166,16 @@ object Helper {
             else -> "§7${formatNumber(kills, true)}"
         }
     }
+
+    fun getPurse() : Long {
+        val lines = ScoreBoard.getLines()
+        if (lines.isEmpty()) return 0L
+        val purseLine = lines.find { it.contains("Purse: ") }
+        return if (purseLine != null) {
+            val purseValue = purseLine.substringAfter("Purse: ")
+            purseValue.replace(",", "").toLongOrNull() ?: 0L
+        } else {
+            0L
+        }
+    }
 }

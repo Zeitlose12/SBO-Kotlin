@@ -5,11 +5,11 @@ import net.sbo.mod.utils.ScoreBoard
 object World {
     /**
      * Retrieves the current world name from the TabList.
-     * If the world name is not found, it returns "Unknown World".
+     * If the world name is not found, it returns "None".
      */
     fun getWorld(): String {
         val worldName: String = TabList.findInfo("Area: ").toString()
-        if (worldName.isEmpty()) return "Unknown World"
+        if (worldName.isEmpty()) return "None"
         return worldName
     }
 
