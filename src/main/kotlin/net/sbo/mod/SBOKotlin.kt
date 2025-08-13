@@ -17,6 +17,7 @@ import net.sbo.mod.utils.data.SboDataObject
 import net.sbo.mod.partyfinder.PartyFinderManager
 import net.sbo.mod.utils.SboKeyBinds
 import net.sbo.mod.guis.Main
+import net.sbo.mod.overlays.OverlayManager
 import net.sbo.mod.partyfinder.PartyCheck
 import net.sbo.mod.partyfinder.PartyPlayer
 import net.sbo.mod.utils.Chat
@@ -76,6 +77,7 @@ object SBOKotlin {
 		DianaTracker.init()
 		PartyPlayer.init()
 		Pickuplog.init()
+		OverlayManager.init()
 
 		Register.onTick(100) { // todo: unregister this register when player is loaded
 			if (mc.player != null && World.isInSkyblock() && !loaded) {
