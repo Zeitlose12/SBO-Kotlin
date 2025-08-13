@@ -103,6 +103,51 @@ data class Reqs(
     val mp: Int = 0
 )
 
+@Serializable
+data class MayorResponse(
+    @SerialName("success") val success: Boolean,
+    @SerialName("lastUpdated") val lastUpdated: Long,
+    @SerialName("mayor") val mayor: MayorData,
+    @SerialName("error") val error: String? = null
+)
+
+@Serializable
+data class MayorData(
+    @SerialName("key") val key: String,
+    @SerialName("name") val name: String,
+    @SerialName("perks") val perks: List<PerkData>,
+    @SerialName("minister") val minister: MinisterData? = null,
+    @SerialName("election") val election: ElectionData
+)
+
+@Serializable
+data class PerkData(
+    @SerialName("name") val name: String,
+    @SerialName("description") val description: String? = null,
+    @SerialName("minister") val minister: Boolean? = null
+)
+
+@Serializable
+data class MinisterData(
+    @SerialName("key") val key: String,
+    @SerialName("name") val name: String,
+    @SerialName("perk") val perk: PerkData
+)
+
+@Serializable
+data class ElectionData(
+    @SerialName("year") val year: Int,
+    @SerialName("candidates") val candidates: List<CandidateData>
+)
+
+@Serializable
+data class CandidateData(
+    @SerialName("key") val key: String,
+    @SerialName("name") val name: String,
+    @SerialName("perks") val perks: List<PerkData>,
+    @SerialName("votes") val votes: Int
+)
+
 data class HighlightElement(
     val page: String,
     val obj: UIComponent,

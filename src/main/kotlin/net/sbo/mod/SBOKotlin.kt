@@ -8,6 +8,7 @@ import net.sbo.mod.utils.waypoint.WaypointManager
 import org.slf4j.LoggerFactory
 import net.sbo.mod.init.registerHelpCommand
 import net.sbo.mod.settings.Settings
+import net.sbo.mod.utils.Mayor
 import net.sbo.mod.utils.Register
 import net.sbo.mod.general.PartyCommands
 import net.sbo.mod.utils.data.SboDataObject
@@ -19,6 +20,7 @@ import net.sbo.mod.partyfinder.PartyPlayer
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.ClickActionManager
 import net.sbo.mod.utils.HypixelModApi
+import net.sbo.mod.utils.MayorState
 
 object SBOKotlin {
 	@JvmField
@@ -66,6 +68,7 @@ object SBOKotlin {
 		PartyFinderManager.init()
 		PartyCheck.init()
 		DianaGuessHandler.init()
+		Mayor.init()
 
 		Register.onTick(100) { // todo: unregister this register when player is loaded
 			if (mc.player != null && PartyPlayer.stats.sbLvl == -1 && HypixelModApi.isOnHypixel) {
