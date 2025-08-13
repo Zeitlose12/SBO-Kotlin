@@ -9,7 +9,7 @@ import net.sbo.mod.utils.waypoint.WaypointManager
 import org.slf4j.LoggerFactory
 import net.sbo.mod.init.registerHelpCommand
 import net.sbo.mod.settings.Settings
-import net.sbo.mod.utils.mayor.Mayor
+import net.sbo.mod.utils.Mayor
 import net.sbo.mod.utils.Register
 import net.sbo.mod.general.PartyCommands
 import net.sbo.mod.general.Pickuplog
