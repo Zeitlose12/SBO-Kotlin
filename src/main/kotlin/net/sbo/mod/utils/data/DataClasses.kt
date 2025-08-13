@@ -4,6 +4,7 @@ import gg.essential.elementa.UIComponent
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.network.packet.Packet
 import net.minecraft.world.World
 
 @Serializable
@@ -112,4 +113,9 @@ data class PlayerInteractEvent(
     val player: PlayerEntity,
     val world: World,
     var isCanceled: Boolean = false
+)
+
+data class PacketActionPair<T: Packet<*>>(
+    val packetClass: Class<T>,
+    val action: (packet: T) -> Unit
 )

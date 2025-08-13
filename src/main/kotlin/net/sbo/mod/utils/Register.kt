@@ -30,6 +30,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.minecraft.network.packet.Packet
 import net.minecraft.util.math.BlockPos
+import net.sbo.mod.utils.data.PacketActionPair
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
 /**
@@ -41,7 +42,7 @@ object Register {
     private val guiRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
     private val guiPostRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
     private val guiKeyActions = mutableListOf<(client: MinecraftClient, screen: Screen, key: Int, cir: CallbackInfoReturnable<Boolean>) -> Unit>()
-    private val PacketReceivedActions = mutableListOf<(packet: Packet<*>) -> Unit>()
+    private val packetReceivedActions = mutableListOf<PacketActionPair<*>>()
     private val playerInteractActions = mutableListOf<(action: String, pos: BlockPos?, event: PlayerInteractEvent) -> Unit>()
 
     fun runGuiOpenActions(client: MinecraftClient, screen: Screen) { guiOpenActions.forEach { action -> action(client, screen) } }
@@ -49,7 +50,15 @@ object Register {
     fun runGuiRenderActions(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
     fun runGuiPostRenderActions( client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiPostRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
     fun runGuiKeyActions(client: MinecraftClient, screen: Screen, key: Int, cir: CallbackInfoReturnable<Boolean>) { guiKeyActions.forEach { action -> action(client, screen, key, cir) } }
-    fun runPacketReceivedActions(packet: Packet <*>) { PacketReceivedActions.forEach { action -> action(packet) } }
+    fun runPacketReceivedActions(packet: Packet<*>) {
+        packetReceivedActions.forEach { pair ->
+            if (pair.packetClass.isInstance(packet)) {
+                @Suppress("UNCHECKED_CAST")
+                val typedAction = pair.action as (Packet<*>) -> Unit
+                typedAction(packet)
+            }
+        }
+    }
     fun runPlayerInteractActions(action: String, pos: BlockPos?, event: PlayerInteractEvent?): Boolean {
         var canceled = false
         playerInteractActions.forEach { a ->
@@ -312,8 +321,8 @@ object Register {
         guiKeyActions.add(action)
     }
 
-    fun onPacketReceived(action: (packet: Packet<*>) -> Unit) {
-        PacketReceivedActions.add(action)
+    fun <T: Packet<*>> onPacketReceived(packetClass: Class<T>, action: (packet: T) -> Unit) {
+        packetReceivedActions.add(PacketActionPair(packetClass, action))
     }
 
     fun onPlayerInteract(action: (action: String, pos: BlockPos?, event: PlayerInteractEvent?) -> Unit) {

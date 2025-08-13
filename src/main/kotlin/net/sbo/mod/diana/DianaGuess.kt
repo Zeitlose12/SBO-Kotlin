@@ -244,10 +244,8 @@ object DianaGuessHandler {
         Register.onWorldChange {
             preciseGuess.onWorldChange()
         }
-        Register.onPacketReceived { packet ->
-            if (packet is ParticleS2CPacket) {
-                preciseGuess.onReceiveParticle(packet)
-            }
+        Register.onPacketReceived(ParticleS2CPacket::class.java) { packet ->
+            preciseGuess.onReceiveParticle(packet)
         }
     }
 }
