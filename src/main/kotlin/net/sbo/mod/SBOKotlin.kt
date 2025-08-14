@@ -65,14 +65,6 @@ object SBOKotlin {
 			Chat.chat("This is a test command! Arguments: ${args.joinToString(", ")}")
 		}
 
-		Register.onEntityDeath { entity, source ->
-			val attacker = source.attacker
-			val name =  entity.name.string
-			val displayName = entity.displayName
-			val customName = entity.customName
-//			println("Entity Death: Entity Name: $name, Display Name: $displayName, Custom Name: $customName, Attacker: ${attacker?.name ?: "Unknown"}")
-		}
-
 		// Registering Guis
 		guis.register()
 
