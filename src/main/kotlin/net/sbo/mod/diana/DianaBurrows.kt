@@ -13,7 +13,6 @@ import net.sbo.mod.utils.waypoint.Waypoint
 import java.awt.Color
 import net.sbo.mod.utils.waypoint.WaypointManager
 import net.sbo.mod.utils.SboVec
-import kotlin.math.abs
 
 internal class EvictingQueue<T>(internal val maxSize: Int) {
     internal val queue = mutableListOf<T>()
@@ -43,43 +42,43 @@ internal object ParticleTypes {
         "ENCHANT" to ParticleCheck { packet ->
             packet.parameters.type == MCParticleTypes.ENCHANT &&
             packet.count == 5 &&
-            abs(packet.speed - 0.05f) < FLOAT_EPSILON &&
-            abs(packet.offsetX - 0.5f) < FLOAT_EPSILON &&
-            abs(packet.offsetY - 0.4f) < FLOAT_EPSILON &&
-            abs(packet.offsetZ - 0.5f) < FLOAT_EPSILON
+            packet.speed == 0.05f &&
+            packet.offsetX == 0.5f &&
+            packet.offsetY == 0.4f &&
+            packet.offsetZ == 0.5f
         },
         "EMPTY" to ParticleCheck { packet ->
             packet.parameters.type == MCParticleTypes.ENCHANTED_HIT &&
             packet.count == 4 &&
-            abs(packet.speed - 0.01f) < FLOAT_EPSILON &&
-            abs(packet.offsetX - 0.5f) < FLOAT_EPSILON &&
-            abs(packet.offsetY - 0.1f) < FLOAT_EPSILON &&
-            abs(packet.offsetZ - 0.5f) < FLOAT_EPSILON
+            packet.speed == 0.01f &&
+            packet.offsetX == 0.5f &&
+            packet.offsetY == 0.1f &&
+            packet.offsetZ == 0.5f
         },
         "MOB" to ParticleCheck { packet ->
             packet.parameters.type == MCParticleTypes.CRIT &&
             packet.count == 3 &&
-            abs(packet.speed - 0.01f) < FLOAT_EPSILON &&
-            abs(packet.offsetX - 0.5f) < FLOAT_EPSILON &&
-            abs(packet.offsetY - 0.1f) < FLOAT_EPSILON &&
-            abs(packet.offsetZ - 0.5f) < FLOAT_EPSILON
+            packet.speed == 0.01f &&
+            packet.offsetX == 0.5f &&
+            packet.offsetY == 0.1f &&
+            packet.offsetZ == 0.5f
         },
         "TREASURE" to ParticleCheck { packet ->
             packet.parameters.type == MCParticleTypes.DRIPPING_LAVA &&
             packet.count == 2 &&
-            abs(packet.speed - 0.01f) < FLOAT_EPSILON &&
-            abs(packet.offsetX - 0.5f) < FLOAT_EPSILON &&
-            abs(packet.offsetY - 0.1f) < FLOAT_EPSILON &&
-            abs(packet.offsetZ - 0.5f) < FLOAT_EPSILON
+            packet.speed == 0.01f &&
+            packet.offsetX == 0.5f &&
+            packet.offsetY == 0.1f &&
+            packet.offsetZ == 0.5f
         },
         "FOOTSTEP" to ParticleCheck { packet ->
             //todo: fix this check type
             /*packet.parameters.type == MCParticleTypes.FOOTSTEP &&*/
             packet.count == 1 &&
-            abs(packet.speed - 0.0f) < FLOAT_EPSILON &&
-            abs(packet.offsetX - 0.05f) < FLOAT_EPSILON &&
-            abs(packet.offsetY - 0.0f) < FLOAT_EPSILON &&
-            abs(packet.offsetZ - 0.05f) < FLOAT_EPSILON
+            packet.speed == 0.0f &&
+            packet.offsetX == 0.05f &&
+            packet.offsetY == 0.0f &&
+            packet.offsetZ == 0.05f
         }
     )
 
