@@ -105,4 +105,20 @@ object Diana : CategoryKt("Diana") {
         this.name = Translated("Remove Guess When Close")
         this.description = Translated("Removes the guess waypoint when you are within this distance of it (0 to disable)")
     }
+
+    init {
+        separator {
+            this.title = "Other"
+        }
+    }
+
+    var chimMessageBool by boolean(false) {
+        this.name = Translated("Chim Message")
+        this.description = Translated("Enables custom chim message")
+    }
+
+    var customChimMessage by strings("&6[SBO] &6&lRARE DROP! &d&lChimera! &b{mf} &b#{amount}") {
+        this.name = Translated("Custom Chim Message Text")
+        this.description = Translated("use: {mf} for MagicFind, {amount} for drop Amount this event and {percentage} for chimera/inquis ratio.")
+    }
 }

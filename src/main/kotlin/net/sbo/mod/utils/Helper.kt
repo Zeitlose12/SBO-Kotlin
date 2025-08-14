@@ -5,6 +5,8 @@ import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
 import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.settings.categories.Debug
+import net.sbo.mod.settings.categories.Diana
+import net.sbo.mod.utils.data.SboDataObject
 import kotlin.concurrent.thread
 import net.sbo.mod.utils.data.DianaItemsData
 import net.sbo.mod.utils.data.DianaMobsData
@@ -293,6 +295,47 @@ object Helper {
                 setTitle(net.minecraft.text.Text.of(title))
             if (subtitle != null)
                 setSubtitle(net.minecraft.text.Text.of(subtitle))
+        }
+    }
+
+    fun checkCustomChimMessage(magicFind: Int): Pair<Boolean, String> {
+        val text = Diana.customChimMessage[0].trim()
+        val trackerMayor = SboDataObject.dianaTrackerMayor
+        if (!Diana.chimMessageBool) {
+            return Pair(false, "")
+        }
+
+        if (text.isNotEmpty()) {
+            var resultText = text.replace('&', '§')
+
+            if (resultText.contains("{mf}")) {
+                val mfMessage = if (magicFind > 0) {
+                    "(+$magicFind% ✯ Magic Find)"
+                } else {
+                    ""
+                }
+                resultText = resultText.replace("{mf}", mfMessage)
+            }
+
+            if (resultText.contains("{amount}")) {
+                val amount = trackerMayor.items.CHIMERA + trackerMayor.items.CHIMERA_LS
+                resultText = resultText.replace("{amount}", amount.toString())
+            }
+
+            if (resultText.contains("{percentage}")) {
+                val minosInquisitorCount = trackerMayor.mobs.MINOS_INQUISITOR
+                val chimeraCount = trackerMayor.items.CHIMERA
+                val percentage = if (minosInquisitorCount > 0) {
+                    (chimeraCount.toDouble() / minosInquisitorCount.toDouble()) * 100
+                } else {
+                    0.0
+                }
+                resultText = resultText.replace("{percentage}", "%.2f%%".format(percentage))
+            }
+
+            return Pair(true, resultText)
+        } else {
+            return Pair(false, "")
         }
     }
 }
