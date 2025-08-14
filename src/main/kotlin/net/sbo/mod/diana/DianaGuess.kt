@@ -222,7 +222,7 @@ class PreciseGuessBurrow {
         val player = mc.player
         val item = player?.mainHandStack
         if (item?.isEmpty == true) return
-        if (item == null || !item.name.string.contains("Spade") || action != "use") return
+        if (item == null || !item.name.string.contains("Spade") || action != "useItem") return
 
         if (System.currentTimeMillis() - this.lastLavaParticle < 200) {
             event?.isCanceled = true

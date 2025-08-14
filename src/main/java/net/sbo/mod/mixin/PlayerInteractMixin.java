@@ -22,7 +22,7 @@ public class PlayerInteractMixin {
     private void onInteractItem(CallbackInfoReturnable<ActionResult> cir) {
         if (client.player != null) {
             PlayerInteractEvent event = new PlayerInteractEvent(client.player, client.player.getWorld(), false);
-            if (Register.INSTANCE.runPlayerInteractActions("use", null, event)) {
+            if (Register.INSTANCE.runPlayerInteractActions("useItem", null, event)) {
                 cir.setReturnValue(ActionResult.FAIL);
                 cir.cancel();
             }
@@ -33,7 +33,7 @@ public class PlayerInteractMixin {
     private void onInteractBlock(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
         if (hand == Hand.MAIN_HAND) {
             PlayerInteractEvent event = new PlayerInteractEvent(player, player.getWorld(), false);
-            if (Register.INSTANCE.runPlayerInteractActions("use", hitResult.getBlockPos(), event)) {
+            if (Register.INSTANCE.runPlayerInteractActions("useBlock", hitResult.getBlockPos(), event)) {
                 cir.setReturnValue(ActionResult.FAIL);
                 cir.cancel();
             }
