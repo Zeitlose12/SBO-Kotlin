@@ -1,8 +1,12 @@
 package net.sbo.mod.utils
 
+import net.minecraft.component.DataComponentTypes
+import net.minecraft.item.ItemStack
+import net.sbo.mod.SBOKotlin.mc
 import kotlin.concurrent.thread
 import net.sbo.mod.utils.data.DianaItemsData
 import net.sbo.mod.utils.data.DianaMobsData
+import net.sbo.mod.utils.data.Item
 import kotlin.reflect.full.memberProperties
 import java.text.DecimalFormat
 import java.util.Locale
@@ -178,5 +182,45 @@ object Helper {
         } else {
             0L
         }
+    }
+
+    fun getCursorItemStack(): ItemStack? {
+        val handler = mc.player?.currentScreenHandler ?: return null
+        return handler.cursorStack
+    }
+
+    fun readPlayerInv(withCursor: Boolean): MutableMap<String, Item> {
+        val inventory = Player.getPlayerInventory()
+        val invItems = mutableMapOf<String, Item>()
+
+        for (slot in 0 until inventory.size) {
+            var stack: ItemStack = inventory[slot]
+            if (slot == 8) { // Skip SB Star and get cursor item if needed
+                if (withCursor) {
+                    stack = getCursorItemStack() ?: continue
+                } else {
+                    continue
+                }
+            }
+
+            if (!stack.isEmpty) {
+                val customData = stack.get(DataComponentTypes.CUSTOM_DATA)
+                val item = Item(
+                    ItemUtils.getSBID(customData),
+                    ItemUtils.getUUID(customData),
+                    ItemUtils.getDisplayName(stack),
+                    ItemUtils.getTimestamp(customData),
+                    stack.count
+                )
+
+                if (invItems.containsKey(item.itemId)) {
+                    invItems[item.itemId]?.count += item.count
+                } else {
+                    invItems[item.itemId] = item
+                }
+            }
+        }
+
+        return invItems
     }
 }
