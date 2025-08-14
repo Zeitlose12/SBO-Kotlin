@@ -108,6 +108,7 @@ data class MayorResponse(
     @SerialName("success") val success: Boolean,
     @SerialName("lastUpdated") val lastUpdated: Long,
     @SerialName("mayor") val mayor: MayorData,
+    @SerialName("current") val current: ElectionData? = null,
     @SerialName("error") val error: String? = null
 )
 
@@ -160,8 +161,8 @@ data class PlayerInteractEvent(
     var isCanceled: Boolean = false
 )
 
-data class PacketActionPair<T: Packet<*>>(
-    val packetClass: Class<T>,
+data class PacketActionPair<T : Packet<*>>(
+    val packetClass: Class<T>?, // Made nullable
     val action: (packet: T) -> Unit
 )
 

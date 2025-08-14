@@ -66,7 +66,7 @@ object Mayor {
         refreshingMayor = true
 
         Http.sendGetRequest("https://api.hypixel.net/resources/skyblock/election")
-            .toJson<MayorResponse> { response ->
+            .toJson<MayorResponse>(true) { response ->
                 refreshingMayor = false
                 if (response.success) {
                     apiLastUpdated = response.lastUpdated
