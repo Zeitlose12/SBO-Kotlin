@@ -25,6 +25,7 @@ import net.sbo.mod.utils.ClickActionManager
 import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.World
 import net.sbo.mod.diana.BurrowDetector
+import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.SBOTimerManager
 
 object SBOKotlin {
@@ -82,6 +83,7 @@ object SBOKotlin {
 		Pickuplog.init()
 		OverlayManager.init()
 		SBOTimerManager.init()
+		Helper.init()
 
 		Register.onTick(100) { // todo: unregister this register when player is loaded
 			if (mc.player != null && World.isInSkyblock() && !loaded) {

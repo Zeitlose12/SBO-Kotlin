@@ -11,6 +11,7 @@ import net.sbo.mod.settings.categories.PartyCommands
 import net.sbo.mod.settings.categories.Customization
 import net.sbo.mod.settings.categories.QOL
 import net.sbo.mod.settings.categories.Credits
+import net.sbo.mod.settings.categories.Debug
 import net.sbo.mod.settings.categories.PartyFinder
 
 object Settings : ConfigKt("sbo/config") {
@@ -32,6 +33,7 @@ object Settings : ConfigKt("sbo/config") {
         category(PartyFinder)
         category(QOL)
         category(Credits)
+        category(Debug)
     }
 
     fun save() = SBOKotlin.settings.save()
