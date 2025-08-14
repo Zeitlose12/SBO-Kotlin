@@ -198,7 +198,6 @@ object BurrowDetector {
 
     fun rightClickBlock(action: String, pos: BlockPos?) {
         if (action == "useBlock") {
-            println(pos)
             val currentPos = BlockPos(pos?.x ?: 0, pos?.y ?: 0, pos?.z ?: 0)
             val adjustedX = if (currentPos.x < 0) currentPos.x + 1 else currentPos.x
             val adjustedY = currentPos.y + 1

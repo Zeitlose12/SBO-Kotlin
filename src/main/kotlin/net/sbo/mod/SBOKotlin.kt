@@ -2,6 +2,7 @@ package net.sbo.mod
 
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider
 import net.minecraft.client.MinecraftClient
 import net.sbo.mod.diana.DianaGuessHandler
 import net.sbo.mod.diana.DianaTracker
@@ -25,6 +26,7 @@ import net.sbo.mod.utils.ClickActionManager
 import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.World
 import net.sbo.mod.diana.BurrowDetector
+import net.sbo.mod.utils.SBOTimerManager
 
 object SBOKotlin {
 	@JvmField
@@ -80,6 +82,7 @@ object SBOKotlin {
 		PartyPlayer.init()
 		Pickuplog.init()
 		OverlayManager.init()
+		SBOTimerManager.init()
 
 		Register.onTick(100) { // todo: unregister this register when player is loaded
 			if (mc.player != null && World.isInSkyblock() && !loaded) {
