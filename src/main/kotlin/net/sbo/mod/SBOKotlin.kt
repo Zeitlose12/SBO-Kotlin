@@ -2,7 +2,6 @@ package net.sbo.mod
 
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider
 import net.minecraft.client.MinecraftClient
 import net.sbo.mod.diana.DianaGuessHandler
 import net.sbo.mod.diana.DianaTracker
@@ -64,6 +63,14 @@ object SBOKotlin {
 			Chat.chat("Test command executed with argument 1: ${args.getOrNull(0) ?: "No argument provided"}")
 			Chat.chat("Test command executed with argument 2: ${args.getOrNull(1) ?: "No second argument provided"}")
 			Chat.chat("This is a test command! Arguments: ${args.joinToString(", ")}")
+		}
+
+		Register.onEntityDeath { entity, source ->
+			val attacker = source.attacker
+			val name =  entity.name.string
+			val displayName = entity.displayName
+			val customName = entity.customName
+//			println("Entity Death: Entity Name: $name, Display Name: $displayName, Custom Name: $customName, Attacker: ${attacker?.name ?: "Unknown"}")
 		}
 
 		// Registering Guis

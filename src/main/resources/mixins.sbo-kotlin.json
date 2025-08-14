@@ -8,6 +8,7 @@
 		"ChatHudMixin",
 		"PacketMixin",
 		"PlayerInteractMixin",
+		"LivingEntityMixin",
 		"accessor.BeaconBlockEntityRendererInvoker"
 	],
 	"injectors": {

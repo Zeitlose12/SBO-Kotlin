@@ -28,6 +28,8 @@ import gg.essential.universal.utils.toFormattedString
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
+import net.minecraft.entity.Entity
+import net.minecraft.entity.damage.DamageSource
 import net.minecraft.network.packet.Packet
 import net.minecraft.util.math.BlockPos
 import net.sbo.mod.utils.data.PacketActionPair
@@ -45,12 +47,14 @@ object Register {
     private val packetReceivedActions = mutableListOf<PacketActionPair<*>>()
     private val sentPacketActions = mutableListOf<PacketActionPair<*>>() // Neue Liste
     private val playerInteractActions = mutableListOf<(action: String, pos: BlockPos?, event: PlayerInteractEvent) -> Unit>()
+    private val entityDeathActions = mutableListOf<(entity: Entity, source: DamageSource) -> Unit>()
 
     fun runGuiOpenActions(client: MinecraftClient, screen: Screen) { guiOpenActions.forEach { action -> action(client, screen) } }
     fun runGuiCloseActions(client: MinecraftClient, screen: Screen) { guiCloseActions.forEach { action -> action(client, screen) } }
     fun runGuiRenderActions(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
     fun runGuiPostRenderActions( client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiPostRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
     fun runGuiKeyActions(client: MinecraftClient, screen: Screen, key: Int, cir: CallbackInfoReturnable<Boolean>) { guiKeyActions.forEach { action -> action(client, screen, key, cir) } }
+    fun runEntityDeathActions(entity: Entity, source: DamageSource) { entityDeathActions.forEach { action -> action(entity, source) } }
     fun runPacketReceivedActions(packet: Packet<*>) {
         packetReceivedActions.forEach { pair ->
             if (pair.packetClass == null || pair.packetClass.isInstance(packet)) {
@@ -349,5 +353,9 @@ object Register {
 
     fun onPlayerInteract(action: (action: String, pos: BlockPos?, event: PlayerInteractEvent?) -> Unit) {
         playerInteractActions.add(action)
+    }
+
+    fun onEntityDeath(action: (entity: Entity, source: DamageSource) -> Unit) {
+        entityDeathActions.add(action)
     }
 }
