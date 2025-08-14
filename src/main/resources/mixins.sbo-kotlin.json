@@ -6,7 +6,7 @@
 		"MinecraftClientMixin",
 		"ScreenMixin",
 		"ChatHudMixin",
-		"PacketReceiveMixin",
+		"PacketMixin",
 		"PlayerInteractMixin",
 		"accessor.BeaconBlockEntityRendererInvoker"
 	],

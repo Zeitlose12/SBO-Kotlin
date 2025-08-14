@@ -24,7 +24,6 @@ import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.ClickActionManager
 import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.World
-import net.minecraft.network.packet.s2c.play.EntityS2CPacket
 
 object SBOKotlin {
 	@JvmField
