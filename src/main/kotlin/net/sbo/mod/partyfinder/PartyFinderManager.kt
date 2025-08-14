@@ -113,7 +113,7 @@ object PartyFinderManager {
         }
 
         Register.onChatMessageCancable(
-            Pattern.compile("§r§d(.*?) (.*?)§r§7: §r§7SBO join party request - id:(.*)", Pattern.DOTALL)
+            Pattern.compile("§r§d(.*?) (.*?)§r§7: §r§7(.*?) join party request - id:(.*)", Pattern.DOTALL)
         ) { message, matchResult ->
             if (matchResult.group(1).contains("From")) {
                 if (partyMemberCount < partySize) {
@@ -355,7 +355,7 @@ object PartyFinderManager {
                     Chat.chat("§6[SBO] §cYou have already sent a request to this player recently.")
                 } else {
                     Chat.chat("§6[SBO] §eSending join request to $partyLeader...")
-                    Chat.command("msg $partyLeader SBO join party request - id:${UUID.randomUUID()}")
+                    Chat.command("msg $partyLeader [SBO] join party request - id:${UUID.randomUUID()}")
                     playersSentRequest[partyLeader] = System.currentTimeMillis()
                 }
             } else {

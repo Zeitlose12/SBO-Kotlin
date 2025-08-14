@@ -213,10 +213,10 @@ object Helper {
                     stack.count
                 )
                 val id = if (item.itemUUID != "") item.itemUUID else item.itemId
-                if (invItems.containsKey(item.itemId)) {
-                    invItems[item.itemId]?.count += item.count
+                if (invItems.containsKey(id)) {
+                    invItems[id]?.count += item.count
                 } else {
-                    invItems[item.itemId] = item
+                    invItems[id] = item
                 }
             }
         }
@@ -230,5 +230,13 @@ object Helper {
         val format = java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         format.timeZone = java.util.TimeZone.getTimeZone("UTC")
         return format.format(date)
+    }
+
+    fun toUpperSnakeCase(input: String): String {
+        return input.replace("-", "_").split(" ").joinToString("_") { it.uppercase() }
+    }
+
+    fun getSecondsPassed(timestamp: Long): Long {
+        return (System.currentTimeMillis() - timestamp) / 1000
     }
 }

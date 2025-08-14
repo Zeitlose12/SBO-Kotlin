@@ -1,13 +1,17 @@
 package net.sbo.mod.general
 
+import net.minecraft.text.HoverEvent
+import net.minecraft.text.Text
 import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.diana.DianaTracker
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Helper
+import net.sbo.mod.utils.Helper.removeFormatting
 import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.World
 import net.sbo.mod.utils.data.Item
+import java.util.regex.Pattern
 
 object Pickuplog {
     private var oldPurse: Long = 0L
@@ -15,6 +19,8 @@ object Pickuplog {
 
     private var oldInventory = mutableMapOf<String, Item>()
     private var newInventory = mutableMapOf<String, Item>()
+
+    private val regex = Regex("""\+([\d,]+) ([^\(]+)""")
 
     fun init() {
         Register.onTick(20) {
@@ -28,12 +34,32 @@ object Pickuplog {
             }
             compareInventory()
         }
+
+        Register.onChatMessageCancable(Pattern.compile("§r(.*?) §r(.*?)§r item(.*?)§r (.*?)", Pattern.DOTALL)) { message, matchResult ->
+            if (World.isInSkyblock() && matchResult.group(1).contains("Sacks")) {
+                message.siblings.forEach { part ->
+                    if (part.string.contains("item")) {
+                        val hover = part.style.hoverEvent
+                        if (hover is HoverEvent.ShowText) {
+                            val plain = hover.value().string
+                            regex.findAll(plain).forEach { match ->
+                                val amount = match.groupValues[1].replace(",", "")
+                                val item = match.groupValues[2].trim()
+                                DianaTracker.trackWithSacksMessage(item, amount.toInt())
+                            }
+                        }
+                    }
+                }
+            }
+            true
+        }
     }
 
     fun compareInventory() {
         val purseChange = newPurse - oldPurse
         if (purseChange != 0L) {
-            Chat.chat("§6[SBO] §aYour purse has changed by §e$purseChange coins.")
+//            Chat.chat("§6[SBO] §aYour purse has changed by §e$purseChange coins.")
+            DianaTracker.trackScavengerCoins(purseChange)
         }
 
         val newItems = mutableListOf<Item>()
@@ -53,7 +79,7 @@ object Pickuplog {
 
         if (newItems.isNotEmpty()) {
             val itemList = newItems.joinToString(", ") { "${it.name} (${it.count})" }
-            Chat.chat("§6[SBO] §aYou picked up new items: §e$itemList")
+//            Chat.chat("§6[SBO] §aYou picked up new items: §e$itemList")
             for (item in newItems) {
                 if (item.itemUUID != "") {
                     DianaTracker.trackWithPickuplog(item)
@@ -67,7 +93,7 @@ object Pickuplog {
             val itemList = changedItemCounts.joinToString(", ") {
                 "${it.first.name} (${if (it.second > 0) "+" else ""}${it.second})"
             }
-            Chat.chat("§6[SBO] §aItem counts changed: §e$itemList")
+//            Chat.chat("§6[SBO] §aItem counts changed: §e$itemList")
             for ((item, countChange) in changedItemCounts) {
                 if (countChange > 0) {
                     DianaTracker.trackWithPickuplogStackable(item, countChange)
@@ -77,7 +103,7 @@ object Pickuplog {
 
         if (removedItems.isNotEmpty()) {
             val removedItemList = removedItems.values.joinToString(", ") { "${it.name} (${it.count})" }
-            Chat.chat("§6[SBO] §cYou lost items: §e$removedItemList")
+//            Chat.chat("§6[SBO] §cYou lost items: §e$removedItemList")
         }
 
         oldPurse = newPurse

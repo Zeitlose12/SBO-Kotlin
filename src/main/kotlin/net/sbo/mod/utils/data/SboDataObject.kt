@@ -399,4 +399,10 @@ object SboDataObject {
         configMapforSave[configName]?.first?.invoke()
             ?: SBOKotlin.logger.warn("[$configName] is not a valid config name. Please use a valid config name")
     }
+
+    fun saveTrackerData() {
+        save("SBO", dianaTrackerTotal, "dianaTrackerTotal.json")
+        save("SBO", dianaTrackerSession, "dianaTrackerSession.json")
+        save("SBO", dianaTrackerMayor, "dianaTrackerMayor.json")
+    }
 }
