@@ -49,7 +49,7 @@ object Helper {
         } else {
             val mobCount = mobs::class.memberProperties.firstOrNull { it.name == itemName }
                 ?.call(mobs) as? Int ?: 0
-            val totalMobsCount = mobs.TotalMobs
+            val totalMobsCount = mobs.TOTAL_MOBS
 
             if (totalMobsCount <= 0) 0.0
             else (mobCount.toDouble() / totalMobsCount.toDouble() * 100)
@@ -212,7 +212,7 @@ object Helper {
                     ItemUtils.getTimestamp(customData),
                     stack.count
                 )
-
+                val id = if (item.itemUUID != "") item.itemUUID else item.itemId
                 if (invItems.containsKey(item.itemId)) {
                     invItems[item.itemId]?.count += item.count
                 } else {
@@ -222,5 +222,13 @@ object Helper {
         }
 
         return invItems
+    }
+
+    fun timestampToDate(timestamp: Long): String {
+        if (timestamp <= 0) return "Unknown"
+        val date = java.util.Date(timestamp)
+        val format = java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+        format.timeZone = java.util.TimeZone.getTimeZone("UTC")
+        return format.format(date)
     }
 }

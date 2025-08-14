@@ -2,6 +2,7 @@ package net.sbo.mod.utils.data
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
@@ -82,7 +83,51 @@ object SboDataObject {
 
         return try {
             FileReader(dataFile).use { reader ->
-                gson.fromJson(reader, type)
+                val loadedData = gson.fromJson(reader, type)
+                val jsonObject = JsonParser.parseReader(FileReader(dataFile)).asJsonObject
+
+                var dataModified = false
+
+                if (loadedData is DianaTracker) {
+                    if (jsonObject.has("items")) {
+                        val itemsObject = jsonObject.getAsJsonObject("items")
+
+                        val totalTime = itemsObject.get("totalTime")?.asLong ?: 0
+                        val sessionTime = itemsObject.get("sessionTime")?.asLong ?: 0
+                        val mayorTime = itemsObject.get("mayorTime")?.asLong ?: 0
+                        val oldTime = maxOf(totalTime, sessionTime, mayorTime)
+
+                        if (oldTime > 0) {
+                            loadedData.items.TIME = oldTime
+                            dataModified = true
+                        }
+                    }
+                }
+
+                if (loadedData is PastDianaEventsData) {
+                    val eventsArray = jsonObject.getAsJsonArray("events")
+                    if (eventsArray != null) {
+                        for ((index, element) in eventsArray.withIndex()) {
+                            val eventObject = element.asJsonObject
+                            if (eventObject.has("items")) {
+                                val itemsObject = eventObject.getAsJsonObject("items")
+                                val oldTime = itemsObject.get("mayorTime")?.asLong ?: 0
+
+                                if (oldTime > 0) {
+                                    loadedData.events[index].items.TIME = oldTime
+                                    dataModified = true
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (dataModified) {
+                    SBOKotlin.logger.info("[$modName] Old data format detected and migrated. Saving updated file.")
+                    save(modName, loadedData, fileName)
+                }
+
+                loadedData
             }
         } catch (e: JsonSyntaxException) {
             SBOKotlin.logger.error("[$modName] Error parsing JSON in $fileName, resetting to default data.")

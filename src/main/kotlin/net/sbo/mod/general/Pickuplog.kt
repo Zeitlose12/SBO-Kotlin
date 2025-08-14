@@ -1,6 +1,7 @@
 package net.sbo.mod.general
 
 import net.sbo.mod.SBOKotlin.mc
+import net.sbo.mod.diana.DianaTracker
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.Player
@@ -25,7 +26,6 @@ object Pickuplog {
                 oldPurse = newPurse
                 return@onTick
             }
-
             compareInventory()
         }
     }
@@ -54,6 +54,13 @@ object Pickuplog {
         if (newItems.isNotEmpty()) {
             val itemList = newItems.joinToString(", ") { "${it.name} (${it.count})" }
             Chat.chat("§6[SBO] §aYou picked up new items: §e$itemList")
+            for (item in newItems) {
+                if (item.itemUUID != "") {
+                    DianaTracker.trackWithPickuplog(item)
+                } else {
+                    DianaTracker.trackWithPickuplogStackable(item, item.count)
+                }
+            }
         }
 
         if (changedItemCounts.isNotEmpty()) {
@@ -61,6 +68,11 @@ object Pickuplog {
                 "${it.first.name} (${if (it.second > 0) "+" else ""}${it.second})"
             }
             Chat.chat("§6[SBO] §aItem counts changed: §e$itemList")
+            for ((item, countChange) in changedItemCounts) {
+                if (countChange > 0) {
+                    DianaTracker.trackWithPickuplogStackable(item, countChange)
+                }
+            }
         }
 
         if (removedItems.isNotEmpty()) {

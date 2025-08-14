@@ -1,5 +1,7 @@
 package net.sbo.mod.utils.data
 
+import com.google.gson.annotations.SerializedName
+
 interface DianaTracker {
     var items: DianaItemsData
     var mobs: DianaMobsData
@@ -24,13 +26,6 @@ data class Effect(
     var duration: Double,
     var timeStamp: Long,
     var loggedOff: Boolean
-)
-
-data class DianaEvent(
-    var year: Any,
-    var items: Map<String, Any>,
-    var mobs: Map<String, Any>,
-    var inquis: Map<String, Any>? = null
 )
 
 // ------ Main Data Class ------
@@ -84,10 +79,9 @@ data class AchievementsData(
 )
 
 data class PastDianaEventsData(
-    var events: List<DianaEvent> = emptyList()
+    var events: List<DianaTrackerMayorData> = emptyList()
 )
 
-// Korrigierte Datenklassen mit 'override'
 data class DianaTrackerTotalData(
     override var items: DianaItemsData = DianaItemsData(),
     override var mobs: DianaMobsData = DianaMobsData(),
@@ -119,40 +113,41 @@ data class PartyFinderData(
 )
 
 // ------ Diana Data ------
+@Suppress("PropertyName")
 data class DianaItemsData(
-    var coins: Long = 0,
-    var `Griffin Feather`: Int = 0,
-    var `Crown of Greed`: Int = 0,
-    var `Washed-up Souvenir`: Int = 0,
-    var Chimera: Int = 0,
-    var ChimeraLs: Int = 0,
-    var `Daedalus Stick`: Int = 0,
-    var DWARF_TURTLE_SHELMET: Int = 0,
-    var ANTIQUE_REMEDIES: Int = 0,
-    var ENCHANTED_ANCIENT_CLAW: Int = 0,
-    var ANCIENT_CLAW: Int = 0,
-    var MINOS_RELIC: Int = 0,
-    var ENCHANTED_GOLD: Int = 0,
-    var ENCHANTED_IRON: Int = 0,
-    var `Total Burrows`: Int = 0,
-    var scavengerCoins: Long  = 0,
-    var fishCoins: Long  = 0,
-    var totalTime: Long  = 0,
-    var sessionTime: Long  = 0,
-    var mayorTime : Long  = 0,
+    @SerializedName("coins") var COINS: Long = 0,
+    @SerializedName("Griffin Feather") var GRIFFIN_FEATHER: Int = 0,
+    @SerializedName("Crown of Greed") var CROWN_OF_GREED: Int = 0,
+    @SerializedName("Washed-up Souvenir") var WASHED_UP_SOUVENIR: Int = 0,
+    @SerializedName("Chimera") var CHIMERA: Int = 0,
+    @SerializedName("ChimeraLs") var CHIMERA_LS: Int = 0,
+    @SerializedName("Daedalus Stick") var DAEDALUS_STICK: Int = 0,
+    @SerializedName("DWARF_TURTLE_SHELMET") var DWARF_TURTLE_SHELMET: Int = 0,
+    @SerializedName("ANTIQUE_REMEDIES") var ANTIQUE_REMEDIES: Int = 0,
+    @SerializedName("ENCHANTED_ANCIENT_CLAW") var ENCHANTED_ANCIENT_CLAW: Int = 0,
+    @SerializedName("ANCIENT_CLAW") var ANCIENT_CLAW: Int = 0,
+    @SerializedName("MINOS_RELIC") var MINOS_RELIC: Int = 0,
+    @SerializedName("ENCHANTED_GOLD") var ENCHANTED_GOLD: Int = 0,
+    @SerializedName("ENCHANTED_IRON") var ENCHANTED_IRON: Int = 0,
+    @SerializedName("Total Burrows") var TOTAL_BURROWS: Int = 0,
+    @SerializedName("scavengerCoins") var SCAVENGER_COINS: Long  = 0,
+    @SerializedName("fishCoins") var FISH_COINS: Long  = 0,
+    @SerializedName("time") var TIME: Long = 0
 )
 
+@Suppress("PropertyName")
 data class DianaMobsData(
-    var `Minos Inquisitor`: Int = 0,
-    var `Minos Champion`: Int = 0,
-    var Minotaur: Int = 0,
-    var `Gaia Construct`: Int = 0,
-    var `Siamese Lynxes`: Int = 0,
-    var `Minos Hunter`: Int = 0,
-    var TotalMobs: Int = 0,
-    var `Minos Inquisitor Ls`: Int = 0
+    @SerializedName("Minos Inquisitor") var MINOS_INQUISITOR: Int = 0,
+    @SerializedName("Minos Champion") var MINOS_CHAMPION: Int = 0,
+    @SerializedName("Minotaur") var MINOTAUR: Int = 0,
+    @SerializedName("Gaia Construct") var GAIA_CONSTRUCT: Int = 0,
+    @SerializedName("Siamese Lynxes") var SIAMESE_LYNXES: Int = 0,
+    @SerializedName("Minos Hunter") var MINOS_HUNTER: Int = 0,
+    @SerializedName("TotalMobs") var TOTAL_MOBS: Int = 0,
+    @SerializedName("Minos Inquisitor Ls") var MINOS_INQUISITOR_LS: Int = 0
 )
 
+@Suppress("PropertyName")
 data class DianaInquisData(
     var DWARF_TURTLE_SHELMET: Int = 0,
     var CROCHET_TIGER_PLUSHIE: Int = 0,

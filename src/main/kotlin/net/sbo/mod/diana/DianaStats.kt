@@ -32,7 +32,7 @@ data class PlayerStats(
 )
 
 object DianaStats {
-    val STATS_PATTERN = Pattern.compile(
+    val STATS_PATTERN = Pattern.compile( // todo: make message from ct sbo compatible with the new Diana stats message
         "§r§9Party §r§8> (.*?)§r§f: §rPlaytime: (.*?) - Profit: (.*?) \\((.*?)\\) - Burrows: (.*?) \\((.*?)\\) - Mobs: (.*?) \\((.*?)\\) - Inqs: (.*?) \\((.*?)\\) - LS Inqs: (.*?) - Chims: (.*?) \\((.*?)\\) - LS: (.*?) \\((.*?)\\) - Sticks: (.*?) \\((.*?)\\) - Relics: (.*?) \\((.*?)\\)",
         Pattern.DOTALL
     )
@@ -59,11 +59,11 @@ object DianaStats {
     fun getPlayerStats(total: Boolean = false): PlayerStats {
         val tracker: DianaTracker = if (total) SboDataObject.dianaTrackerTotal else SboDataObject.dianaTrackerMayor
 
-        val playtime = if (total) tracker.items.totalTime else tracker.items.mayorTime
+        val playtime = tracker.items.TIME
         val playTimeHrs = playtime.toDouble() / TimeUnit.HOURS.toMillis(1)
 
-        val burrowsPerHour = if (playTimeHrs > 0) tracker.items.`Total Burrows`.toDouble() / playTimeHrs else 0.0
-        val mobsPerHour = if (playTimeHrs > 0) tracker.mobs.TotalMobs.toDouble() / playTimeHrs else 0.0
+        val burrowsPerHour = if (playTimeHrs > 0) tracker.items.TOTAL_BURROWS.toDouble() / playTimeHrs else 0.0
+        val mobsPerHour = if (playTimeHrs > 0) tracker.mobs.TOTAL_MOBS.toDouble() / playTimeHrs else 0.0
 
         val totalValue = 0.0 // todo: getTotalValue(tracker)
         val profit = listOf(
@@ -74,21 +74,21 @@ object DianaStats {
         val stats = PlayerStats(
             playtime = Helper.formatTime(playtime),
             profit = profit,
-            burrows = Helper.formatNumber(tracker.items.`Total Burrows`),
+            burrows = Helper.formatNumber(tracker.items.TOTAL_BURROWS),
             burrowsPerHour = "%.2f".format(Locale.US, burrowsPerHour),
-            totalMobs = Helper.formatNumber(tracker.mobs.TotalMobs),
+            totalMobs = Helper.formatNumber(tracker.mobs.TOTAL_MOBS),
             mobsPerHour = "%.2f".format(Locale.US, mobsPerHour),
-            inquisitors = tracker.mobs.`Minos Inquisitor`,
-            inqPercentage = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "Minos Inquisitor")}%",
-            lsInqs = Helper.formatNumber(tracker.mobs.`Minos Inquisitor Ls`, withCommas = true),
-            chimeraDrops = tracker.items.Chimera,
-            chimeraDropRate = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "Chimera", "Minos Inquisitor")}%",
-            chimeraLSDrops = tracker.items.ChimeraLs,
-            chimeraLSDropRate = "${"%.2f".format(Locale.US, if (tracker.mobs.`Minos Inquisitor Ls` > 0) tracker.items.ChimeraLs.toDouble() / tracker.mobs.`Minos Inquisitor Ls`.toDouble() * 100.0 else 0.0)}%",
-            sticksDropped = tracker.items.`Daedalus Stick`,
-            stickDropRate = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "Daedalus Stick", "Minotaur")}%",
+            inquisitors = tracker.mobs.MINOS_INQUISITOR,
+            inqPercentage = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "MINOS_INQUISITOR")}%",
+            lsInqs = Helper.formatNumber(tracker.mobs.MINOS_INQUISITOR_LS, withCommas = true),
+            chimeraDrops = tracker.items.CHIMERA,
+            chimeraDropRate = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "CHIMERA", "MINOS_INQUISITOR")}%",
+            chimeraLSDrops = tracker.items.CHIMERA_LS,
+            chimeraLSDropRate = "${"%.2f".format(Locale.US, if (tracker.mobs.MINOS_INQUISITOR_LS > 0) tracker.items.CHIMERA_LS.toDouble() / tracker.mobs.MINOS_INQUISITOR_LS.toDouble() * 100.0 else 0.0)}%",
+            sticksDropped = tracker.items.DAEDALUS_STICK,
+            stickDropRate = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "DAEDALUS_STICK", "MINOTAUR")}%",
             relicsDropped = tracker.items.MINOS_RELIC,
-            relicDropRate = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "MINOS_RELIC", "Minos Champion")}%"
+            relicDropRate = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "MINOS_RELIC", "MINOS_CHAMPION")}%"
         )
         return stats
     }

@@ -113,8 +113,8 @@ object PartyCommands {
                 }
                 "!chim", "!chimera", "!chims", "!chimeras", "!book", "!books" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
-                    val chimeraCount = dianaTrackerMayor.items.Chimera
-                    val chimeraLsCount = dianaTrackerMayor.items.ChimeraLs
+                    val chimeraCount = dianaTrackerMayor.items.CHIMERA
+                    val chimeraLsCount = dianaTrackerMayor.items.CHIMERA_LS
                     val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "Chimera", "Minos Inquisitor")
                     sleep(200) {
                         Chat.command("pc Chimera: $chimeraCount ($percent%) +$chimeraLsCount LS")
@@ -123,12 +123,12 @@ object PartyCommands {
                 "!inqsls", "!inquisitorls", "!inquisls", "!lsinq", "!lsinqs", "!lsinquisitor", "!lsinquis" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     sleep(200) {
-                        Chat.command("pc Inquisitor LS: ${dianaTrackerMayor.mobs.`Minos Inquisitor Ls`}")
+                        Chat.command("pc Inquisitor LS: ${dianaTrackerMayor.mobs.MINOS_INQUISITOR_LS}")
                     }
                 }
                 "!inq", "!inqs", "!inquisitor", "!inquis" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
-                    val inquisCount = dianaTrackerMayor.mobs.`Minos Inquisitor`
+                    val inquisCount = dianaTrackerMayor.mobs.MINOS_INQUISITOR
                     val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "Minos Inquisitor")
                     sleep(200) {
                         Chat.command("pc Inquisitor: $inquisCount ($percent%)")
@@ -136,8 +136,8 @@ object PartyCommands {
                 }
                 "!burrows", "!burrow" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
-                    val burrows = dianaTrackerMayor.items.`Total Burrows`
-                    val playTimeHrs = dianaTrackerMayor.items.mayorTime / TimeUnit.HOURS.toMillis(1)
+                    val burrows = dianaTrackerMayor.items.TOTAL_BURROWS
+                    val playTimeHrs = dianaTrackerMayor.items.TIME / TimeUnit.HOURS.toMillis(1)
                     val burrowsPerHr = if (playTimeHrs > 0) {
                         val result = burrows.toDouble() / playTimeHrs
                         BigDecimal(result).setScale(2, RoundingMode.HALF_UP).toDouble()
@@ -156,7 +156,7 @@ object PartyCommands {
                 }
                 "!chimls", "!chimerals", "!bookls", "!lschim", "!lsbook", "!lootsharechim", "!lschimera" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
-                    val chimsLs = dianaTrackerMayor.items.ChimeraLs
+                    val chimsLs = dianaTrackerMayor.items.CHIMERA_LS
                     val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "ChimeraLs", "Minos Inquisitor Ls")
                     sleep(200) {
                         Chat.command("pc Chimera LS: $chimsLs ($percent%)")
@@ -164,7 +164,7 @@ object PartyCommands {
                 }
                 "!sticks", "!stick" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
-                    val stickCount = dianaTrackerMayor.items.`Daedalus Stick`
+                    val stickCount = dianaTrackerMayor.items.DAEDALUS_STICK
                     val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "Daedalus Stick", "Minotaur")
                     sleep(200) {
                         Chat.command("pc Sticks: $stickCount ($percent%)")
@@ -172,7 +172,7 @@ object PartyCommands {
                 }
                 "!feathers", "!feather" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
-                    val featherCount = dianaTrackerMayor.items.`Griffin Feather`
+                    val featherCount = dianaTrackerMayor.items.GRIFFIN_FEATHER
                     sleep(200) {
                         Chat.command("pc Feathers: $featherCount")
                     }
@@ -180,13 +180,13 @@ object PartyCommands {
                 "!coins", "!coin" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     sleep(200) {
-                        Chat.command("pc Coins: ${formatNumber(dianaTrackerMayor.items.coins, withCommas = true)}")
+                        Chat.command("pc Coins: ${formatNumber(dianaTrackerMayor.items.COINS, withCommas = true)}")
                     }
                 }
                 "!mobs", "!mob" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
-                    val totalMobs = dianaTrackerMayor.mobs.TotalMobs
-                    val playTimeHrs = dianaTrackerMayor.items.mayorTime / TimeUnit.HOURS.toMillis(1)
+                    val totalMobs = dianaTrackerMayor.mobs.TOTAL_MOBS
+                    val playTimeHrs = dianaTrackerMayor.items.TIME / TimeUnit.HOURS.toMillis(1)
                     val mobsPerHr = if (playTimeHrs > 0) {
                         val result = totalMobs.toDouble() / playTimeHrs
                         BigDecimal(result).setScale(2, RoundingMode.HALF_UP).toDouble()
@@ -204,7 +204,7 @@ object PartyCommands {
                 "!playtime" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     sleep(200) {
-                        Chat.command("pc Playtime: ${formatTime(dianaTrackerMayor.items.mayorTime)}")
+                        Chat.command("pc Playtime: ${formatTime(dianaTrackerMayor.items.TIME)}")
                     }
                 }
                 "!profits", "!profit" -> {
