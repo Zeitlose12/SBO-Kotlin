@@ -24,6 +24,7 @@ import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.ClickActionManager
 import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.World
+import net.minecraft.network.packet.s2c.play.EntityS2CPacket
 
 object SBOKotlin {
 	@JvmField
@@ -61,6 +62,10 @@ object SBOKotlin {
 			Chat.chat("Test command executed with argument 1: ${args.getOrNull(0) ?: "No argument provided"}")
 			Chat.chat("Test command executed with argument 2: ${args.getOrNull(1) ?: "No second argument provided"}")
 			Chat.chat("This is a test command! Arguments: ${args.joinToString(", ")}")
+		}
+
+		Register.onPacketReceived { packet ->
+			println(packet)
 		}
 
 		// Registering Guis

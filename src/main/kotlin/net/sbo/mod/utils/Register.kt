@@ -43,6 +43,7 @@ object Register {
     private val guiPostRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
     private val guiKeyActions = mutableListOf<(client: MinecraftClient, screen: Screen, key: Int, cir: CallbackInfoReturnable<Boolean>) -> Unit>()
     private val packetReceivedActions = mutableListOf<PacketActionPair<*>>()
+    private val sentPacketActions = mutableListOf<PacketActionPair<*>>() // Neue Liste
     private val playerInteractActions = mutableListOf<(action: String, pos: BlockPos?, event: PlayerInteractEvent) -> Unit>()
 
     fun runGuiOpenActions(client: MinecraftClient, screen: Screen) { guiOpenActions.forEach { action -> action(client, screen) } }
@@ -52,7 +53,16 @@ object Register {
     fun runGuiKeyActions(client: MinecraftClient, screen: Screen, key: Int, cir: CallbackInfoReturnable<Boolean>) { guiKeyActions.forEach { action -> action(client, screen, key, cir) } }
     fun runPacketReceivedActions(packet: Packet<*>) {
         packetReceivedActions.forEach { pair ->
-            if (pair.packetClass.isInstance(packet)) {
+            if (pair.packetClass == null || pair.packetClass.isInstance(packet)) {
+                @Suppress("UNCHECKED_CAST")
+                val typedAction = pair.action as (Packet<*>) -> Unit
+                typedAction(packet)
+            }
+        }
+    }
+    fun runPacketSentActions(packet: Packet<*>) {
+        sentPacketActions.forEach { pair ->
+            if (pair.packetClass == null || pair.packetClass.isInstance(packet)) {
                 @Suppress("UNCHECKED_CAST")
                 val typedAction = pair.action as (Packet<*>) -> Unit
                 typedAction(packet)
@@ -323,6 +333,18 @@ object Register {
 
     fun <T: Packet<*>> onPacketReceived(packetClass: Class<T>, action: (packet: T) -> Unit) {
         packetReceivedActions.add(PacketActionPair(packetClass, action))
+    }
+
+    fun onPacketReceived(action: (packet: Packet<*>) -> Unit) {
+        packetReceivedActions.add(PacketActionPair(null, action))
+    }
+
+    fun <T: Packet<*>> onPacketSend(packetClass: Class<T>, action: (packet: T) -> Unit) {
+        sentPacketActions.add(PacketActionPair(packetClass, action))
+    }
+
+    fun onPacketSend(action: (packet: Packet<*>) -> Unit) {
+        sentPacketActions.add(PacketActionPair(null, action))
     }
 
     fun onPlayerInteract(action: (action: String, pos: BlockPos?, event: PlayerInteractEvent?) -> Unit) {

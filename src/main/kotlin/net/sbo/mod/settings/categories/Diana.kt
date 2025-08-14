@@ -11,6 +11,17 @@ object Diana : CategoryKt("Diana") {
 
     init {
         separator {
+            this.title = "Diana Burrows"
+        }
+    }
+
+    var dianaBurrowGuess by boolean(true) {
+        this.name = Translated("Diana Burrow Guess")
+        this.description = Translated("Guess the burrow location. Needs Driping Lava Partciles and set /particlequality to Extreme for more accuracy")
+    }
+
+    init {
+        separator {
             this.title = "Diana Warp"
         }
     }

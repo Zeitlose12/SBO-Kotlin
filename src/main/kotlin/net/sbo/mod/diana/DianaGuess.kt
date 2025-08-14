@@ -12,6 +12,7 @@ import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.SboVec
 import net.sbo.mod.utils.data.PlayerInteractEvent
 import net.sbo.mod.utils.waypoint.WaypointManager
+import net.sbo.mod.settings.categories.Diana
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -239,12 +240,15 @@ object DianaGuessHandler {
 
     fun init() {
         Register.onPlayerInteract { action, pos, event ->
+            if (!Diana.dianaBurrowGuess) return@onPlayerInteract
             preciseGuess.onUseSpade(action, event)
         }
         Register.onWorldChange {
+            if (!Diana.dianaBurrowGuess) return@onWorldChange
             preciseGuess.onWorldChange()
         }
         Register.onPacketReceived(ParticleS2CPacket::class.java) { packet ->
+            if (!Diana.dianaBurrowGuess) return@onPacketReceived
             preciseGuess.onReceiveParticle(packet)
         }
     }
