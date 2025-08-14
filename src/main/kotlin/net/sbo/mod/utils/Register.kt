@@ -33,13 +33,14 @@ import net.minecraft.entity.damage.DamageSource
 import net.minecraft.network.packet.Packet
 import net.minecraft.util.math.BlockPos
 import net.sbo.mod.utils.data.PacketActionPair
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
 /**
  * Utility object for registering events
  */
 object Register {
-    private val guiOpenActions = mutableListOf<(client: MinecraftClient, screen: Screen) -> Unit>()
+    private val guiOpenActions = mutableListOf<(screen: Screen, ci: CallbackInfo) -> Unit>()
     private val guiCloseActions = mutableListOf<(client: MinecraftClient, screen: Screen) -> Unit>()
     private val guiRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
     private val guiPostRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
@@ -49,7 +50,7 @@ object Register {
     private val playerInteractActions = mutableListOf<(action: String, pos: BlockPos?, event: PlayerInteractEvent) -> Unit>()
     private val entityDeathActions = mutableListOf<(entity: Entity, source: DamageSource) -> Unit>()
 
-    fun runGuiOpenActions(client: MinecraftClient, screen: Screen) { guiOpenActions.forEach { action -> action(client, screen) } }
+    fun runGuiOpenActions(screen: Screen, ci: CallbackInfo) { guiOpenActions.forEach { action -> action(screen, ci) } }
     fun runGuiCloseActions(client: MinecraftClient, screen: Screen) { guiCloseActions.forEach { action -> action(client, screen) } }
     fun runGuiRenderActions(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
     fun runGuiPostRenderActions( client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiPostRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
@@ -299,7 +300,7 @@ object Register {
      * Registers an event that listens for GUI open events and executes an action.
      * @param action The action to execute when a GUI is opened.
      */
-    fun onGuiOpen(action: (client: MinecraftClient, screen: Screen) -> Unit) {
+    fun onGuiOpen(action: (screen: Screen, ci: CallbackInfo) -> Unit) {
         guiOpenActions.add(action)
     }
 

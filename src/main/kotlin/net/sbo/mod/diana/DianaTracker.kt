@@ -2,6 +2,9 @@ package net.sbo.mod.diana
 
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Helper
+import net.sbo.mod.utils.Helper.allowSackTracking
+import net.sbo.mod.utils.Helper.checkDiana
+import net.sbo.mod.utils.Helper.lastLootShare
 import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.SBOTimerManager.timerSession
 import net.sbo.mod.utils.data.DianaTracker
@@ -11,12 +14,10 @@ import net.sbo.mod.utils.data.SboDataObject
 import net.sbo.mod.utils.data.SboDataObject.dianaTrackerMayor
 import net.sbo.mod.utils.data.SboDataObject.dianaTrackerSession
 import net.sbo.mod.utils.data.SboDataObject.dianaTrackerTotal
+import net.sbo.mod.utils.data.SboDataObject.saveTrackerData
 
 object DianaTracker {
-    private var isDianaActive: Boolean = true // replaces checkDiana todo: implement this properly
     private var lastDianaMobDeath: Long = 0L // replaces mobDeath2SecsTrue and mobDeath4SecsTrue todo: implement this properly
-    private var gotLootShare: Boolean = false // todo: implement this properly
-    private var allowSackTracking: Boolean = true // todo: implement this properly
 
     private val rngDrops = listOf("Enchanted Book", "Daedalus Stick")
     private val rareDrops = listOf("DWARF_TURTLE_SHELLMET", "CROCHET_TIGER_PLUSHIE", "ANTIQUE_REMEDIES", "MINOS_RELIC") // not trackable by chat
@@ -35,8 +36,9 @@ object DianaTracker {
 
     fun trackWithPickuplog(item: Item) {
         if (Helper.getSecondsPassed(item.creation) > 2) return
-        if (Helper.getSecondsPassed(lastDianaMobDeath) > 2 && !gotLootShare) return
-        if (!isDianaActive) return
+        if (Helper.getSecondsPassed(lastDianaMobDeath) > 2) return
+        if (Helper.getSecondsPassed(lastLootShare) > 2) return
+        if (!checkDiana()) return
         if (item.itemId in rareDrops) {
             Chat.chat("§6[SBO] §aYou picked up a Diana item: §e${item.name} (${item.count}) itemcreation date: ${Helper.timestampToDate(item.creation)}")
             trackItem(item.itemId, item.count)
@@ -46,8 +48,9 @@ object DianaTracker {
     }
 
     fun trackWithPickuplogStackable(item: Item, amount: Int) {
-        if (Helper.getSecondsPassed(lastDianaMobDeath) > 2 && !gotLootShare) return
-        if (!isDianaActive) return
+        if (Helper.getSecondsPassed(lastDianaMobDeath) > 2) return
+        if (Helper.getSecondsPassed(lastLootShare) > 2) return
+        if (!checkDiana()) return
         if (item.itemId in otherDrops) {
             Chat.chat("§6[SBO] §aYou picked up a Diana item: §e${item.name} (${amount}) itemcreation date: ${Helper.timestampToDate(item.creation)}")
             trackItem(item.itemId, amount)
@@ -58,7 +61,7 @@ object DianaTracker {
 
     fun trackWithSacksMessage(itemName: String, amount: Int) {
         if (!allowSackTracking) return
-        if (!isDianaActive) return
+        if (!checkDiana()) return
         if (sackDrops.contains(itemName)) {
             Chat.chat("§6[SBO] §aYou picked up a Diana item from a sack: §e$itemName (${amount})")
             trackItem(itemName, amount)
@@ -67,8 +70,9 @@ object DianaTracker {
 
     fun trackScavengerCoins(amount: Long) {
         if (amount <= 0) return
-        if (!isDianaActive) return
-        if (Helper.getSecondsPassed(lastDianaMobDeath) > 4 && !gotLootShare) return
+        if (Helper.getSecondsPassed(lastDianaMobDeath) > 4) return
+        if (Helper.getSecondsPassed(lastLootShare) > 4) return
+        if (!checkDiana()) return
         if (amount in forbiddenCoins) return
         trackItem("SCAVENGER_COINS", amount.toInt())
         trackItem("COINS", amount.toInt())
@@ -79,7 +83,7 @@ object DianaTracker {
         trackOne(dianaTrackerMayor, itemName, amount)
         trackOne(dianaTrackerSession, itemName, amount)
         trackOne(dianaTrackerTotal, itemName, amount)
-        SboDataObject.saveTrackerData()
+        saveTrackerData()
     }
 
     fun trackOne(tracker: DianaTracker, item: String, amount: Int) {

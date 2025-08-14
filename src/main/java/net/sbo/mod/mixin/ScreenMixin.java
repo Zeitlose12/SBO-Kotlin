@@ -3,7 +3,7 @@ package net.sbo.mod.mixin;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.DrawContext;
-import net.sbo.mod.utils.Register; // Importiere die Kotlin-Klasse
+import net.sbo.mod.utils.Register;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

@@ -3,6 +3,7 @@ package net.sbo.mod.utils
 import net.minecraft.component.DataComponentTypes
 import net.minecraft.item.ItemStack
 import net.sbo.mod.SBOKotlin.mc
+import net.sbo.mod.settings.categories.Debug
 import kotlin.concurrent.thread
 import net.sbo.mod.utils.data.DianaItemsData
 import net.sbo.mod.utils.data.DianaMobsData
@@ -10,8 +11,25 @@ import net.sbo.mod.utils.data.Item
 import kotlin.reflect.full.memberProperties
 import java.text.DecimalFormat
 import java.util.Locale
+import java.util.regex.Pattern
 
 object Helper {
+    var lastLootShare: Long = 0L
+    var allowSackTracking: Boolean = true
+
+    fun init() {
+        Register.onChatMessageCancable(Pattern.compile("§r§l§eLOOT SHARE §r§fYou received loot for assisting (.*?)", Pattern.DOTALL)) { message, matchResult ->
+            lastLootShare = System.currentTimeMillis()
+            true
+        }
+
+        Register.onGuiOpen { screen, ci ->
+            sleep(200) {
+                if (screen.title.string == "Sack of Sacks") allowSackTracking = false
+            }
+        }
+    }
+
     /**
      * Sleeps for the specified number of milliseconds and then executes the callback.
      * This is done in a separate thread to avoid blocking the main thread.
@@ -238,5 +256,20 @@ object Helper {
 
     fun getSecondsPassed(timestamp: Long): Long {
         return (System.currentTimeMillis() - timestamp) / 1000
+    }
+
+    fun playerHasSpade(): Boolean {
+        return true
+    }
+
+    fun checkDiana(): Boolean {
+        val diana = (Debug.itsAlwaysDiana || ((Mayor.perks.contains("Mythological Ritual") || Mayor.mayor == "Jerry") && playerHasSpade() && World.getWorld() == "Hub"))
+        return diana
+    }
+
+    fun getInventoryName(): String {
+        val currentInv = mc.currentScreen?.title?.string ?: "Unknown Inventory"
+        Chat.chat("§6[SBO] §aCurrent Inventory: §e$currentInv")
+        return currentInv
     }
 }
