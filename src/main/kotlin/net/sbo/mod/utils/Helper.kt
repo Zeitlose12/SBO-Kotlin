@@ -285,4 +285,14 @@ object Helper {
         Chat.chat("§6[SBO] §aCurrent Inventory: §e$currentInv")
         return currentInv
     }
+
+    fun showTitle(title: String?, subtitle: String?, fadeIn: Int, time: Int, fadeOut: Int) {
+        mc.inGameHud.apply {
+            setTitleTicks(fadeIn, time, fadeOut)
+            if (title != null)
+                setTitle(net.minecraft.text.Text.of(title))
+            if (subtitle != null)
+                setSubtitle(net.minecraft.text.Text.of(subtitle))
+        }
+    }
 }
