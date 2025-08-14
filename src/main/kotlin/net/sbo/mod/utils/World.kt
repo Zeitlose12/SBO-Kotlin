@@ -1,5 +1,6 @@
 package net.sbo.mod.utils
 
+import net.sbo.mod.settings.categories.Debug
 import net.sbo.mod.utils.ScoreBoard
 
 object World {
@@ -31,6 +32,6 @@ object World {
      */
     fun isInSkyblock(): Boolean {
         val title = ScoreBoard.getTitle().lowercase()
-        return title.contains("skyblock")
+        return title.contains("skyblock") || Debug.alwaysInSkyblock
     }
 }
