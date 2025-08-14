@@ -24,6 +24,7 @@ import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.ClickActionManager
 import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.World
+import net.sbo.mod.diana.BurrowDetector
 
 object SBOKotlin {
 	@JvmField
@@ -63,10 +64,6 @@ object SBOKotlin {
 			Chat.chat("This is a test command! Arguments: ${args.joinToString(", ")}")
 		}
 
-		Register.onPacketReceived { packet ->
-			println(packet)
-		}
-
 		// Registering Guis
 		guis.register()
 
@@ -77,6 +74,7 @@ object SBOKotlin {
 		PartyFinderManager.init()
 		PartyCheck.init()
 		DianaGuessHandler.init()
+		BurrowDetector.init()
 		Mayor.init()
 		DianaTracker.init()
 		PartyPlayer.init()

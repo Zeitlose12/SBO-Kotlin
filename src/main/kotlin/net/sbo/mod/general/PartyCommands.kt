@@ -219,7 +219,7 @@ object PartyCommands {
                 }
                 "!stats", "!stat" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
-                    if (secondArg == user) {
+                    if (secondArg?.lowercase() == user.lowercase()) {
                         sleep(200) {
                             DianaStats.sendPlayerStats(false)
                         }
@@ -227,7 +227,7 @@ object PartyCommands {
                 }
                 "!totalstats", "!totalstat" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
-                    if (secondArg == user) {
+                    if (secondArg?.lowercase() == user.lowercase()) {
                         sleep(200) {
                             DianaStats.sendPlayerStats(true)
                         }

@@ -339,11 +339,11 @@ object Register {
         packetReceivedActions.add(PacketActionPair(null, action))
     }
 
-    fun <T: Packet<*>> onPacketSend(packetClass: Class<T>, action: (packet: T) -> Unit) {
+    fun <T: Packet<*>> onPacketSent(packetClass: Class<T>, action: (packet: T) -> Unit) {
         sentPacketActions.add(PacketActionPair(packetClass, action))
     }
 
-    fun onPacketSend(action: (packet: Packet<*>) -> Unit) {
+    fun onPacketSent(action: (packet: Packet<*>) -> Unit) {
         sentPacketActions.add(PacketActionPair(null, action))
     }
 
