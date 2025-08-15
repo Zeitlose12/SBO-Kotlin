@@ -25,7 +25,7 @@ object Pickuplog {
     fun init() {
         Register.onTick(20) {
             if (mc.player == null || !World.isInSkyblock()) return@onTick
-            newInventory = Helper.readPlayerInv(true)
+            newInventory = Helper.readPlayerInv()
             newPurse = Helper.getPurse()
             if (oldInventory.isEmpty()) {
                 oldInventory = newInventory
