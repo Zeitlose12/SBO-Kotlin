@@ -3,6 +3,7 @@ package net.sbo.mod
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import net.minecraft.client.MinecraftClient
+import net.minecraft.entity.EntityType
 import net.sbo.mod.diana.DianaGuessHandler
 import net.sbo.mod.diana.DianaTracker
 import net.sbo.mod.utils.waypoint.WaypointManager
