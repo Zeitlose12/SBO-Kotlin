@@ -9,6 +9,7 @@
 		"PacketMixin",
 		"PlayerInteractMixin",
 		"LivingEntityMixin",
+		"ClientPlayNetworkHandlerMixin",
 		"accessor.BeaconBlockEntityRendererInvoker"
 	],
 	"injectors": {

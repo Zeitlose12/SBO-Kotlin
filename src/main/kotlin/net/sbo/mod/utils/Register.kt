@@ -49,6 +49,7 @@ object Register {
     private val sentPacketActions = mutableListOf<PacketActionPair<*>>() // Neue Liste
     private val playerInteractActions = mutableListOf<(action: String, pos: BlockPos?, event: PlayerInteractEvent) -> Unit>()
     private val entityDeathActions = mutableListOf<(entity: Entity, source: DamageSource) -> Unit>()
+    private val chatActions = mutableListOf<ChatTrigger>()
 
     fun runGuiOpenActions(screen: Screen, ci: CallbackInfo) { guiOpenActions.forEach { action -> action(screen, ci) } }
     fun runGuiCloseActions(client: MinecraftClient, screen: Screen) { guiCloseActions.forEach { action -> action(client, screen) } }
@@ -86,6 +87,14 @@ object Register {
             }
         }
         return canceled
+    }
+    fun runChatActions(message: String): Boolean {
+        for (action in chatActions) {
+            if (action.processMessage(message)) {
+                return true
+            }
+        }
+        return false
     }
 
 
@@ -268,6 +277,20 @@ object Register {
         action: (message: Text, matchResult: Matcher) -> Boolean
     ) {
         ChatHandler.registerHandler(regex, action)
+    }
+
+    fun onChat(criteria: String, action: (message: String, args: List<String>) -> Unit): ChatTrigger {
+        val newTrigger = ChatTrigger(criteria, action)
+        chatActions.add(newTrigger)
+        return newTrigger
+    }
+
+    fun onChat(action: (message: String) -> Unit): ChatTrigger {
+        val newTrigger = ChatTrigger("{message}") { message, _ ->
+            action.invoke(message)
+        }
+        chatActions.add(newTrigger)
+        return newTrigger
     }
 
     /**
