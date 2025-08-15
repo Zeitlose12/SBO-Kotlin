@@ -12,13 +12,14 @@ import net.sbo.mod.utils.Helper.calcPercentOne
 import net.sbo.mod.utils.Helper.formatNumber
 import net.sbo.mod.utils.Helper.formatTime
 import net.sbo.mod.diana.DianaStats
+import net.sbo.mod.utils.Helper.removeFormatting
 import java.util.concurrent.TimeUnit
 import java.math.BigDecimal
 import java.math.RoundingMode
 
 object PartyCommands {
 
-    val commandRegex = Regex("^§[0-9a-fk-or]Party §[0-9a-fk-or]> (.*?)§[0-9a-fk-or]*: ?(.*)\$")
+    val commandRegex = Regex("^§r§[0-9a-fk-or]Party §[0-9a-fk-or]> (.*?)§[0-9a-fk-or]*: ?(.*)\$")
 
     val settings = PartyCommands
     val carrot = listOf(
@@ -48,7 +49,7 @@ object PartyCommands {
             val unformattedPlayerName = matchResult.groupValues[1]
             val fullMessage = matchResult.groupValues[2]
             val messageParts = fullMessage.trim().split(Regex("\\s+"))
-            val command = messageParts.getOrNull(0)?.lowercase() ?: return@onChatMessage
+            val command = messageParts.getOrNull(0)?.lowercase()?.removeFormatting() ?: return@onChatMessage
             val secondArg = messageParts.getOrNull(1)
             val playerName = getPlayerName(unformattedPlayerName)
             val user = SBOKotlin.mc.player?.name?.string ?: "unknown"
@@ -56,7 +57,7 @@ object PartyCommands {
 
             if (!settings.partyCommands) return@onChatMessage
             if (messageParts.size > 1 && command !in commandsWithArgs) return@onChatMessage
-
+            println("command: $command, playerName: $playerName, user: $user, secondArg: $secondArg")
             when (command) {
                 "!w", "!warp" -> {
                     if (!settings.warpCommand) return@onChatMessage
@@ -227,6 +228,7 @@ object PartyCommands {
                 }
                 "!totalstats", "!totalstat" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
+                    println("secondArg: $secondArg, user: $user")
                     if (secondArg?.lowercase() == user.lowercase()) {
                         sleep(200) {
                             DianaStats.sendPlayerStats(true)

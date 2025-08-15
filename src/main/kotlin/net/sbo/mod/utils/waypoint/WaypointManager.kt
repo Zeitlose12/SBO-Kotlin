@@ -6,6 +6,7 @@ import net.sbo.mod.render.WaypointRenderer
 import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Helper
+import net.sbo.mod.utils.Helper.checkDiana
 import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.Register
@@ -78,7 +79,7 @@ object WaypointManager {
             val trailing = match.groups["trailing"]?.value ?: ""
 
             if (!channel.contains("Guild")) {
-                if (trailing.startsWith(" ") || trailing.lowercase().contains("inquisitor") || Diana.allWaypointsAreInqs) { // todo: showTitle and play sound
+                if ((trailing.startsWith(" ") || trailing.lowercase().contains("inquisitor") || Diana.allWaypointsAreInqs) && checkDiana()) { // todo: play sound
                     Helper.showTitle("§r§6§l<§b§l§kO§6§l> §b§lINQUISITOR! §6§l<§b§l§kO§6§l>", player, 0, 90, 20)
                     addWaypoint(Waypoint(player, x.toDouble(), y.toDouble(), z.toDouble(), 1.0f, 0.84f, 0.0f, 45, type = "inq"))
                 } else {

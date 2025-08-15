@@ -32,8 +32,7 @@ object PartyPlayer {
             Regex("^Switching to profile (.*)$"),
             true
         ) { _, _ ->
-            Chat.chat("§6[SBO] §aProfile switched detected, updating stats...")
-            sleep(1000) {
+            sleep(2000) {
                 load()
             }
         }
