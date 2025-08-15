@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.sbo.mod.render.WaypointRenderer
 import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.utils.Chat
+import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.Register
@@ -45,10 +46,6 @@ object WaypointManager {
             0,
             "burrow"
         )
-        Register.command("removeAllInq") {
-            removeAllOfType("inq")
-            Chat.chat("Removed all Inquisitor waypoints.")
-        }
 
         Register.command("sbosendinq") {
             val playerPos = Player.getLastPosition()
@@ -59,7 +56,6 @@ object WaypointManager {
             Regex("^LOOT SHARE You received loot for assisting (.+)$"),
             true
         ) { message, match ->
-            Chat.chat("sbo-kotlin: Loot share message detected, adding guess waypoint.")
             removeWithinDistance("inq", 30)
             1
         }
@@ -73,8 +69,7 @@ object WaypointManager {
             Regex("^(?<channel>.*> )?(?<playerName>.+?)[§&]f: (?:[§&]r)?x: (?<x>[^ ,]+),? y: (?<y>[^ ,]+),? z: (?<z>[^ ,]+)(?<trailing>.*)$")
         ) { message, match ->
             val channel = match.groups["channel"]?.value ?: "Unknown"
-            val playerName = match.groups["playerName"]?.value ?: "Unknown"
-            Chat.chat("playername: $playerName")
+            val player = match.groups["playerName"]?.value ?: "Unknown"
 
             val x = match.groups["x"]?.value?.toIntOrNull() ?: 0.0
             val y = match.groups["y"]?.value?.toIntOrNull() ?: 0.0
@@ -83,10 +78,12 @@ object WaypointManager {
             val trailing = match.groups["trailing"]?.value ?: ""
 
             if (!channel.contains("Guild")) {
-                if (trailing.startsWith(" ") || trailing.lowercase().contains("inquisitor") || Diana.allWaypointsAreInqs)
-                    addWaypoint(Waypoint(playerName, x.toDouble(), y.toDouble(), z.toDouble(), 1.0f, 0.84f, 0.0f, 45, type = "inq"))
-                else
-                    addWaypoint(Waypoint(playerName, x.toDouble(), y.toDouble(), z.toDouble(), 0.0f, 0.2f, 1.0f, 30, type = "world"))
+                if (trailing.startsWith(" ") || trailing.lowercase().contains("inquisitor") || Diana.allWaypointsAreInqs) { // todo: showTitle and play sound
+                    Helper.showTitle("§r§6§l<§b§l§kO§6§l> §b§lINQUISITOR! §6§l<§b§l§kO§6§l>", player, 0, 90, 20)
+                    addWaypoint(Waypoint(player, x.toDouble(), y.toDouble(), z.toDouble(), 1.0f, 0.84f, 0.0f, 45, type = "inq"))
+                } else {
+                    addWaypoint(Waypoint(player, x.toDouble(), y.toDouble(), z.toDouble(), 0.0f, 0.2f, 1.0f, 30, type = "world"))
+                }
             }
             1
         }
@@ -274,13 +271,10 @@ object WaypointManager {
     }
 
     fun warpToGuess() {
+        if (guessWp == null) return
+        if (guessWp!!.hidden) return
         val warp = getClosestWarp(guessWp?.pos ?: SboVec(0.0, 0.0, 0.0))
-        if (warp != null) {
-            executeWarpCommand(warp)
-            Chat.chat("Warping to guess waypoint at $warp")
-        } else {
-            Chat.chat("No valid warp found for guess waypoint.")
-        }
+        if (warp != null) executeWarpCommand(warp)
     }
 
     fun warpToInq() {

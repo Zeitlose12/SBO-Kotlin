@@ -120,7 +120,7 @@ object PartyFinderManager {
                     val playerName = Helper.getPlayerName(matchResult.group(2) ?: "no name")
 
                     if (PartyFinder.autoInvite) {
-                        Chat.command("p invite $playerName")
+                        invitePlayerIfMeetsReqs(playerName)
                     } else {
                         Chat.chat(Chat.getChatBreak())
                         Chat.chat(
@@ -310,7 +310,7 @@ object PartyFinderManager {
         }
     }
 
-    // todo: test this function, implement it into auto invite,
+    // todo: test this function,
     //  add a way to prevent inviting more player then party has space (maybe every user has 10 seconds to accept else next player gets invited)
     fun invitePlayerIfMeetsReqs(playerName: String) {
         PartyCheck.checkPlayer(playerName, true) { stats ->

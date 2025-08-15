@@ -4,6 +4,7 @@ import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
 import net.sbo.mod.SBOKotlin.mc
+import net.sbo.mod.diana.DianaTracker
 import net.sbo.mod.settings.categories.Debug
 import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.utils.data.SboDataObject
@@ -20,6 +21,11 @@ object Helper {
     var lastLootShare: Long = 0L
     var allowSackTracking: Boolean = true
     var hasSpade: Boolean = false
+    var lastDianaMobDeath: Long = 0L
+    var lastInqDeath: Long = 0L
+
+    private var hasTrackedInq: Boolean = false
+    private var dianaMobNames: List<String> = listOf("Minos Inquisitor", "Minotaur", "Minos Champion", "Iron Golem", "Ocelot", "Zombie")
 
     fun init() {
         Register.onChatMessageCancable(Pattern.compile("§r§l§eLOOT SHARE §r§fYou received loot for assisting (.*?)", Pattern.DOTALL)) { message, matchResult ->
@@ -35,6 +41,27 @@ object Helper {
 
         Register.onTick(20) { // maybe better way to register this
             hasSpade = playerHasItem("ANCESTRAL_SPADE")
+        }
+
+        Register.onEntityDeath { entity, source ->
+            val dist = entity.distanceTo(mc.player)
+            val name = entity.name.string
+            if (name == "Minos Inquisitor") {
+                if (getSecondsPassed(lastLootShare) < 2 && !hasTrackedInq) {
+                    hasTrackedInq = true
+                    DianaTracker.trackItem("MINOS_INQUISITOR_LS", 1)
+                    sleep(2000) {
+                        hasTrackedInq = false
+                    }
+                }
+                lastInqDeath = System.currentTimeMillis()
+            }
+            if (dianaMobNames.contains(name.trim())) {
+                if (dist <= 30) {
+                    allowSackTracking = true
+                    lastDianaMobDeath = System.currentTimeMillis()
+                }
+            }
         }
     }
 
@@ -337,5 +364,18 @@ object Helper {
         } else {
             return Pair(false, "")
         }
+    }
+
+    fun toTitleCase(input: String): String {
+        return input.lowercase().split(" ").joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }
+    }
+
+    fun getMagicFind(mf: String): Int {
+        val mfMatch = Regex("""(\+)?(&r&b)?(\d+)%""").find(mf)
+        if (mfMatch != null) {
+            val mfValue = mfMatch.groupValues[3].toIntOrNull() ?: 0
+            return mfValue
+        }
+        return 0
     }
 }

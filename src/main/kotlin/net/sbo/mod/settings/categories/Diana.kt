@@ -60,6 +60,36 @@ object Diana : CategoryKt("Diana") {
             this.title = "Diana Tracker"
         }
     }
+    var fourEyedFish by boolean(true) {
+        this.name = Translated("Four-Eyed Fish")
+        this.description = Translated("Set if you have a Four-Eyed Fish on your griffin pet")
+    }
+
+    var lootAnnouncerChat by boolean(true) {
+        this.name = Translated("Rare Drop Announcer")
+        this.description = Translated("Announces relic/shelmet/plushie/remedies in chat")
+    }
+
+    var lootAnnouncerScreen by boolean(false) {
+        this.name = Translated("Loot Screen Announcer")
+        this.description = Translated("Announces chimera/stick/relic on screen")
+    }
+
+    var lootAnnouncerPrice by boolean(true) {
+        this.name = Translated("Show Price Title")
+        this.description = Translated("Shows chimera/stick/relic price as a subtitle on screen")
+        this.condition = { lootAnnouncerScreen }
+    }
+
+    var lootAnnouncerParty by boolean(false) {
+        this.name = Translated("Loot Party Announcer")
+        this.description = Translated("Announces chimera/stick/relic and Shelmet/Plushie/Remedies (only when dropped from Inquisitor) in party chat")
+    }
+
+    var sendSinceMessage by boolean(true) {
+        this.name = Translated("Stats Message")
+        this.description = Translated("Sends the chat Message with stat: [SBO] Took 120 Mobs to get a Inquis!")
+    }
 
     var bazaarSettingDiana by enum(SettingDiana.SELLOFFER) {
         this.name = Translated("Bazaar Setting")
