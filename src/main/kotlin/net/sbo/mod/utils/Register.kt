@@ -13,6 +13,7 @@ import net.minecraft.server.command.CommandManager.argument
 import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
 import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.world.ClientWorld
 import net.minecraft.client.gui.DrawContext
 import net.sbo.mod.SBOKotlin.logger
 import java.util.regex.Matcher
@@ -25,6 +26,8 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import gg.essential.universal.utils.toFormattedString
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
@@ -358,5 +361,9 @@ object Register {
 
     fun onEntityDeath(action: (entity: Entity, source: DamageSource) -> Unit) {
         entityDeathActions.add(action)
+    }
+
+    fun onEntityLoad(action: (entity: Entity, clientWorld: ClientWorld) -> Unit) {
+        ClientEntityEvents.ENTITY_LOAD.register(action)
     }
 }
