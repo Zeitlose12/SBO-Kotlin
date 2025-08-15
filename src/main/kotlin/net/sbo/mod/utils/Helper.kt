@@ -25,6 +25,7 @@ object Helper {
     var lastInqDeath: Long = 0L
 
     private var hasTrackedInq: Boolean = false
+    private var prevInv = mutableMapOf<String, Item>()
     private var dianaMobNames: List<String> = listOf("Minos Inquisitor", "Minotaur", "Minos Champion", "Iron Golem", "Ocelot", "Zombie")
 
     fun init() {
@@ -242,19 +243,15 @@ object Helper {
         return handler.cursorStack
     }
 
-    fun readPlayerInv(withCursor: Boolean): MutableMap<String, Item> {
+    fun readPlayerInv(): MutableMap<String, Item> {
         val inventory = Player.getPlayerInventory()
         val invItems = mutableMapOf<String, Item>()
 
+        if (getCursorItemStack()?.count != 0) return prevInv // todo: do this but only of the overlay
+
         for (slot in 0 until inventory.size) {
-            var stack: ItemStack = inventory[slot]
-            if (slot == 8) { // Skip SB Star and get cursor item if needed
-                if (withCursor) {
-                    stack = getCursorItemStack() ?: continue
-                } else {
-                    continue
-                }
-            }
+            if (slot == 8) continue // Skip SB Star
+            val stack: ItemStack = inventory[slot]
 
             if (!stack.isEmpty) {
                 val customData = stack.get(DataComponentTypes.CUSTOM_DATA)
@@ -273,7 +270,7 @@ object Helper {
                 }
             }
         }
-
+        prevInv = invItems
         return invItems
     }
 

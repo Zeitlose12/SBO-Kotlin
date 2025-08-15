@@ -72,7 +72,7 @@ object PartyFinderManager {
     private val partyLeaveRegexes = listOf(
         Regex("^(.+) §r§ehas been removed from the party.$"),
         Regex("^(.+) §r§ehas left the party.$"),
-        Regex("^(.+) §r§ewas removed from your party because they disconnected.$"), // not tested
+        Regex("^(.+) §r§ewas removed from your party because they disconnected.$"),
         Regex("^§r§eKicked (.+) because they were offline.$")
     )
 
