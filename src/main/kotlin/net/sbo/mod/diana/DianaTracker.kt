@@ -169,9 +169,9 @@ object DianaTracker {
                     if (sboData.mobsSinceInq == 1 && !sboData.b2bInq) {
                         Chat.chat("§6[SBO] §cb2b Inquisitor!")
 //                        unlockAchievement(6) // b2b inq
-                        sboData.b2bInq = true;
+                        sboData.b2bInq = true
                     }
-                    if (sboData.inqsSinceChim >= 2) sboData.b2bChim = false;
+                    if (sboData.inqsSinceChim >= 2) sboData.b2bChim = false
 
                     sboData.mobsSinceInq = 0
                 }
@@ -181,7 +181,7 @@ object DianaTracker {
                 }
                 "Minotaur" -> {
                     sboData.minotaursSinceStick += 1
-                    if (sboData.minotaursSinceStick >= 2) sboData.b2bStick = false;
+                    if (sboData.minotaursSinceStick >= 2) sboData.b2bStick = false
                     trackMob(mob, 1)
                 }
                 "Gaia Construct" -> trackMob(mob, 1)
@@ -248,7 +248,7 @@ object DianaTracker {
                         }
                         if (sboData.inqsSinceChim == 1 && !sboData.b2bChim) {
                             Chat.chat("&6[SBO] &cb2b Chimera!")
-                            sboData.b2bChim = true;
+                            sboData.b2bChim = true
 //                            unlockAchievement(1) // b2b chim
                         }
 //                        if (sboData.b2bChim && sboData.b2bInq) {
@@ -268,7 +268,7 @@ object DianaTracker {
                             }
                             if (sboData.inqsSinceLsChim == 1 && !sboData.b2bChimLs) {
                                 Chat.chat("&6[SBO] &cb2b Lootshare Chimera!")
-                                sboData.b2bChimLs = true;
+                                sboData.b2bChimLs = true
 //                                unlockAchievement(66) // b2b chim ls
                             }
                             sboData.inqsSinceLsChim = 0
@@ -297,7 +297,7 @@ object DianaTracker {
                     }
                     if (sboData.minotaursSinceStick == 1 && !sboData.b2bStick) {
                         Chat.chat("&6[SBO] &cb2b Daedalus Stick!")
-                        sboData.b2bStick = true;
+                        sboData.b2bStick = true
 //                        unlockAchievement(3) // b2b stick
                     }
                     sboData.minotaursSinceStick = 0
