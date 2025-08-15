@@ -1,6 +1,8 @@
 package net.sbo.mod.diana
 
+import net.sbo.mod.guis.partyfinder.pages.Help
 import net.sbo.mod.settings.categories.Diana
+import net.sbo.mod.settings.categories.QOL
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.Helper.allowSackTracking
@@ -10,8 +12,10 @@ import net.sbo.mod.utils.Helper.lastInqDeath
 import net.sbo.mod.utils.Helper.lastLootShare
 import net.sbo.mod.utils.Helper.removeFormatting
 import net.sbo.mod.utils.Helper.sleep
+import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.Register
 import net.sbo.mod.utils.SBOTimerManager.timerSession
+import net.sbo.mod.utils.World.isInSkyblock
 import net.sbo.mod.utils.data.DianaTracker
 import net.sbo.mod.utils.data.DianaTrackerSessionData
 import net.sbo.mod.utils.data.Item
@@ -51,6 +55,18 @@ object DianaTracker {
             SboDataObject.save("SboData")
         }
 
+        Register.onChatMessageCancable(Pattern.compile("(.*?) (.*?) §r§efound a §r§cPhoenix §r§epet!(.*?)", Pattern.DOTALL)) { message, matchResult ->
+            if (QOL.phoenixAnnouncer) {
+                Chat.chat("§6[SBO] §cGG §eFound a Phoenix pet!")
+                Helper.showTitle("§c§lPhoenix Pet!", "", 0, 25, 35)
+            }
+            if (Helper.getSecondsPassed(lastDianaMobDeath) > 2) return@onChatMessageCancable true
+            val player = matchResult.group(2).removeFormatting()
+            if (Player.getName() != Helper.getPlayerName(player)) return@onChatMessageCancable true
+//            if (isInSkyblock() && checkDiana()) unlockAchievement(77); // phoenix pet
+            true
+        }
+
         trackBurrowsWithChat()
         trackMobsWithChat()
         trackCoinsWithChat()
@@ -59,7 +75,7 @@ object DianaTracker {
     }
 
     fun trackWithPickuplog(item: Item) {
-        val isLootShare = Helper.getSecondsPassed(lastLootShare) < 2
+        val isLootShare = Helper.getSecondsPassed(lastLootShare) <= 2
         if (Helper.getSecondsPassed(item.creation) > 2) return
         if (Helper.getSecondsPassed(lastDianaMobDeath) > 2 && !isLootShare) return
         if (!checkDiana()) return
@@ -67,6 +83,14 @@ object DianaTracker {
             val msg = Helper.toTitleCase(item.itemId.replace("_", " "))
             if (item.itemId == "MINOS_RELIC") {
                 if (Diana.sendSinceMessage) Chat.chat("§6[SBO] §eTook §c${sboData.champsSinceRelic} §eChampions to get a Minos Relic!")
+                if (sboData.champsSinceRelic == 1) {
+                    Chat.chat("&6[SBO] &cb2b Minos Relic!")
+//                    unlockAchievement(5) // b2b relic
+                }
+                if (isLootShare) {
+                    Chat.chat("§6[SBO] §cLootshared a Minos Relic!")
+//                    unlockAchievement(17) // relic ls
+                }
                 sboData.champsSinceRelic = 0
 
                 if (Diana.lootAnnouncerScreen) {
@@ -128,17 +152,28 @@ object DianaTracker {
                     sboData.inqsSinceChim += 1
                     trackMob(mob, 1)
 
-                    val timeSinceInq = Helper.formatTime(dianaTrackerTotal.items.TIME - sboData.lastInqDate)
-
                     if (Diana.sendSinceMessage) {
+                        val timeSinceInq = Helper.formatTime(dianaTrackerTotal.items.TIME - sboData.lastInqDate)
                         if (sboData.lastInqDate != 0L) {
                             Chat.chat("§6[SBO] §eTook §c${sboData.mobsSinceInq} §eMobs and §c$timeSinceInq §eto get an Inquis!")
                         } else {
                             Chat.chat("§6[SBO] §eTook §c${sboData.mobsSinceInq} §eMobs to get an Inquis!")
                         }
                     }
+                    sboData.lastInqDate = dianaTrackerTotal.items.TIME
 
-                    sboData.mobsSinceInq
+                    if (sboData.b2bInq && sboData.mobsSinceInq == 1) {
+                        Chat.chat("§6[SBO] §cb2b2b Inquisitor!")
+//                        unlockAchievement(7) // b2b2b inq
+                    }
+                    if (sboData.mobsSinceInq == 1 && !sboData.b2bInq) {
+                        Chat.chat("§6[SBO] §cb2b Inquisitor!")
+//                        unlockAchievement(6) // b2b inq
+                        sboData.b2bInq = true;
+                    }
+                    if (sboData.inqsSinceChim >= 2) sboData.b2bChim = false;
+
+                    sboData.mobsSinceInq = 0
                 }
                 "Minos Champion" -> {
                     sboData.champsSinceRelic += 1
@@ -146,6 +181,7 @@ object DianaTracker {
                 }
                 "Minotaur" -> {
                     sboData.minotaursSinceStick += 1
+                    if (sboData.minotaursSinceStick >= 2) sboData.b2bStick = false;
                     trackMob(mob, 1)
                 }
                 "Gaia Construct" -> trackMob(mob, 1)
@@ -202,15 +238,39 @@ object DianaTracker {
                         announceLootToParty("Chimera!", "Chimera!$mfPrefix")
 
                     if (Helper.getSecondsPassed(lastDianaMobDeath) > 2) { // todo: track mf like in ct
+                        // normal chim
                         if (Diana.sendSinceMessage) Chat.chat("§6[SBO] §eTook §c${sboData.inqsSinceChim} §eInquisitors to get a Chimera!")
 
                         trackItem("CHIMERA", 1)
+                        if (sboData.b2bChim && sboData.inqsSinceChim == 1) {
+                            Chat.chat("&6[SBO] &cb2b2b Chimera!")
+//                            unlockAchievement(2) // b2b2b chim
+                        }
+                        if (sboData.inqsSinceChim == 1 && !sboData.b2bChim) {
+                            Chat.chat("&6[SBO] &cb2b Chimera!")
+                            sboData.b2bChim = true;
+//                            unlockAchievement(1) // b2b chim
+                        }
+//                        if (sboData.b2bChim && sboData.b2bInq) {
+//                            unlockAchievement(75) // b2b chim from b2b inq
+//                        }
                         sboData.inqsSinceChim = 0
                     } else {
+                        // lootshare chim
                         if (Diana.sendSinceMessage) Chat.chat("§6[SBO] §eTook §c${sboData.inqsSinceLsChim} §eInquisitors to lootshare a Chimera!")
 
                         trackItem("CHIMERA_LS", 1)
-                        sleep(50) {
+
+                        sleep(200) {
+                            if (sboData.b2bChimLs && sboData.inqsSinceLsChim == 1) {
+                                Chat.chat("&6[SBO] &cb2b2b Lootshare Chimera!")
+//                                unlockAchievement(67) // b2b2b chim ls
+                            }
+                            if (sboData.inqsSinceLsChim == 1 && !sboData.b2bChimLs) {
+                                Chat.chat("&6[SBO] &cb2b Lootshare Chimera!")
+                                sboData.b2bChimLs = true;
+//                                unlockAchievement(66) // b2b chim ls
+                            }
                             sboData.inqsSinceLsChim = 0
                         }
                     }
@@ -224,7 +284,22 @@ object DianaTracker {
                     if (Diana.sendSinceMessage) Chat.chat("§6[SBO] §eTook §c${sboData.minotaursSinceStick} §eMinotaurs to get a Daedalus Stick!")
                     announceLootToParty("Daedalus Stick!", "Daedalus Stick!$mfPrefix")
 
+                    if (Helper.getSecondsPassed(lastLootShare) <= 2) {
+                        // lootshare stick
+                        Chat.chat("§6[SBO] §cLootshared a Daedalus Stick!")
+//                        unlockAchievement(15)
+                    }
+
                     trackItem("DAEDALUS_STICK", 1)
+                    if (sboData.b2bStick && sboData.minotaursSinceStick == 1) {
+                        Chat.chat("&6[SBO] &cb2b2b Daedalus Stick!")
+//                        unlockAchievement(4) // b2b2b stick
+                    }
+                    if (sboData.minotaursSinceStick == 1 && !sboData.b2bStick) {
+                        Chat.chat("&6[SBO] &cb2b Daedalus Stick!")
+                        sboData.b2bStick = true;
+//                        unlockAchievement(3) // b2b stick
+                    }
                     sboData.minotaursSinceStick = 0
                 }
             }
@@ -284,15 +359,27 @@ object DianaTracker {
         Chat.command("pc [SBO] RARE DROP! $msg")
     }
 
+    fun getB2BMessage(itemName: String, streak: Int): String? {
+        if (streak <= 1) return null
+
+        val prettyName = Helper.toTitleCase(itemName.replace("_", " "))
+        val streakText = "b" + "2b".repeat(streak - 1)
+
+        return "§6[SBO] §c$streakText $prettyName!"
+    }
+
     fun trackMob(item: String, amount: Int) {
         trackItem(item, amount)
         trackItem("TOTAL_MOBS", amount)
         sboData.mobsSinceInq += amount
+        if (sboData.mobsSinceInq >= 2) sboData.b2bInq = false
         SboDataObject.save("SboData")
     }
 
     fun trackItem(item: String, amount: Int, fromInq: Boolean = false) {
         val itemName = Helper.toUpperSnakeCase(item)
+        if (itemName == "MINOS_INQUISITOR_LS") sboData.inqsSinceLsChim += 1
+
         trackOne(dianaTrackerMayor, itemName, amount, fromInq)
         trackOne(dianaTrackerSession, itemName, amount, fromInq)
         trackOne(dianaTrackerTotal, itemName, amount, fromInq)

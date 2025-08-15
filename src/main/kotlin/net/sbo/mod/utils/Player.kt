@@ -29,4 +29,8 @@ object Player {
         val inventory = mc.player?.inventory?.toList()
         return inventory ?: emptyList()
     }
+
+    fun getName(): String? {
+        return mc.player?.name?.string
+    }
 }

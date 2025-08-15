@@ -13,6 +13,7 @@ import net.sbo.mod.utils.Helper.formatNumber
 import net.sbo.mod.utils.Helper.formatTime
 import net.sbo.mod.diana.DianaStats
 import net.sbo.mod.utils.Helper.removeFormatting
+import net.sbo.mod.utils.Player
 import java.util.concurrent.TimeUnit
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -52,7 +53,7 @@ object PartyCommands {
             val command = messageParts.getOrNull(0)?.lowercase()?.removeFormatting() ?: return@onChatMessage
             val secondArg = messageParts.getOrNull(1)
             val playerName = getPlayerName(unformattedPlayerName)
-            val user = SBOKotlin.mc.player?.name?.string ?: "unknown"
+            val user = Player.getName() ?: return@onChatMessage
             val commandsWithArgs = setOf("!since", "!demote", "!promote", "!ptme", "!transfer", "!stats", "!totalstats")
 
             if (!settings.partyCommands) return@onChatMessage
