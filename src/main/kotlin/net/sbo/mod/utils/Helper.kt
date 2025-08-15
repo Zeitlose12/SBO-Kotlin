@@ -364,7 +364,7 @@ object Helper {
     }
 
     fun toTitleCase(input: String): String {
-        return input.lowercase().split(" ").joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }
+        return input.lowercase().replaceFirstChar { char -> char.uppercase() }
     }
 
     fun getMagicFind(mf: String): Int {
