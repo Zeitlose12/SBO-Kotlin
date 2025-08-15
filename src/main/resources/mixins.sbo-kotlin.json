@@ -5,7 +5,6 @@
 	"client": [
 		"MinecraftClientMixin",
 		"ScreenMixin",
-		"ChatHudMixin",
 		"PacketMixin",
 		"PlayerInteractMixin",
 		"LivingEntityMixin",

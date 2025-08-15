@@ -32,8 +32,8 @@ data class PlayerStats(
 )
 
 object DianaStats {
-    val STATS_PATTERN = Pattern.compile( // todo: make message from ct sbo compatible with the new Diana stats message
-        "§r§9Party §r§8> (.*?)§r§f: §rPlaytime: (.*?) - Profit: (.*?) \\((.*?)\\) - Burrows: (.*?) \\((.*?)\\) - Mobs: (.*?) \\((.*?)\\) - Inqs: (.*?) \\((.*?)\\) - LS Inqs: (.*?) - Chims: (.*?) \\((.*?)\\) - LS: (.*?) \\((.*?)\\) - Sticks: (.*?) \\((.*?)\\) - Relics: (.*?) \\((.*?)\\)",
+    val STATS_PATTERN = Pattern.compile(
+        "§r§9Party §r§8> (.*?)§r§f: §rPlaytime: (.*?) - Profit: (.*?) - (.*?) - Burrows: (.*?) \\((.*?)\\) - Mobs: (.*?) \\((.*?)\\) - Inquisitors: (.*?) \\((.*?)\\) - LS Inqs: (.*?) - Chimeras: (.*?) \\((.*?)\\) - LS: (.*?) \\((.*?)\\) - Sticks: (.*?) \\((.*?)\\) - Relics: (.*?) \\((.*?)\\)(.*?)",
         Pattern.DOTALL
     )
 
@@ -97,12 +97,12 @@ object DianaStats {
         val stats = getPlayerStats(total)
         val statsMessage = buildString {
             append("Playtime: ${stats.playtime} - ")
-            append("Profit: ${stats.profit[0]} (${stats.profit[2]}/h) - ")
-            append("Burrows: ${stats.burrows} (${stats.burrowsPerHour}/h)")
-            append(" - Mobs: ${stats.totalMobs} (${stats.mobsPerHour}/h) - ")
-            append("Inqs: ${stats.inquisitors} (${stats.inqPercentage}) - ")
+            append("Profit: ${stats.profit[0]} - ${stats.profit[2]}/h - ")
+            append("Burrows: ${stats.burrows} (${stats.burrowsPerHour}/h) - ")
+            append("Mobs: ${stats.totalMobs} (${stats.mobsPerHour}/h) - ")
+            append("Inquisitors: ${stats.inquisitors} (${stats.inqPercentage}) - ")
             append("LS Inqs: ${stats.lsInqs} - ")
-            append("Chims: ${stats.chimeraDrops} (${stats.chimeraDropRate}) - LS: ${stats.chimeraLSDrops} (${stats.chimeraLSDropRate}) - ")
+            append("Chimeras: ${stats.chimeraDrops} (${stats.chimeraDropRate}) - LS: ${stats.chimeraLSDrops} (${stats.chimeraLSDropRate}) - ")
             append("Sticks: ${stats.sticksDropped} (${stats.stickDropRate}) - ")
             append("Relics: ${stats.relicsDropped} (${stats.relicDropRate})")
         }

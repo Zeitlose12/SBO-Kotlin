@@ -13,6 +13,7 @@ import net.sbo.mod.utils.SboVec
 import net.sbo.mod.utils.data.PlayerInteractEvent
 import net.sbo.mod.utils.waypoint.WaypointManager
 import net.sbo.mod.settings.categories.Diana
+import net.sbo.mod.utils.World
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -248,7 +249,7 @@ object DianaGuessHandler {
             preciseGuess.onWorldChange()
         }
         Register.onPacketReceived(ParticleS2CPacket::class.java) { packet ->
-            if (!Diana.dianaBurrowGuess) return@onPacketReceived
+            if (!Diana.dianaBurrowGuess || World.getWorld() != "Hub") return@onPacketReceived
             preciseGuess.onReceiveParticle(packet)
         }
     }
