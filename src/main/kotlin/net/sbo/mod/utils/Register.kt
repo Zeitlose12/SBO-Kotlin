@@ -35,6 +35,7 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.damage.DamageSource
 import net.minecraft.network.packet.Packet
 import net.minecraft.util.math.BlockPos
+import net.sbo.mod.utils.ChatUtils.formattedString
 import net.sbo.mod.utils.data.PacketActionPair
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
@@ -182,12 +183,7 @@ object Register {
         action: (message: Text, matchResult: MatchResult) -> Unit
     ) {
         ClientReceiveMessageEvents.GAME.register { message, _ ->
-            var text = ""
-            if (message.siblings.isEmpty()) {
-                text = message.toFormattedString()
-            } else {
-                text = message.string
-            }
+            var text = message.formattedString()
 
             if (noFormatting) text = text.removeFormatting()
 
@@ -211,12 +207,7 @@ object Register {
         action: (message: Text, matchResult: MatchResult) -> Unit
     ) {
         ClientReceiveMessageEvents.GAME.register { message, _ ->
-            var text = ""
-            if (message.siblings.isEmpty()) {
-                text = message.toFormattedString()
-            } else {
-                text = message.string
-            }
+            var text = message.formattedString()
 
             if (noFormatting) text = text.removeFormatting()
 
@@ -247,12 +238,7 @@ object Register {
         val criteriaRegex = Regex(finalRegexPattern)
 
         ClientReceiveMessageEvents.GAME.register { message: Text, _ ->
-            var text = ""
-            if (message.siblings.isEmpty()) {
-                text = message.toFormattedString()
-            } else {
-                text = message.string
-            }
+            var text = message.formattedString()
 
             if (noFormatting) text = text.removeFormatting()
 

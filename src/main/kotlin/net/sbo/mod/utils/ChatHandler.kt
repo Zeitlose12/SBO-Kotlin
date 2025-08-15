@@ -3,6 +3,7 @@ package net.sbo.mod.utils
 import gg.essential.universal.utils.toFormattedString
 import net.minecraft.text.Text
 import net.sbo.mod.settings.categories.Debug
+import net.sbo.mod.utils.ChatUtils.formattedString
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -15,8 +16,10 @@ object ChatHandler {
     }
 
     fun processMessage(message: Text): Boolean {
-        val messageString = message.toFormattedString()
-        if (Debug.debugMessages) println("Processing chat message: $messageString")
+        val messageString = message.formattedString()
+        if (Debug.debugMessages && !messageString.contains("❈ Defense")) {
+            println("Processing chat message: $messageString")
+        }
         messageHandlers.forEach { rule ->
             val matcher = rule.pattern.matcher(messageString)
             if (matcher.find()) {
