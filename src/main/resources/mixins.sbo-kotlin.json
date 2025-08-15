@@ -1,17 +1,17 @@
 {
-	"required": true,
-	"package": "net.sbo.mod.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"client": [
-		"MinecraftClientMixin",
-		"ScreenMixin",
-		"PacketMixin",
-		"PlayerInteractMixin",
-		"LivingEntityMixin",
-		"ClientPlayNetworkHandlerMixin",
-		"accessor.BeaconBlockEntityRendererInvoker"
-	],
-	"injectors": {
-		"defaultRequire": 1
+  "required": true,
+  "package": "net.sbo.mod.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ClientPlayNetworkHandlerMixin",
+    "LivingEntityMixin",
+    "MinecraftClientMixin",
+    "PacketMixin",
+    "PlayerInteractMixin",
+    "ScreenMixin",
+    "accessor.BeaconBlockEntityRendererInvoker"
+  ],
+  "injectors": {
+    "defaultRequire": 1
 	}
 }
