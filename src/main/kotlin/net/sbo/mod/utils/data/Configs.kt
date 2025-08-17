@@ -107,6 +107,7 @@ data class DianaItemsData(
     @SerializedName("Daedalus Stick") var DAEDALUS_STICK: Int = 0,
     @SerializedName("DWARF_TURTLE_SHELMET") var DWARF_TURTLE_SHELMET: Int = 0,
     @SerializedName("ANTIQUE_REMEDIES") var ANTIQUE_REMEDIES: Int = 0,
+    @SerializedName("CROCHET_TIGER_PLUSHIE") var CROCHET_TIGER_PLUSHIE: Int = 0,
     @SerializedName("ENCHANTED_ANCIENT_CLAW") var ENCHANTED_ANCIENT_CLAW: Int = 0,
     @SerializedName("ANCIENT_CLAW") var ANCIENT_CLAW: Int = 0,
     @SerializedName("MINOS_RELIC") var MINOS_RELIC: Int = 0,

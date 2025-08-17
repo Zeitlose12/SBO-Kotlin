@@ -8,7 +8,6 @@ import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.Helper.calcPercentOne
 import net.sbo.mod.utils.data.SboDataObject.SBOConfigBundle
-import net.sbo.mod.utils.data.SboDataObject.dianaTrackerMayor
 import net.sbo.mod.utils.events.Register
 import java.math.BigDecimal
 import java.math.RoundingMode

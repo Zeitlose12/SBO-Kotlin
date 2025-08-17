@@ -93,6 +93,7 @@ object SBOKotlin {
 		DianaStats.init()
 		MagicFind.init()
 		DianaMobs.init()
+		DianaLoot.init()
 
 		Register.onTick(100) { unregister ->
 			if (mc.player != null && World.isInSkyblock()) {
