@@ -16,7 +16,8 @@ data class SboConfigBundle(
     var dianaTrackerSessionData: DianaTrackerSessionData,
     var dianaTrackerMayorData: DianaTrackerMayorData,
     var partyFinderConfigState: PartyFinderConfigState,
-    var partyFinderData: PartyFinderData
+    var partyFinderData: PartyFinderData,
+    var overlayData: OverlayData
 )
 
 // ------ Data Classes ------
@@ -209,4 +210,14 @@ data class PlayerStats(
     var griffinItem: String? = null,
     var killLeaderboard: Int = 0,
     var mythosKills: Long = 0L
+)
+
+data class OverlayData(
+    var overlays: MutableMap<String, OverlayValues> = mutableMapOf()
+)
+
+data class OverlayValues(
+    var x: Float = 0f,
+    var y: Float = 0f,
+    var scale: Float = 1.0f,
 )

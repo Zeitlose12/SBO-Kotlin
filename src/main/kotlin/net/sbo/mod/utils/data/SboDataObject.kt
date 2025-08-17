@@ -47,6 +47,9 @@ object SboDataObject {
     @JvmField
     var partyFinderData: PartyFinderData = PartyFinderData()
 
+    @JvmField
+    var overlayData: OverlayData = OverlayData()
+
     lateinit var SBOConfigBundle: SboConfigBundle
     private val gson: Gson = GsonBuilder().setPrettyPrinting().create()
     private const val MAX_BACKUPS = 5
@@ -61,6 +64,7 @@ object SboDataObject {
         dianaTrackerMayor = SBOConfigBundle.dianaTrackerMayorData
         pfConfigState = SBOConfigBundle.partyFinderConfigState
         partyFinderData = SBOConfigBundle.partyFinderData
+        overlayData = SBOConfigBundle.overlayData
         saveAllDataThreaded("SBO")
         savePeriodically(10)
         Register.onDisconnect {
@@ -265,7 +269,8 @@ object SboDataObject {
         val dianaTrackerMayorData = load(modName, "dianaTrackerMayor.json", DianaTrackerMayorData(), DianaTrackerMayorData::class.java)
         val partyFinderConfigState = load(modName, "partyFinderConfigState.json", PartyFinderConfigState(), PartyFinderConfigState::class.java)
         val partyFinderData = load(modName, "partyFinderData.json", PartyFinderData(), PartyFinderData::class.java)
-        return SboConfigBundle(sboData, achievementsData, pastDianaEventsData, dianaTrackerTotalData, dianaTrackerSessionData, dianaTrackerMayorData, partyFinderConfigState, partyFinderData)
+        val overlayData = load(modName, "overlayData.json", OverlayData(), OverlayData::class.java)
+        return SboConfigBundle(sboData, achievementsData, pastDianaEventsData, dianaTrackerTotalData, dianaTrackerSessionData, dianaTrackerMayorData, partyFinderConfigState, partyFinderData, overlayData)
     }
 
     private fun zipFolder(folderToZip: File, zipFilePath: File) {
@@ -302,6 +307,7 @@ object SboDataObject {
             saveToFolder(tempBackupDir, bundle.dianaTrackerMayorData, "dianaTrackerMayor.json")
             saveToFolder(tempBackupDir, bundle.partyFinderConfigState, "partyFinderConfigState.json")
             saveToFolder(tempBackupDir, bundle.partyFinderData, "partyFinderData.json")
+            saveToFolder(tempBackupDir, bundle.overlayData, "overlayData.json")
 
             val zipFile = File(backupDir, "SBOBackup_$timestamp.zip")
             zipFolder(tempBackupDir, zipFile)
@@ -330,7 +336,8 @@ object SboDataObject {
         "DianaTrackerSessionData" to Pair({ save("SBO", dianaTrackerSession, "dianaTrackerSession.json") }, dianaTrackerSession),
         "DianaTrackerMayorData" to Pair({ save("SBO", dianaTrackerMayor, "dianaTrackerMayor.json") }, dianaTrackerMayor),
         "PartyFinderConfigState" to Pair({ save("SBO", pfConfigState, "partyFinderConfigState.json") }, pfConfigState),
-        "PartyFinderData" to Pair({ save("SBO", partyFinderData, "partyFinderData.json") }, partyFinderData)
+        "PartyFinderData" to Pair({ save("SBO", partyFinderData, "partyFinderData.json") }, partyFinderData),
+        "OverlayData" to Pair({ save("SBO", overlayData, "overlayData.json") }, overlayData)
     )
 
     private fun <T> saveToFolder(folder: File, data: T, fileName: String) {

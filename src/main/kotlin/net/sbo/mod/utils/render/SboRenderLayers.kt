@@ -1,4 +1,4 @@
-package net.sbo.mod.render
+package net.sbo.mod.utils.render
 
 import com.mojang.blaze3d.pipeline.BlendFunction
 import com.mojang.blaze3d.pipeline.RenderPipeline

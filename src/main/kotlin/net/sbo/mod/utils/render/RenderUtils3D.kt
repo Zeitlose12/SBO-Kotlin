@@ -1,4 +1,4 @@
-package net.sbo.mod.render
+package net.sbo.mod.utils.render
 
 import net.fabricmc.fabric.api.client.rendering.v1.*
 import net.minecraft.client.font.TextRenderer

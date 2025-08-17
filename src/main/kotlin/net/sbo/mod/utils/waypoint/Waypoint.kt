@@ -1,7 +1,7 @@
 package net.sbo.mod.utils.waypoint
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
-import net.sbo.mod.render.RenderUtil
+import net.sbo.mod.utils.render.RenderUtil
 import net.sbo.mod.settings.categories.Customization
 import net.sbo.mod.settings.categories.Diana
 import java.awt.Color

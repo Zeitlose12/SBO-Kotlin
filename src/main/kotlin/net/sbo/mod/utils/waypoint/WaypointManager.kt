@@ -2,7 +2,7 @@ package net.sbo.mod.utils.waypoint
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
-import net.sbo.mod.render.WaypointRenderer
+import net.sbo.mod.utils.render.WaypointRenderer
 import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Helper
@@ -24,29 +24,6 @@ object WaypointManager {
         if (guessWp == null) {
             guessWp = Waypoint("Guess", 100.0, 100.0, 100.0, 0.0f, 0.964f, 1.0f, 0,"guess")
         }
-
-        // create test waypoint at 100, 100, 100
-        val testWaypointTreasure = Waypoint(
-            "Treasure",
-            102.0, 100.0, 100.0,
-            1.0f, 0.666f, 0.0f,
-            0,
-            "burrow"
-        )
-        val testWaypointStart = Waypoint(
-            "Start",
-            100.0, 100.0, 102.0,
-            0.333f, 1.0f, 0.333f,
-            0,
-            "burrow"
-        )
-        val testWaypointMob = Waypoint(
-            "Mob",
-            100.0, 100.0, 100.0,
-            1.0f, 0.333f, 0.333f,
-            0,
-            "burrow"
-        )
 
         Register.command("sbosendinq") {
             val playerPos = Player.getLastPosition()
