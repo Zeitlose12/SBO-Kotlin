@@ -338,4 +338,8 @@ object Register {
     fun onEntityLoad(action: (entity: Entity, clientWorld: ClientWorld) -> Unit) {
         ClientEntityEvents.ENTITY_LOAD.register(action)
     }
+
+    fun onEntityUnload(action: (entity: Entity, clientWorld: ClientWorld) -> Unit) {
+        ClientEntityEvents.ENTITY_UNLOAD.register(action)
+    }
 }

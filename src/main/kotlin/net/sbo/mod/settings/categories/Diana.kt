@@ -206,6 +206,11 @@ object Diana : CategoryKt("Diana") {
         }
     }
 
+    var mythosMobHp by boolean(true) {
+        this.name = Translated("Mythos Mob HP")
+        this.description = Translated("Displays HP of mythological mobs near you. /sboguis to move it")
+    }
+
     var chimMessageBool by boolean(false) {
         this.name = Translated("Chim Message")
         this.description = Translated("Enables custom chim message")

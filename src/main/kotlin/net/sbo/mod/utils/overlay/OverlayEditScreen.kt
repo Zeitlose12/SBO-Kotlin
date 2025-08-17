@@ -3,6 +3,7 @@ package net.sbo.mod.utils.overlay
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
+import net.sbo.mod.utils.data.SboDataObject
 import net.sbo.mod.utils.data.SboDataObject.overlayData
 import org.lwjgl.glfw.GLFW
 
@@ -97,5 +98,6 @@ class OverlayEditScreen : Screen(Text.literal("SBO_Overlay_Editor")) {
     override fun removed() {
         super.removed()
         OverlayManager.overlays.forEach { it.selected = false }
+        SboDataObject.save("OverlayData")
     }
 }

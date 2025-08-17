@@ -23,6 +23,7 @@ import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.World
 import net.sbo.mod.diana.BurrowDetector
 import net.sbo.mod.diana.DianaGuess
+import net.sbo.mod.diana.DianaMobDetect
 import net.sbo.mod.general.HelpCommand
 import net.sbo.mod.overlays.Bobber
 import net.sbo.mod.overlays.DianaLoot
@@ -93,6 +94,7 @@ object SBOKotlin {
 		DianaStats.init()
 		MagicFind.init()
 		DianaMobs.init()
+		DianaMobDetect.init()
 		DianaLoot.init()
 
 		Register.onTick(100) { unregister ->
