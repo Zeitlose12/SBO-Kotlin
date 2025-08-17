@@ -237,8 +237,9 @@ object DianaTracker {
                     } else
                         announceLootToParty("Chimera!", "Chimera!$mfPrefix")
 
-                    if (Helper.getSecondsPassed(lastDianaMobDeath) > 2) { // todo: track mf like in ct
+                    if (Helper.getSecondsPassed(lastDianaMobDeath) > 2) {
                         // normal chim
+                        if (magicfind > sboData.highestChimMagicFind) sboData.highestChimMagicFind = magicfind
                         if (Diana.sendSinceMessage) Chat.chat("§6[SBO] §eTook §c${sboData.inqsSinceChim} §eInquisitors to get a Chimera!")
 
                         trackItem("CHIMERA", 1)
@@ -277,17 +278,18 @@ object DianaTracker {
                 }
                 "Daedalus Stick" -> {
                     if (Diana.lootAnnouncerScreen) {
-                        val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(100000)} coins" else "" // todo: get price from api
+                        val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(Helper.getItemPrice("Daedalus Stick"))} coins" else "" // todo: get price from api
                         Helper.showTitle("§d§lDaedalus Stick!", subTitle, 0, 25, 35)
                     }
 
                     if (Diana.sendSinceMessage) Chat.chat("§6[SBO] §eTook §c${sboData.minotaursSinceStick} §eMinotaurs to get a Daedalus Stick!")
                     announceLootToParty("Daedalus Stick!", "Daedalus Stick!$mfPrefix")
 
-                    if (Helper.getSecondsPassed(lastLootShare) <= 2) {
-                        // lootshare stick
+                    if (Helper.getSecondsPassed(lastLootShare) <= 2) { // lootshare stick
                         Chat.chat("§6[SBO] §cLootshared a Daedalus Stick!")
 //                        unlockAchievement(15)
+                    } else if (magicfind > sboData.highestStickMagicFind) {
+                        sboData.highestStickMagicFind = magicfind
                     }
 
                     trackItem("DAEDALUS_STICK", 1)

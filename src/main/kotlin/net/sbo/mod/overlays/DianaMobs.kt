@@ -18,7 +18,7 @@ object DianaMobs {
             updateLines()
         }
         .onMouseEnter {
-            changeView.text = "$UNDERLINE$YELLOW${BOLD}Change View"
+            changeView.text = "$YELLOW$UNDERLINE${BOLD}Change View"
         }
         .onMouseLeave {
             changeView.text = "$YELLOW${BOLD}Change View"
