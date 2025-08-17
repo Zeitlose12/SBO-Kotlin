@@ -26,7 +26,7 @@ import net.sbo.mod.utils.data.SboDataObject.saveTrackerData
 import net.sbo.mod.utils.data.SboDataObject.sboData
 import java.util.regex.Pattern
 
-// todo: all the backtoback messages, achievements, diana loot prices
+// todo: achievements
 
 object DianaTracker {
     private val rareDrops = mapOf<String, String>("DWARF_TURTLE_SHELLMET" to "§9", "CROCHET_TIGER_PLUSHIE" to "§5", "ANTIQUE_REMEDIES" to "$5", "MINOS_RELIC" to "§5")
@@ -94,7 +94,7 @@ object DianaTracker {
                 sboData.champsSinceRelic = 0
 
                 if (Diana.lootAnnouncerScreen) {
-                    val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(100000)} coins" else "" // todo: get price from api
+                    val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(Helper.getItemPrice(item.itemId))} coins" else ""
                     Helper.showTitle("§d§lMinos Relic!", subTitle, 0, 25, 35)
                 }
 
@@ -226,7 +226,7 @@ object DianaTracker {
             when (drop) {
                 "Enchanted Book" -> {
                     if (Diana.lootAnnouncerScreen) {
-                        val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(100000)} coins" else "" // todo: get price from api
+                        val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(Helper.getItemPrice("CHIMERA"))} coins" else ""
                         Helper.showTitle("§d§lChimera!", subTitle, 0, 25, 35)
                     }
 
@@ -278,7 +278,7 @@ object DianaTracker {
                 }
                 "Daedalus Stick" -> {
                     if (Diana.lootAnnouncerScreen) {
-                        val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(Helper.getItemPrice("Daedalus Stick"))} coins" else "" // todo: get price from api
+                        val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(Helper.getItemPrice("DAEDALUS_STICK"))} coins" else ""
                         Helper.showTitle("§d§lDaedalus Stick!", subTitle, 0, 25, 35)
                     }
 

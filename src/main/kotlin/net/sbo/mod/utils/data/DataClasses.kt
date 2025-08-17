@@ -59,6 +59,42 @@ data class PartyUpdateResponse(
 )
 
 @Serializable
+data class HypixelBazaarResponse(
+    val success: Boolean,
+    val lastUpdated: Long,
+    val products: Map<String, Product>
+)
+
+@Suppress("PropertyName")
+@Serializable
+data class Product(
+    val product_id: String,
+    val sell_summary: List<SummaryItem>,
+    val buy_summary: List<SummaryItem>,
+    val quick_status: QuickStatus
+)
+
+@Serializable
+data class SummaryItem(
+    val amount: Int,
+    val pricePerUnit: Double,
+    val orders: Int
+)
+
+@Serializable
+data class QuickStatus(
+    val productId: String,
+    val sellPrice: Double,
+    val sellVolume: Int,
+    val sellMovingWeek: Int,
+    val sellOrders: Int,
+    val buyPrice: Double,
+    val buyVolume: Int,
+    val buyMovingWeek: Int,
+    val buyOrders: Int
+)
+
+@Serializable
 data class Party(
     @SerialName("partyinfo")
     val partyInfo: List<PartyPlayerStats>,

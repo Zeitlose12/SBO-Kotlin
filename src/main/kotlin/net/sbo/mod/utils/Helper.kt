@@ -7,16 +7,20 @@ import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.diana.DianaTracker
 import net.sbo.mod.settings.categories.Debug
 import net.sbo.mod.settings.categories.Diana
+import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.data.SboDataObject
 import kotlin.concurrent.thread
 import net.sbo.mod.utils.data.DianaItemsData
 import net.sbo.mod.utils.data.DianaMobsData
+import net.sbo.mod.utils.data.HypixelBazaarResponse
 import net.sbo.mod.utils.data.Item
 import net.sbo.mod.utils.events.Register
+import net.sbo.mod.utils.http.Http
 import kotlin.reflect.full.memberProperties
 import java.text.DecimalFormat
 import java.util.Locale
 import java.util.regex.Pattern
+import kotlin.math.roundToLong
 
 object Helper {
     var lastLootShare: Long = 0L
@@ -29,6 +33,8 @@ object Helper {
     private var hasTrackedInq: Boolean = false
     private var prevInv = mutableMapOf<String, Item>()
     private var dianaMobNames: List<String> = listOf("Minos Inquisitor", "Minotaur", "Minos Champion", "Iron Golem", "Ocelot", "Zombie")
+    private var priceDataAh: MutableMap<String, Long> = mutableMapOf()
+    private var priceDataBazaar: HypixelBazaarResponse? = null
 
     fun init() {
         Register.onChatMessageCancable(Pattern.compile("§r§l§eLOOT SHARE §r§fYou received loot for assisting (.*?)", Pattern.DOTALL)) { message, matchResult ->
@@ -52,6 +58,11 @@ object Helper {
         Register.onTick(20) { // maybe better way to register this
             hasSpade = playerHasItem("ANCESTRAL_SPADE")
         }
+
+        Register.onTick(20 * 60 * 5) {
+            updateItemPriceInfo()
+        }
+        updateItemPriceInfo()
 
         Register.onEntityDeath { entity, source ->
             val dist = entity.distanceTo(mc.player)
@@ -382,4 +393,31 @@ object Helper {
         }
         return 0
     }
+
+    fun updateItemPriceInfo() {
+        Http.sendGetRequest("https://api.skyblockoverhaul.com/ahItems")
+            .toJson<List<MutableMap<String, Long>>> {
+                priceDataAh = it[1]
+            }.error { error ->
+                Chat.chat("§6[SBO] §4Unexpected error while fetching AH item prices: $error")
+            }
+        Http.sendGetRequest("https://api.skyblockoverhaul.com/bazaarItems")
+            .toJson<HypixelBazaarResponse> {
+                priceDataBazaar = it
+            }.error { error ->
+                Chat.chat("§6[SBO] §4Unexpected error while fetching Bazaar item prices: $error")
+            }
+    }
+
+    fun getItemPrice(sbId: String): Long {
+        val id = if (sbId == "CHIMERA") "ENCHANTMENT_ULTIMATE_CHIMERA_1" else sbId
+        val ahPrice = priceDataAh[sbId]
+        val bazaarPrice = priceDataBazaar?.products?.get(sbId)?.quick_status?.sellPrice
+        return when {
+            ahPrice != null -> ahPrice
+            bazaarPrice != null -> bazaarPrice.roundToLong()
+            else -> 0L
+        }
+    }
 }
+
