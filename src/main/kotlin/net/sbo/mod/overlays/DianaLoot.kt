@@ -96,7 +96,7 @@ object DianaLoot {
             listOf(
                 OverlayTextLine("$YELLOW${BOLD}Diana Loot $GRAY($YELLOW$type$GRAY)"),
                 OverlayTextLine("$GOLD$chimPrice $GRAY|$LIGHT_PURPLE Chimera: $AQUA${Helper.formatNumber(tracker.items.CHIMERA, true)} $GRAY($AQUA${chimPercent}%$GRAY)"),
-                OverlayTextLine("$GOLD$chimLsPrice $GRAY|$LIGHT_PURPLE Chimera $GRAY[$AQUA LS$GRAY]: $AQUA${Helper.formatNumber(tracker.items.CHIMERA_LS, true)} $GRAY($AQUA${chimLsPercent}%$GRAY)"),
+                OverlayTextLine("$GOLD$chimLsPrice $GRAY|$LIGHT_PURPLE Chimera $GRAY[${AQUA}LS$GRAY]: $AQUA${Helper.formatNumber(tracker.items.CHIMERA_LS, true)} $GRAY($AQUA${chimLsPercent}%$GRAY)"),
                 OverlayTextLine("$GOLD$relicPrice $GRAY|$DARK_PURPLE Minos Relic: $AQUA${Helper.formatNumber(tracker.items.MINOS_RELIC, true)} $GRAY($AQUA${relicPercent}%$GRAY)"),
                 OverlayTextLine("$GOLD$stickPrice $GRAY|$GOLD Daedalus Stick: $AQUA${Helper.formatNumber(tracker.items.DAEDALUS_STICK, true)} $GRAY($AQUA${stickPercent}%$GRAY)"),
                 OverlayTextLine("$GOLD$crownPrice $GRAY|$GOLD Crown of Greed: $AQUA${Helper.formatNumber(tracker.items.CROWN_OF_GREED, true)}"),
@@ -144,7 +144,7 @@ object DianaLoot {
         for (item in tracker.items::class.java.declaredFields) {
             item.isAccessible = true
             val itemName = item.name
-            if (itemName == "TIME" || itemName == "TOTAL_BURROWS" || itemName == "COINS" || itemName == "SCAVENGER_COINS" || itemName == "FISH_COINS") continue
+            if (itemName == "TIME" || itemName == "TOTAL_BURROWS" || itemName == "COINS" || itemName == "SCAVENGER_COINS" || itemName == "FISH_COINS" || itemName == "CHIMERA_LS") continue
             val itemValue = item.get(tracker.items) as Int
             if (itemValue <= 0) continue
             val itemPrice = Helper.getItemPrice(itemName)
@@ -152,6 +152,6 @@ object DianaLoot {
                 totalProfit += itemPrice * itemValue
             }
         }
-        return totalProfit + tracker.items.COINS + tracker.items.SCAVENGER_COINS + tracker.items.FISH_COINS
+        return totalProfit + tracker.items.COINS + tracker.items.SCAVENGER_COINS + tracker.items.FISH_COINS + Helper.getItemPriceFormatted("CHIMERA", tracker.items.CHIMERA_LS).toLong()
     }
 }
