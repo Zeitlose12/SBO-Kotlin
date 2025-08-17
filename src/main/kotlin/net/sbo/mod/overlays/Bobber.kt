@@ -15,7 +15,6 @@ object Bobber {
     val overlayText: OverlayTextLine = OverlayTextLine("")
 
     fun init() {
-        OverlayManager.add(bobberOverlay)
         bobberOverlay.setCondition { General.bobberOverlay }
         bobberOverlay.addLine(overlayText)
         Register.onTick(20) { client ->

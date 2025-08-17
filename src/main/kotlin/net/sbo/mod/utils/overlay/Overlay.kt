@@ -16,7 +16,6 @@ import java.awt.Color
  * @property x The x-coordinate of the overlay.
  * @property y The y-coordinate of the overlay.
  * @property scale The scale of the overlay, default is 1.0f.
- * @property renderType The type of rendering for the overlay, like "render", "postRender", "both".
  * @property allowedGuis The list of GUI names where the overlay is allowed to render.
  */
 class Overlay(
@@ -24,7 +23,6 @@ class Overlay(
     var x: Float,
     var y: Float,
     var scale: Float = 1.0f,
-    var renderType: String = "render",
     var allowedGuis: List<String> = listOf("Chat screen", "Crafting")
 ) {
     private val lines = mutableListOf<OverlayTextLine>()

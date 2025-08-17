@@ -15,7 +15,6 @@ object Legion {
     val overlayText: OverlayTextLine = OverlayTextLine("")
 
     fun init () {
-        OverlayManager.add(legionOverlay)
         legionOverlay.setCondition { General.legionOverlay }
         legionOverlay.addLine(overlayText)
         Register.onTick(20) { client ->
