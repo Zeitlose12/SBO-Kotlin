@@ -64,11 +64,6 @@ object Helper {
         }
         updateItemPriceInfo()
 
-        Register.command("sbotestprice") {
-            val chimPrice = getItemPrice("CHIMERA")
-            Chat.chat("§6[SBO] §aChimera price: §b${Helper.formatNumber(chimPrice, true)} coins")
-        }
-
         Register.onEntityDeath { entity, source ->
             val dist = entity.distanceTo(mc.player)
             val name = entity.name.string
@@ -414,13 +409,16 @@ object Helper {
             }
     }
 
-    fun getItemPrice(sbId: String): Long {
+    fun getItemPrice(sbId: String, amount: Int = 1): Long {
         val id = if (sbId == "CHIMERA") "ENCHANTMENT_ULTIMATE_CHIMERA_1" else sbId
-        val ahPrice = priceDataAh[id]
+        var ahPrice = priceDataAh[id]?.toDouble() ?: 0.0
+        if (id == "CROWN_OF_GREED")
+            ahPrice = if (ahPrice < 1000000.0) 1000000.0 else ahPrice
+
         val bazaarPrice = priceDataBazaar?.products?.get(id)?.quick_status?.sellPrice
         return when {
-            ahPrice != null -> ahPrice
-            bazaarPrice != null -> bazaarPrice.roundToLong()
+            ahPrice != 0.0 -> (ahPrice * amount).roundToLong()
+            bazaarPrice != null -> (bazaarPrice * amount).roundToLong()
             else -> 0L
         }
     }
