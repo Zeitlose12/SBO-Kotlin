@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.sbo.mod.diana.PreciseGuessBurrowState
 import net.sbo.mod.utils.render.WaypointRenderer
 import net.sbo.mod.settings.categories.Diana
-import net.sbo.mod.utils.Chat
+import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.Helper.checkDiana
 import net.sbo.mod.utils.Helper.sleep

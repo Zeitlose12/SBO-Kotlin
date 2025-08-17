@@ -1,7 +1,7 @@
 package net.sbo.mod.diana
 
 import net.sbo.mod.utils.data.SboDataObject
-import net.sbo.mod.utils.Chat
+import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.data.DianaTracker
 import java.util.concurrent.TimeUnit

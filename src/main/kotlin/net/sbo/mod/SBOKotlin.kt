@@ -19,8 +19,8 @@ import net.sbo.mod.utils.SboKeyBinds
 import net.sbo.mod.guis.Main
 import net.sbo.mod.partyfinder.PartyCheck
 import net.sbo.mod.partyfinder.PartyPlayer
-import net.sbo.mod.utils.Chat
-import net.sbo.mod.utils.ClickActionManager
+import net.sbo.mod.utils.chat.Chat
+import net.sbo.mod.utils.events.ClickActionManager
 import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.World
 import net.sbo.mod.diana.BurrowDetector
@@ -28,7 +28,6 @@ import net.sbo.mod.overlays.Bobber
 import net.sbo.mod.overlays.Legion
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.SBOTimerManager
-import net.sbo.mod.utils.events.TickScheduler
 import net.sbo.mod.utils.overlay.OverlayManager
 
 object SBOKotlin {
@@ -72,7 +71,7 @@ object SBOKotlin {
 		// Registering Guis
 		guis.register()
 
-		ClickActionManager.inti()
+		ClickActionManager.init()
 		SboKeyBinds.init()
 		WaypointManager.init()
 		HypixelModApi.init()

@@ -1,6 +1,7 @@
 package net.sbo.mod.utils
 
 import net.sbo.mod.SBOKotlin
+import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.data.MayorResponse
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.http.Http

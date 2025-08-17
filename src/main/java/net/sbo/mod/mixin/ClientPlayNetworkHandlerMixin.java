@@ -1,6 +1,6 @@
 package net.sbo.mod.mixin;
 
-import net.sbo.mod.utils.ChatHandler;
+import net.sbo.mod.utils.chat.ChatHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.Text;

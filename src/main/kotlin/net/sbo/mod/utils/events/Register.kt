@@ -3,7 +3,6 @@ package net.sbo.mod.utils.events
 import net.sbo.mod.SBOKotlin.mc
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.minecraft.client.MinecraftClient
@@ -13,7 +12,7 @@ import net.minecraft.client.world.ClientWorld
 import net.minecraft.client.gui.DrawContext
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import net.sbo.mod.utils.ChatHandler
+import net.sbo.mod.utils.chat.ChatHandler
 import net.sbo.mod.utils.Helper.removeFormatting
 import net.sbo.mod.utils.data.PlayerInteractEvent
 
@@ -25,7 +24,7 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.damage.DamageSource
 import net.minecraft.network.packet.Packet
 import net.minecraft.util.math.BlockPos
-import net.sbo.mod.utils.ChatUtils.formattedString
+import net.sbo.mod.utils.chat.ChatUtils.formattedString
 import net.sbo.mod.utils.events.TickScheduler.ScheduledTask
 import net.sbo.mod.utils.events.TickScheduler.tasks
 import net.sbo.mod.utils.data.PacketActionPair

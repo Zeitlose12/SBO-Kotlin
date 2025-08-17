@@ -1,4 +1,4 @@
-package net.sbo.mod.utils
+package net.sbo.mod.utils.chat
 
 import net.minecraft.text.Style
 import net.minecraft.text.TextColor

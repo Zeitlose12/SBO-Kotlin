@@ -1,9 +1,8 @@
-package net.sbo.mod.utils
+package net.sbo.mod.utils.chat
 
-import gg.essential.universal.utils.toFormattedString
 import net.minecraft.text.Text
 import net.sbo.mod.settings.categories.Debug
-import net.sbo.mod.utils.ChatUtils.formattedString
+import net.sbo.mod.utils.chat.ChatUtils.formattedString
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 

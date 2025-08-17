@@ -1,7 +1,6 @@
 package net.sbo.mod.settings.categories
 
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
-import net.sbo.mod.utils.Chat.chat
 
 enum class TestColor {
     RED, GREEN, BLUE, YELLOW, PURPLE

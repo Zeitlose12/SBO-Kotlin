@@ -2,7 +2,7 @@ package net.sbo.mod.diana
 
 import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.settings.categories.QOL
-import net.sbo.mod.utils.Chat
+import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.Helper.allowSackTracking
 import net.sbo.mod.utils.Helper.checkDiana

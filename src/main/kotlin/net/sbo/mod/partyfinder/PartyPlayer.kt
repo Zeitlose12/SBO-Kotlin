@@ -1,7 +1,7 @@
 package net.sbo.mod.partyfinder
 
 import net.sbo.mod.SBOKotlin.API_URL
-import net.sbo.mod.utils.Chat
+import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.events.Register

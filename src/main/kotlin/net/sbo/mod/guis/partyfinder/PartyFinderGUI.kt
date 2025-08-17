@@ -4,7 +4,6 @@ import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.WindowScreen
-import gg.essential.elementa.components.SVGComponent
 import gg.essential.elementa.components.ScrollComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIRoundedRectangle
@@ -36,8 +35,8 @@ import net.sbo.mod.partyfinder.PartyFinderManager.removePartyFromQueue
 import net.sbo.mod.partyfinder.PartyFinderManager.sendJoinRequest
 import net.sbo.mod.partyfinder.PartyPlayer.getPartyPlayerStats
 import net.sbo.mod.settings.categories.PartyFinder
-import net.sbo.mod.utils.Chat
-import net.sbo.mod.utils.EventBus
+import net.sbo.mod.utils.chat.Chat
+import net.sbo.mod.utils.events.EventBus
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.data.HighlightElement
 import net.sbo.mod.utils.data.Party

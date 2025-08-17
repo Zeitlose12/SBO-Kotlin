@@ -5,7 +5,7 @@ import net.azureaaron.hmapi.network.packet.v2.s2c.PartyInfoS2CPacket
 import net.sbo.mod.settings.categories.PartyFinder
 import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.events.Register
-import net.sbo.mod.utils.Chat
+import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.data.SboDataObject
@@ -15,7 +15,7 @@ import net.sbo.mod.utils.http.Http.getString
 import net.sbo.mod.utils.data.SboDataObject.sboData
 import net.sbo.mod.SBOKotlin.API_URL
 import net.sbo.mod.partyfinder.PartyPlayer.getPartyPlayerStats
-import net.sbo.mod.utils.EventBus
+import net.sbo.mod.utils.events.EventBus
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.data.PartyPlayerStats
 import net.sbo.mod.utils.data.GetAllParties

@@ -7,6 +7,7 @@ import net.azureaaron.hmapi.network.packet.s2c.HelloS2CPacket
 import net.azureaaron.hmapi.network.packet.s2c.HypixelS2CPacket
 import net.azureaaron.hmapi.network.packet.v1.s2c.LocationUpdateS2CPacket
 import net.azureaaron.hmapi.network.packet.v2.s2c.PartyInfoS2CPacket
+import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.events.Register
 
 object HypixelModApi {

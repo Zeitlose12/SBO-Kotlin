@@ -2,7 +2,7 @@ package net.sbo.mod.general
 
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.settings.categories.PartyCommands
-import net.sbo.mod.utils.Chat
+import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.data.SboDataObject.sboData
 import net.sbo.mod.utils.data.SboDataObject.dianaTrackerMayor
 import net.sbo.mod.utils.Helper.sleep
