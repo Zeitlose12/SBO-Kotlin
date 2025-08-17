@@ -49,7 +49,6 @@ object PartyFinderManager {
 
     private val playersSentRequest = mutableMapOf<String, Long>()
 
-    // todo: add fun invitePlayerIfMeetsReqs
     private val partyDisbandRegexes = listOf(
         Regex("^.+ §r§ehas disbanded the party!$"),
         Regex("^§r§cThe party was disbanded because (.+)$"),

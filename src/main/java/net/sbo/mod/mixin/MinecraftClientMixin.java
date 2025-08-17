@@ -2,7 +2,6 @@ package net.sbo.mod.mixin;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.sbo.mod.utils.Register;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,7 +13,7 @@ public abstract class MinecraftClientMixin {
 
     @Inject(method = "setScreen", at = @At("HEAD"))
     public void onSetScreen(Screen screen, CallbackInfo ci) {
-        if (screen instanceof HandledScreen<?>) {
+        if (screen != null) {
             Register.INSTANCE.runGuiOpenActions(screen, ci);
         }
     }

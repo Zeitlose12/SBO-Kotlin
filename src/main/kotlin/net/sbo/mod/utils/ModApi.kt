@@ -25,6 +25,15 @@ object HypixelModApi {
         HypixelPacketEvents.HELLO.register(::handlePacket)
         HypixelPacketEvents.PARTY_INFO.register(::handlePacket)
         HypixelPacketEvents.LOCATION_UPDATE.register(::handlePacket)
+
+        Register.onDisconnect {
+            isOnHypixel = false
+            isOnSkyblock = false
+            isLeader = false
+            isInParty = false
+            partyMembers = emptyList()
+            mode = ""
+        }
     }
 
     private fun handlePacket(packet: HypixelS2CPacket) {
@@ -56,6 +65,7 @@ object HypixelModApi {
 
     private fun onHelloPacket(packet: HelloS2CPacket) {
         isOnHypixel = true
+        sendPartyInfoPacket()
     }
 
     private fun onPartyInfoPacket(packet: PartyInfoS2CPacket) {

@@ -48,7 +48,7 @@ object Diana : CategoryKt("Diana") {
         this.description = Translated("The additional block difference to consider when warping to a waypoint. (0 to disable)")
     }
 
-    var warpDelay by int(0) { // todo: add this
+    var warpDelay by int(0) {
         this.range = 0..1000
         this.slider = true
         this.name = Translated("Warp Delay")

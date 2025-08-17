@@ -17,8 +17,6 @@ object PartyCheck {
     private var checkCooldown: Long = 0
 
     fun init() {
-        // todo: add /sbocheck command and /sbocheckparty command like in ct
-
         HypixelModApi.onPartyInfo { isInParty, isLeader, members ->
             val partyMember = members.filter { it != Player.getUUIDString() }
             checkParty(partyMember)

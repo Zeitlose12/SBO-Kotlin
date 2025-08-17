@@ -94,7 +94,7 @@ object DianaTracker {
                 sboData.champsSinceRelic = 0
 
                 if (Diana.lootAnnouncerScreen) {
-                    val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(100000)} coins" else ""
+                    val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(100000)} coins" else "" // todo: get price from api
                     Helper.showTitle("§d§lMinos Relic!", subTitle, 0, 25, 35)
                 }
 
@@ -226,7 +226,7 @@ object DianaTracker {
             when (drop) {
                 "Enchanted Book" -> {
                     if (Diana.lootAnnouncerScreen) {
-                        val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(100000)} coins" else ""
+                        val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(100000)} coins" else "" // todo: get price from api
                         Helper.showTitle("§d§lChimera!", subTitle, 0, 25, 35)
                     }
 
@@ -277,7 +277,7 @@ object DianaTracker {
                 }
                 "Daedalus Stick" -> {
                     if (Diana.lootAnnouncerScreen) {
-                        val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(100000)} coins" else ""
+                        val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(100000)} coins" else "" // todo: get price from api
                         Helper.showTitle("§d§lDaedalus Stick!", subTitle, 0, 25, 35)
                     }
 
@@ -309,7 +309,7 @@ object DianaTracker {
     }
 
     fun trackBurrowsWithChat() {
-        Register.onChatMessageCancable(Pattern.compile("§r§eYou dug out a Griffin Burrow! §r§7(.*?)", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("§r§eYou dug out a Griffin Burrow! (.*?)", Pattern.DOTALL)) { message, matchResult ->
             trackItem("TOTAL_BURROWS", 1)
             val burrow = matchResult.group(1).trim().removeFormatting()
             if (Diana.fourEyedFish) {

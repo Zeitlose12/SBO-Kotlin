@@ -1,5 +1,6 @@
 package net.sbo.mod.utils
 
+import net.minecraft.client.gui.screen.Screen
 import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
@@ -23,6 +24,7 @@ object Helper {
     var hasSpade: Boolean = false
     var lastDianaMobDeath: Long = 0L
     var lastInqDeath: Long = 0L
+    var currentScreen: Screen? = null
 
     private var hasTrackedInq: Boolean = false
     private var prevInv = mutableMapOf<String, Item>()
@@ -36,7 +38,14 @@ object Helper {
 
         Register.onGuiOpen { screen, ci ->
             sleep(200) {
+                currentScreen = screen
                 if (screen.title.string == "Sack of Sacks") allowSackTracking = false
+            }
+        }
+
+        Register.onGuiClose { screen ->
+            sleep(200) {
+                currentScreen = null
             }
         }
 
@@ -306,10 +315,8 @@ object Helper {
         return diana
     }
 
-    fun getInventoryName(): String {
-        val currentInv = mc.currentScreen?.title?.string ?: "Unknown Inventory"
-        Chat.chat("§6[SBO] §aCurrent Inventory: §e$currentInv")
-        return currentInv
+    fun getGuiName(): String {
+        return currentScreen?.title?.string ?: ""
     }
 
     fun showTitle(title: String?, subtitle: String?, fadeIn: Int, time: Int, fadeOut: Int) {

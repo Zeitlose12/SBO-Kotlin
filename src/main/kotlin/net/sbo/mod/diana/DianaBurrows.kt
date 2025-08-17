@@ -13,6 +13,8 @@ import net.sbo.mod.utils.waypoint.Waypoint
 import java.awt.Color
 import net.sbo.mod.utils.waypoint.WaypointManager
 import net.sbo.mod.utils.SboVec
+import net.sbo.mod.utils.World
+import java.util.regex.Pattern
 
 internal class EvictingQueue<T>(internal val maxSize: Int) {
     internal val queue = mutableListOf<T>()
@@ -127,18 +129,24 @@ object BurrowDetector {
             resetBurrows()
             Chat.chat("§6[SBO] §4Burrow Waypoints Cleared!§r")
         }
-        //todo: add chat registers when diana elected
-//        registerWhen(register("chat", (burrow) => {
-//            refreshBurrows();
-//        }).setCriteria("&r&eYou dug out a Griffin Burrow! &r&7${burrow}&r"), () => settings.dianaBurrowDetect);
-//
-//        registerWhen(register("chat", (burrow) => {
-//            refreshBurrows();
-//        }).setCriteria("&r&eYou finished the Griffin burrow chain!${burrow}"), () => settings.dianaBurrowDetect);
-//
-//        registerWhen(register("chat", (died) => {
-//            refreshBurrows();
-//        }).setCriteria(" ☠ You ${died}."), () => getWorld() == "Hub" && settings.dianaBurrowDetect);
+
+        Register.onChatMessageCancable(Pattern.compile("§r§eYou dug out a Griffin Burrow! (.*?)", Pattern.DOTALL)) { message, matchResult ->
+            if (!Diana.dianaBurrowDetect) return@onChatMessageCancable true
+            refreshBurrows()
+            true
+        }
+
+        Register.onChatMessageCancable(Pattern.compile("§r§eYou finished the Griffin burrow chain!(.*?)", Pattern.DOTALL)) { message, matchResult ->
+            if (!Diana.dianaBurrowDetect) return@onChatMessageCancable true
+            refreshBurrows()
+            true
+        }
+
+        Register.onChatMessageCancable(Pattern.compile(" ☠ You (.*?)", Pattern.DOTALL)) { message, matchResult ->
+            if (Diana.dianaBurrowDetect && World.getWorld() == "Hub")
+                refreshBurrows()
+            true
+        }
     }
 
     private fun getRGB(type: String): Color {

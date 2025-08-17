@@ -6,7 +6,7 @@ import net.sbo.mod.utils.render.RenderUtils2D
 
 import java.awt.Color
 
-class OverlayTextLine( // todo: check if guis is chat or player inventory else dont execute actions and do this in overlay
+class OverlayTextLine(
     var text: String,
     var shadow: Boolean = true,
 ) {
@@ -82,9 +82,7 @@ class OverlayTextLine( // todo: check if guis is chat or player inventory else d
         val textWidth = textRenderer.getWidth(text) * scale
         val textHeight = (textRenderer.fontHeight + 1) * scale - 1
 
-        val isOver = mouseX >= x && mouseX <= x + textWidth && mouseY >= y && mouseY <= y + textHeight
-
-        return isOver
+        return mouseX >= x && mouseX <= x + textWidth && mouseY >= y && mouseY <= y + textHeight
     }
 
     fun updateMouseInteraction(mouseX: Double, mouseY: Double, x: Float, y: Float, textRenderer: TextRenderer, scale: Float, drawContext: DrawContext) {

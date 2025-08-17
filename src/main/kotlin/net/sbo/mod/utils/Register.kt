@@ -29,6 +29,7 @@ import gg.essential.universal.utils.toFormattedString
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.minecraft.entity.Entity
@@ -45,7 +46,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
  */
 object Register {
     private val guiOpenActions = mutableListOf<(screen: Screen, ci: CallbackInfo) -> Unit>()
-    private val guiCloseActions = mutableListOf<(client: MinecraftClient, screen: Screen) -> Unit>()
     private val guiRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
     private val guiPostRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
     private val guiKeyActions = mutableListOf<(client: MinecraftClient, screen: Screen, key: Int, cir: CallbackInfoReturnable<Boolean>) -> Unit>()
@@ -55,7 +55,6 @@ object Register {
     private val entityDeathActions = mutableListOf<(entity: Entity, source: DamageSource) -> Unit>()
 
     fun runGuiOpenActions(screen: Screen, ci: CallbackInfo) { guiOpenActions.forEach { action -> action(screen, ci) } }
-    fun runGuiCloseActions(client: MinecraftClient, screen: Screen) { guiCloseActions.forEach { action -> action(client, screen) } }
     fun runGuiRenderActions(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
     fun runGuiPostRenderActions( client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiPostRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
     fun runGuiKeyActions(client: MinecraftClient, screen: Screen, key: Int, cir: CallbackInfoReturnable<Boolean>) { guiKeyActions.forEach { action -> action(client, screen, key, cir) } }
@@ -297,8 +296,12 @@ object Register {
      * Registers an event that listens for GUI close events and executes an action.
      * @param action The action to execute when a GUI is closed.
      */
-    fun onGuiClose(action: (client: MinecraftClient, screen: Screen) -> Unit) {
-        guiCloseActions.add(action)
+    fun onGuiClose(action: (screen: Screen) -> Unit) {
+        ScreenEvents.AFTER_INIT.register { _, screen, _, _ ->
+            ScreenEvents.remove(screen).register {
+                action(screen)
+            }
+        }
     }
 
     /**
