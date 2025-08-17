@@ -33,7 +33,7 @@ object Helper {
     private var hasTrackedInq: Boolean = false
     private var prevInv = mutableMapOf<String, Item>()
     private var dianaMobNames: List<String> = listOf("Minos Inquisitor", "Minotaur", "Minos Champion", "Iron Golem", "Ocelot", "Zombie")
-    private var priceDataAh: MutableMap<String, Long> = mutableMapOf()
+    private var priceDataAh: Map<String, Long> = emptyMap()
     private var priceDataBazaar: HypixelBazaarResponse? = null
 
     fun init() {
@@ -63,6 +63,11 @@ object Helper {
             updateItemPriceInfo()
         }
         updateItemPriceInfo()
+
+        Register.command("sbotestprice") {
+            val chimPrice = getItemPrice("CHIMERA")
+            Chat.chat("§6[SBO] §aChimera price: §b${Helper.formatNumber(chimPrice, true)} coins")
+        }
 
         Register.onEntityDeath { entity, source ->
             val dist = entity.distanceTo(mc.player)
@@ -396,12 +401,12 @@ object Helper {
 
     fun updateItemPriceInfo() {
         Http.sendGetRequest("https://api.skyblockoverhaul.com/ahItems")
-            .toJson<List<MutableMap<String, Long>>> {
-                priceDataAh = it[1]
+            .toJson<List<Map<String, Map<String, Long>>>> { json ->
+                priceDataAh = json.flatMap { it.entries }.associate { it.key to it.value["price"]!! }
             }.error { error ->
                 Chat.chat("§6[SBO] §4Unexpected error while fetching AH item prices: $error")
             }
-        Http.sendGetRequest("https://api.skyblockoverhaul.com/bazaarItems")
+        Http.sendGetRequest("https://api.hypixel.net/skyblock/bazaar?product")
             .toJson<HypixelBazaarResponse> {
                 priceDataBazaar = it
             }.error { error ->
@@ -411,8 +416,8 @@ object Helper {
 
     fun getItemPrice(sbId: String): Long {
         val id = if (sbId == "CHIMERA") "ENCHANTMENT_ULTIMATE_CHIMERA_1" else sbId
-        val ahPrice = priceDataAh[sbId]
-        val bazaarPrice = priceDataBazaar?.products?.get(sbId)?.quick_status?.sellPrice
+        val ahPrice = priceDataAh[id]
+        val bazaarPrice = priceDataBazaar?.products?.get(id)?.quick_status?.sellPrice
         return when {
             ahPrice != null -> ahPrice
             bazaarPrice != null -> bazaarPrice.roundToLong()
