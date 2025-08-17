@@ -115,7 +115,7 @@ object Diana : CategoryKt("Diana") {
     }
 
     var statsTracker by boolean(false) {
-        this.name = Translated("Diana Stats")
+        this.name = Translated("Diana Stats Tracker")
         this.description = Translated("Shows stats like Mobs since Inquisitor, Inquisitors since Chimera, /sboguis to move the overlay")
     }
 
