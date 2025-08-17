@@ -97,7 +97,7 @@ object DianaTracker {
                 sboData.champsSinceRelic = 0
 
                 if (Diana.lootAnnouncerScreen) {
-                    val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(Helper.getItemPrice(item.itemId))} coins" else ""
+                    val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.getItemPriceFormatted(item.itemId)} coins" else ""
                     Helper.showTitle("§d§lMinos Relic!", subTitle, 0, 25, 35)
                 }
 
@@ -229,7 +229,7 @@ object DianaTracker {
             when (drop) {
                 "Enchanted Book" -> {
                     if (Diana.lootAnnouncerScreen) {
-                        val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(Helper.getItemPrice("CHIMERA"))} coins" else ""
+                        val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.getItemPriceFormatted("CHIMERA")} coins" else ""
                         Helper.showTitle("§d§lChimera!", subTitle, 0, 25, 35)
                     }
 
@@ -281,7 +281,7 @@ object DianaTracker {
                 }
                 "Daedalus Stick" -> {
                     if (Diana.lootAnnouncerScreen) {
-                        val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.formatNumber(Helper.getItemPrice("DAEDALUS_STICK"))} coins" else ""
+                        val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.getItemPriceFormatted("DAEDALUS_STICK")} coins" else ""
                         Helper.showTitle("§d§lDaedalus Stick!", subTitle, 0, 25, 35)
                     }
 

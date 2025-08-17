@@ -409,6 +409,7 @@ object Helper {
             }
     }
 
+
     fun getItemPrice(sbId: String, amount: Int = 1): Long {
         val id = if (sbId == "CHIMERA") "ENCHANTMENT_ULTIMATE_CHIMERA_1" else sbId
         var ahPrice = priceDataAh[id]?.toDouble() ?: 0.0
@@ -421,6 +422,11 @@ object Helper {
             bazaarPrice != null -> (bazaarPrice * amount).roundToLong()
             else -> 0L
         }
+    }
+
+    fun getItemPriceFormatted(sbId: String, amount: Int = 1): String {
+        val price = getItemPrice(sbId, amount)
+        return formatNumber(price)
     }
 }
 
