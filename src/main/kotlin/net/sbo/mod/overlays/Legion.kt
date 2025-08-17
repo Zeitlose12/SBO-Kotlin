@@ -4,12 +4,20 @@ import net.minecraft.client.MinecraftClient
 import net.sbo.mod.utils.Register
 import net.sbo.mod.settings.categories.General
 import net.sbo.mod.utils.World
+import net.sbo.mod.utils.overlay.Overlay
+import net.sbo.mod.utils.overlay.OverlayManager
+import net.sbo.mod.utils.overlay.OverlayTextLine
 import java.util.UUID
 
 object Legion {
     var legionCount: Int = 0
+    val legionOverlay: Overlay = Overlay("legionOverlay", 10.0f, 10.0f, 1.0f)
+    val overlayText: OverlayTextLine = OverlayTextLine("")
 
     fun init () {
+        OverlayManager.add(legionOverlay)
+        legionOverlay.setCondition { General.legionOverlay }
+        legionOverlay.addLine(overlayText)
         Register.onTick(20) { client ->
             if (!General.legionOverlay || !World.isInSkyblock()) return@onTick
             val player = client.player ?: return@onTick
@@ -24,6 +32,7 @@ object Legion {
                 }
                 .distinctBy { it.uuid }
             legionCount = nearbyPlayers.size
+            overlayText.text = "§e§lLegion: §b§l$legionCount"
         }
     }
 
