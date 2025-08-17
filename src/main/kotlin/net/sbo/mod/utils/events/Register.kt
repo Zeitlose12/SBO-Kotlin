@@ -1,21 +1,16 @@
-package net.sbo.mod.utils
+package net.sbo.mod.utils.events
 
 import net.sbo.mod.SBOKotlin.mc
-import com.mojang.brigadier.context.CommandContext
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
-import net.minecraft.server.command.CommandManager.literal
-import net.minecraft.server.command.CommandManager.argument
 import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.client.gui.DrawContext
-import net.sbo.mod.SBOKotlin.logger
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import net.sbo.mod.utils.ChatHandler
@@ -23,20 +18,16 @@ import net.sbo.mod.utils.Helper.removeFormatting
 import net.sbo.mod.utils.data.PlayerInteractEvent
 
 import com.mojang.brigadier.arguments.StringArgumentType
-import com.mojang.brigadier.Command
-import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import gg.essential.universal.utils.toFormattedString
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.minecraft.entity.Entity
 import net.minecraft.entity.damage.DamageSource
 import net.minecraft.network.packet.Packet
 import net.minecraft.util.math.BlockPos
 import net.sbo.mod.utils.ChatUtils.formattedString
+import net.sbo.mod.utils.events.TickScheduler.ScheduledTask
+import net.sbo.mod.utils.events.TickScheduler.tasks
 import net.sbo.mod.utils.data.PacketActionPair
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
@@ -134,17 +125,10 @@ object Register {
     /**
      * Registers a tick event that executes an action every specified number of ticks.
      * @param tick The number of ticks after which the action should be executed.
-     * @param action The action to execute on each tick.
+     * @param action The action to execute. It receives a lambda to unregister itself.
      */
-    fun onTick(tick: Int, action: (MinecraftClient) -> Unit) {
-        var tickCounter = 0
-        ClientTickEvents.END_CLIENT_TICK.register { client ->
-            tickCounter++
-            if (tickCounter >= tick) {
-                action(client)
-                tickCounter = 0
-            }
-        }
+    fun onTick(tick: Int, action: (unregister: () -> Unit) -> Unit) {
+        tasks += ScheduledTask(tick, action)
     }
 
     /**

@@ -4,7 +4,7 @@ import gg.essential.universal.utils.toFormattedString
 import net.azureaaron.hmapi.network.packet.v2.s2c.PartyInfoS2CPacket
 import net.sbo.mod.settings.categories.PartyFinder
 import net.sbo.mod.utils.HypixelModApi
-import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Player

@@ -1,9 +1,8 @@
 package net.sbo.mod.general
 
-import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.events.Register
 import net.sbo.mod.settings.categories.PartyCommands
 import net.sbo.mod.utils.Chat
-import net.sbo.mod.SBOKotlin
 import net.sbo.mod.utils.data.SboDataObject.sboData
 import net.sbo.mod.utils.data.SboDataObject.dianaTrackerMayor
 import net.sbo.mod.utils.Helper.sleep
@@ -17,6 +16,8 @@ import net.sbo.mod.utils.Player
 import java.util.concurrent.TimeUnit
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.SimpleDateFormat
+import java.util.Date
 
 object PartyCommands {
 
@@ -103,7 +104,7 @@ object PartyCommands {
                 "!time" -> {
                     if (!settings.timeCommand) return@onChatMessage
                     sleep(200) {
-                        val currentTime = java.text.SimpleDateFormat("HH:mm:ss").format(java.util.Date())
+                        val currentTime = SimpleDateFormat("HH:mm:ss").format(Date())
                         Chat.command("pc $currentTime")
                     }
                 }

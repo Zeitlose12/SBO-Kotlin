@@ -5,9 +5,8 @@ import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.guis.partyfinder.PartyFinderGUI
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.EventBus
-import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.World
-import net.sbo.mod.utils.data.SboDataObject
 
 object Main {
     private var partyFinderGui: PartyFinderGUI? = null

@@ -4,7 +4,7 @@ import net.sbo.mod.SBOKotlin.API_URL
 import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Player
-import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.data.PartyInfo
 import net.sbo.mod.utils.data.PartyPlayerStats
 import net.sbo.mod.utils.http.Http

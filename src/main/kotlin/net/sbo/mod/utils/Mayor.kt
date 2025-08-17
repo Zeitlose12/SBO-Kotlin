@@ -2,6 +2,7 @@ package net.sbo.mod.utils
 
 import net.sbo.mod.SBOKotlin
 import net.sbo.mod.utils.data.MayorResponse
+import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.http.Http
 import java.util.Calendar
 import java.util.Date

@@ -1,14 +1,10 @@
 package net.sbo.mod.general
 
 import net.minecraft.text.HoverEvent
-import net.minecraft.text.Text
 import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.diana.DianaTracker
-import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Helper
-import net.sbo.mod.utils.Helper.removeFormatting
-import net.sbo.mod.utils.Player
-import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.World
 import net.sbo.mod.utils.data.Item
 import java.util.regex.Pattern

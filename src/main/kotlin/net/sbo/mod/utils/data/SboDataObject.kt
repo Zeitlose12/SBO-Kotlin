@@ -5,10 +5,9 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.sbo.mod.SBOKotlin
-import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.events.Register
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter

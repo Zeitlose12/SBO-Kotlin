@@ -2,7 +2,6 @@ package net.sbo.mod.utils.waypoint
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
-import net.sbo.mod.diana.DianaGuessHandler
 import net.sbo.mod.diana.PreciseGuessBurrowState
 import net.sbo.mod.utils.render.WaypointRenderer
 import net.sbo.mod.settings.categories.Diana
@@ -11,7 +10,7 @@ import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.Helper.checkDiana
 import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Player
-import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.SboVec
 import kotlin.collections.iterator
 import kotlin.math.roundToInt

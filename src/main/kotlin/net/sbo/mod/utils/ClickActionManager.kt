@@ -1,5 +1,6 @@
 package net.sbo.mod.utils
 
+import net.sbo.mod.utils.events.Register
 import java.util.UUID
 
 /**

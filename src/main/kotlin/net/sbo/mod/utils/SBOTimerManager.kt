@@ -2,6 +2,7 @@ package net.sbo.mod.utils
 
 import net.sbo.mod.SBOKotlin
 import net.sbo.mod.utils.data.SboDataObject
+import net.sbo.mod.utils.events.Register
 import java.lang.reflect.Field
 import java.util.Locale
 

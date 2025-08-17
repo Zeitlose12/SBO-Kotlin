@@ -6,7 +6,7 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.sbo.mod.utils.Chat
-import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.events.Register
 
 val commands = arrayOf(
     mapOf("cmd" to "sbo", "desc" to "Open the Settings GUI"),

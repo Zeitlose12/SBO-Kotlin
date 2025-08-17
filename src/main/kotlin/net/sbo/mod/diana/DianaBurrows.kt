@@ -5,7 +5,7 @@ import net.minecraft.network.packet.s2c.play.ParticleS2CPacket
 import net.minecraft.util.math.BlockPos
 import net.sbo.mod.SBOKotlin
 import net.sbo.mod.settings.categories.Diana
-import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.events.Register
 import net.sbo.mod.settings.categories.Customization
 import net.sbo.mod.utils.Chat
 import net.minecraft.particle.ParticleTypes as MCParticleTypes

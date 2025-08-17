@@ -1,11 +1,11 @@
 package net.sbo.mod.overlays
 
 import net.minecraft.client.MinecraftClient
-import net.sbo.mod.utils.Register
+import net.sbo.mod.SBOKotlin.mc
+import net.sbo.mod.utils.events.Register
 import net.sbo.mod.settings.categories.General
 import net.sbo.mod.utils.World
 import net.sbo.mod.utils.overlay.Overlay
-import net.sbo.mod.utils.overlay.OverlayManager
 import net.sbo.mod.utils.overlay.OverlayTextLine
 import java.util.UUID
 
@@ -17,16 +17,16 @@ object Legion {
     fun init () {
         legionOverlay.setCondition { General.legionOverlay }
         legionOverlay.addLine(overlayText)
-        Register.onTick(20) { client ->
+        Register.onTick(20) {
             if (!General.legionOverlay || !World.isInSkyblock()) return@onTick
-            val player = client.player ?: return@onTick
-            val world = client.world ?: return@onTick
+            val player = mc.player ?: return@onTick
+            val world = mc.world ?: return@onTick
             val nearbyPlayers = world.players
                 .filter { otherPlayer ->
                     otherPlayer != player &&
 
                     (otherPlayer.uuid.version() == 4 || otherPlayer.uuid.version() == 1) &&
-                    getPlayerPing(client, otherPlayer.uuid) > 0 &&
+                    getPlayerPing(mc, otherPlayer.uuid) > 0 &&
                     otherPlayer.distanceTo(player) <= 30
                 }
                 .distinctBy { it.uuid }

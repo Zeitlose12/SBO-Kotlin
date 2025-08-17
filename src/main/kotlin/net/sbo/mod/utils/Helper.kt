@@ -2,7 +2,6 @@ package net.sbo.mod.utils
 
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.component.DataComponentTypes
-import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
 import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.diana.DianaTracker
@@ -13,6 +12,7 @@ import kotlin.concurrent.thread
 import net.sbo.mod.utils.data.DianaItemsData
 import net.sbo.mod.utils.data.DianaMobsData
 import net.sbo.mod.utils.data.Item
+import net.sbo.mod.utils.events.Register
 import kotlin.reflect.full.memberProperties
 import java.text.DecimalFormat
 import java.util.Locale

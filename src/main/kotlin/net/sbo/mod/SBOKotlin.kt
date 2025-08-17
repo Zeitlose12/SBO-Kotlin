@@ -3,7 +3,6 @@ package net.sbo.mod
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import net.minecraft.client.MinecraftClient
-import net.minecraft.entity.EntityType
 import net.sbo.mod.diana.DianaGuessHandler
 import net.sbo.mod.diana.DianaTracker
 import net.sbo.mod.utils.waypoint.WaypointManager
@@ -11,7 +10,7 @@ import org.slf4j.LoggerFactory
 import net.sbo.mod.init.registerHelpCommand
 import net.sbo.mod.settings.Settings
 import net.sbo.mod.utils.Mayor
-import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.events.Register
 import net.sbo.mod.general.PartyCommands
 import net.sbo.mod.general.Pickuplog
 import net.sbo.mod.utils.data.SboDataObject
@@ -29,6 +28,7 @@ import net.sbo.mod.overlays.Bobber
 import net.sbo.mod.overlays.Legion
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.SBOTimerManager
+import net.sbo.mod.utils.events.TickScheduler
 import net.sbo.mod.utils.overlay.OverlayManager
 
 object SBOKotlin {
@@ -89,6 +89,12 @@ object SBOKotlin {
 		Helper.init()
 		Bobber.init()
 		Legion.init()
+
+		Register.onTick(100) { unregister ->
+			if (!World.isInSkyblock()) return@onTick
+			Chat.chat("§6[SBO] §aSBO-Kotlin is running smoothly!")
+			unregister()
+		}
 
 		Register.onTick(100) { // todo: unregister this register when player is loaded
 			if (mc.player != null && World.isInSkyblock() && !loaded) {

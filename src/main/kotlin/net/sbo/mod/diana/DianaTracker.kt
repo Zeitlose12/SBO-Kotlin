@@ -1,6 +1,5 @@
 package net.sbo.mod.diana
 
-import net.sbo.mod.guis.partyfinder.pages.Help
 import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.settings.categories.QOL
 import net.sbo.mod.utils.Chat
@@ -13,9 +12,8 @@ import net.sbo.mod.utils.Helper.lastLootShare
 import net.sbo.mod.utils.Helper.removeFormatting
 import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Player
-import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.SBOTimerManager.timerSession
-import net.sbo.mod.utils.World.isInSkyblock
 import net.sbo.mod.utils.data.DianaTracker
 import net.sbo.mod.utils.data.DianaTrackerSessionData
 import net.sbo.mod.utils.data.Item

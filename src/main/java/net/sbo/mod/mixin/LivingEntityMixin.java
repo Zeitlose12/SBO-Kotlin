@@ -3,7 +3,7 @@ package net.sbo.mod.mixin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
-import net.sbo.mod.utils.Register;
+import net.sbo.mod.utils.events.Register;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import org.spongepowered.asm.mixin.Mixin;

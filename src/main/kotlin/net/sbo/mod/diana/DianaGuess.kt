@@ -8,7 +8,7 @@ package net.sbo.mod.diana
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket
 import net.minecraft.particle.ParticleTypes
 import net.sbo.mod.SBOKotlin.mc
-import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.SboVec
 import net.sbo.mod.utils.data.PlayerInteractEvent
 import net.sbo.mod.utils.waypoint.WaypointManager
