@@ -6,7 +6,7 @@ import net.sbo.mod.utils.events.Register
 import java.lang.reflect.Field
 import java.util.Locale
 
-object SBOTimerManager {
+object SboTimerManager {
     private val activeTimers = mutableListOf<SBOTimer>()
     val timerMayor = SBOTimer(
         name = "Mayor",
@@ -212,7 +212,7 @@ object SBOTimerManager {
          * Starts the inactivity check by adding this timer to the central manager.
          */
         private fun startInactivityCheck() {
-            SBOTimerManager.addTimer(this)
+            SboTimerManager.addTimer(this)
             inactivityFlag = false
         }
 
@@ -220,7 +220,7 @@ object SBOTimerManager {
          * Stops the inactivity check by removing this timer from the central manager.
          */
         private fun stopInactivityCheck() {
-            SBOTimerManager.removeTimer(this)
+            SboTimerManager.removeTimer(this)
             inactivityFlag = false
         }
     }

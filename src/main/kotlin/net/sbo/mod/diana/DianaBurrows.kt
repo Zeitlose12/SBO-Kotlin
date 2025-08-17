@@ -201,6 +201,7 @@ object BurrowDetector {
             removePos = BlockPos(adjustedX, adjustedY, adjustedZ)
             lastInteractedPos = pos
         }
+        WaypointManager.removeWaypointAt(SboVec(adjustedX.toDouble(), adjustedY.toDouble(), adjustedZ.toDouble()), "burrow")
     }
 
     fun rightClickBlock(action: String, pos: BlockPos?) {

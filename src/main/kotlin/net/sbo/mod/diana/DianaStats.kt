@@ -10,26 +10,6 @@ import net.sbo.mod.utils.events.Register
 import java.util.regex.Pattern
 import java.util.Locale
 
-data class PlayerStats(
-    val playtime: String,
-    val profit: List<String>,
-    val burrows: String,
-    val burrowsPerHour: String,
-    val totalMobs: String,
-    val mobsPerHour: String,
-    val inquisitors: Int,
-    val inqPercentage: String,
-    val lsInqs: String,
-    val chimeraDrops: Int,
-    val chimeraDropRate: String,
-    val chimeraLSDrops: Int,
-    val chimeraLSDropRate: String,
-    val sticksDropped: Int,
-    val stickDropRate: String,
-    val relicsDropped: Int,
-    val relicDropRate: String
-)
-
 object DianaStats {
     val STATS_PATTERN = Pattern.compile(
         "§r§9Party §8> (.*?)§f: §rPlaytime: (.*?) - Profit: (.*?) - (.*?) - Burrows: (.*?) \\((.*?)\\) - Mobs: (.*?) \\((.*?)\\) - Inquisitors: (.*?) \\((.*?)\\) - LS Inqs: (.*?) - Chimeras: (.*?) \\((.*?)\\) - LS: (.*?) \\((.*?)\\) - Sticks: (.*?) \\((.*?)\\) - Relics: (.*?) \\((.*?)\\)(.*?)",
@@ -108,4 +88,24 @@ object DianaStats {
 
         Chat.command("pc $statsMessage")
     }
+
+    data class PlayerStats(
+        val playtime: String,
+        val profit: List<String>,
+        val burrows: String,
+        val burrowsPerHour: String,
+        val totalMobs: String,
+        val mobsPerHour: String,
+        val inquisitors: Int,
+        val inqPercentage: String,
+        val lsInqs: String,
+        val chimeraDrops: Int,
+        val chimeraDropRate: String,
+        val chimeraLSDrops: Int,
+        val chimeraLSDropRate: String,
+        val sticksDropped: Int,
+        val stickDropRate: String,
+        val relicsDropped: Int,
+        val relicDropRate: String
+    )
 }

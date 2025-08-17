@@ -2,11 +2,10 @@ package net.sbo.mod.settings.categories
 
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 
-enum class TestColor {
-    RED, GREEN, BLUE, YELLOW, PURPLE
-}
-
 object General : CategoryKt("General") {
+    enum class TestColor {
+        RED, GREEN, BLUE, YELLOW, PURPLE
+    }
 
     init {
         separator {

@@ -3,11 +3,12 @@ package net.sbo.mod.settings.categories
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import net.sbo.mod.utils.waypoint.AdditionalHubWarps
 
-enum class SettingDiana {
-    INSTASELL, SELLOFFER
-}
+
 
 object Diana : CategoryKt("Diana") {
+    enum class SettingDiana {
+        INSTASELL, SELLOFFER
+    }
 
     init {
         separator {

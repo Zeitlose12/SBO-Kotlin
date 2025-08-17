@@ -13,7 +13,7 @@ import net.sbo.mod.utils.Helper.removeFormatting
 import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.events.Register
-import net.sbo.mod.utils.SBOTimerManager.timerSession
+import net.sbo.mod.utils.SboTimerManager.timerSession
 import net.sbo.mod.utils.data.DianaTracker
 import net.sbo.mod.utils.data.DianaTrackerSessionData
 import net.sbo.mod.utils.data.Item

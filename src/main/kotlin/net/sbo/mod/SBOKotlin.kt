@@ -7,7 +7,6 @@ import net.sbo.mod.diana.DianaGuessHandler
 import net.sbo.mod.diana.DianaTracker
 import net.sbo.mod.utils.waypoint.WaypointManager
 import org.slf4j.LoggerFactory
-import net.sbo.mod.init.registerHelpCommand
 import net.sbo.mod.settings.Settings
 import net.sbo.mod.utils.Mayor
 import net.sbo.mod.utils.events.Register
@@ -24,10 +23,11 @@ import net.sbo.mod.utils.events.ClickActionManager
 import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.World
 import net.sbo.mod.diana.BurrowDetector
+import net.sbo.mod.general.HelpCommand
 import net.sbo.mod.overlays.Bobber
 import net.sbo.mod.overlays.Legion
 import net.sbo.mod.utils.Helper
-import net.sbo.mod.utils.SBOTimerManager
+import net.sbo.mod.utils.SboTimerManager
 import net.sbo.mod.utils.overlay.OverlayManager
 
 object SBOKotlin {
@@ -44,8 +44,6 @@ object SBOKotlin {
 	val settings = Settings.register(configurator)
 	val guis = Main
 
-	private var loaded: Boolean = false
-
 	@JvmStatic
 	fun onInitializeClient() {
 		logger.info("Initializing SBO-Kotlin...")
@@ -54,7 +52,6 @@ object SBOKotlin {
 		SboDataObject.init()
 
 		// load Main Features
-		registerHelpCommand()
 		PartyCommands.registerPartyChatListeners()
 		Register.command("sbo") {
 			mc.send{
@@ -71,6 +68,7 @@ object SBOKotlin {
 		// Registering Guis
 		guis.register()
 
+		HelpCommand.init()
 		ClickActionManager.init()
 		SboKeyBinds.init()
 		WaypointManager.init()
@@ -84,21 +82,15 @@ object SBOKotlin {
 		PartyPlayer.init()
 		Pickuplog.init()
 		OverlayManager.init()
-		SBOTimerManager.init()
+		SboTimerManager.init()
 		Helper.init()
 		Bobber.init()
 		Legion.init()
 
 		Register.onTick(100) { unregister ->
-			if (!World.isInSkyblock()) return@onTick
-			Chat.chat("§6[SBO] §aSBO-Kotlin is running smoothly!")
-			unregister()
-		}
-
-		Register.onTick(100) { // todo: unregister this register when player is loaded
-			if (mc.player != null && World.isInSkyblock() && !loaded) {
+			if (mc.player != null && World.isInSkyblock()) {
 				PartyPlayer.load()
-				loaded = true
+				unregister()
 			}
 		}
 		logger.info("SBO-Kotlin initialized successfully!")
