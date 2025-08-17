@@ -1,5 +1,6 @@
 package net.sbo.mod.diana
 
+import net.sbo.mod.overlays.DianaStats
 import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.settings.categories.QOL
 import net.sbo.mod.utils.chat.Chat
@@ -51,6 +52,7 @@ object DianaTracker {
             sboData.champsSinceRelic = 0
             sboData.inqsSinceLsChim = 0
             SboDataObject.save("SboData")
+            DianaStats.updateLines()
         }
 
         Register.onChatMessageCancable(Pattern.compile("(.*?) (.*?) §r§efound a §r§cPhoenix §r§epet!(.*?)", Pattern.DOTALL)) { message, matchResult ->
@@ -382,6 +384,7 @@ object DianaTracker {
         trackOne(dianaTrackerSession, itemName, amount, fromInq)
         trackOne(dianaTrackerTotal, itemName, amount, fromInq)
         saveTrackerData()
+        DianaStats.updateLines()
     }
 
     fun trackOne(tracker: DianaTracker, item: String, amount: Int, fromInq: Boolean = false) {

@@ -11,12 +11,12 @@ import java.util.UUID
 
 object Legion {
     var legionCount: Int = 0
-    val legionOverlay: Overlay = Overlay("legionOverlay", 10.0f, 10.0f, 1.0f)
+    val overlay: Overlay = Overlay("legionOverlay", 10.0f, 10.0f, 1.0f)
     val overlayText: OverlayTextLine = OverlayTextLine("")
 
     fun init () {
-        legionOverlay.setCondition { General.legionOverlay }
-        legionOverlay.addLine(overlayText)
+        overlay.setCondition { General.legionOverlay }
+        overlay.addLine(overlayText)
         Register.onTick(20) {
             if (!General.legionOverlay || !World.isInSkyblock()) return@onTick
             val player = mc.player ?: return@onTick

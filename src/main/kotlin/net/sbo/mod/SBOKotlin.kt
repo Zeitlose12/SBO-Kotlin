@@ -25,7 +25,11 @@ import net.sbo.mod.diana.BurrowDetector
 import net.sbo.mod.diana.DianaGuess
 import net.sbo.mod.general.HelpCommand
 import net.sbo.mod.overlays.Bobber
+import net.sbo.mod.overlays.DianaLoot
+import net.sbo.mod.overlays.DianaMobs
+import net.sbo.mod.overlays.DianaStats
 import net.sbo.mod.overlays.Legion
+import net.sbo.mod.overlays.MagicFind
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.SboTimerManager
 import net.sbo.mod.utils.overlay.OverlayManager
@@ -86,6 +90,9 @@ object SBOKotlin {
 		Helper.init()
 		Bobber.init()
 		Legion.init()
+		DianaStats.init()
+		MagicFind.init()
+		DianaMobs.init()
 
 		Register.onTick(100) { unregister ->
 			if (mc.player != null && World.isInSkyblock()) {

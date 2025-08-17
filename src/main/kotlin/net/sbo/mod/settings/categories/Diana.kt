@@ -1,6 +1,8 @@
 package net.sbo.mod.settings.categories
 
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
+import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
+import net.sbo.mod.overlays.DianaMobs
 import net.sbo.mod.utils.waypoint.AdditionalHubWarps
 
 
@@ -8,6 +10,19 @@ import net.sbo.mod.utils.waypoint.AdditionalHubWarps
 object Diana : CategoryKt("Diana") {
     enum class SettingDiana {
         INSTASELL, SELLOFFER
+    }
+
+    enum class Tracker {
+        OFF, TOTAL, EVENT, SESSION;
+
+        fun next(): Tracker {
+            val values = entries
+            val currentIndex = ordinal
+
+            if (currentIndex == 0) return values[0 + 1]
+            if (this == values.last()) return TOTAL
+            return values[currentIndex + 1]
+        }
     }
 
     init {
@@ -61,6 +76,54 @@ object Diana : CategoryKt("Diana") {
             this.title = "Diana Tracker"
         }
     }
+
+    var mobTracker by ObservableEntry(
+        enum(Tracker.OFF) {
+            this.name = Translated("Mob Tracker")
+            this.description = Translated("Shows your Diana mob kills, /sboguis to move the overlay")
+        }
+    ) { old, new ->
+        if (old != new) {
+            if (new != Tracker.OFF) {
+                DianaMobs.updateLines()
+            }
+        }
+    }
+
+    var lootTracker by ObservableEntry( enum(Tracker.OFF) {
+            this.name = Translated("Loot Tracker")
+            this.description = Translated("Shows your Diana loot, /sboguis to move the overlay")
+        }
+    ) { old, new ->
+        if (old != new) {
+            if (new != Tracker.OFF) {
+                DianaMobs.updateLines()
+            }
+        }
+    }
+
+    var inquisTracker by ObservableEntry( enum(Tracker.OFF) {
+            this.name = Translated("Inquis Loot Tracker")
+            this.description = Translated("Shows your Inquisitor Loot so you see how lucky/unlucky you are (Shelmet/Plushie/Remedies), /sboguis to move the overlay")
+        }
+    ) { old, new ->
+        if (old != new) {
+            if (new != Tracker.OFF) {
+                DianaMobs.updateLines()
+            }
+        }
+    }
+
+    var statsTracker by boolean(false) {
+        this.name = Translated("Diana Stats")
+        this.description = Translated("Shows stats like Mobs since Inquisitor, Inquisitors since Chimera, /sboguis to move the overlay")
+    }
+
+    var magicFindTracker by boolean(false) {
+        this.name = Translated("Magic Find Tracker")
+        this.description = Translated("Shows your highest magic find for sticks and chimeras (only after you dropped it once), /sboguis to move the overlay")
+    }
+
     var fourEyedFish by boolean(true) {
         this.name = Translated("Four-Eyed Fish")
         this.description = Translated("Set if you have a Four-Eyed Fish on your griffin pet")

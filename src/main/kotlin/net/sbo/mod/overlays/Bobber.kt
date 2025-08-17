@@ -11,12 +11,12 @@ import net.sbo.mod.utils.overlay.OverlayTextLine
 
 object Bobber {
     var bobberCount: Int = 0
-    val bobberOverlay: Overlay = Overlay("bobberOverlay", 10.0f, 10.0f, 1.0f)
+    val overlay: Overlay = Overlay("bobberOverlay", 10.0f, 10.0f, 1.0f)
     val overlayText: OverlayTextLine = OverlayTextLine("")
 
     fun init() {
-        bobberOverlay.setCondition { General.bobberOverlay }
-        bobberOverlay.addLine(overlayText)
+        overlay.setCondition { General.bobberOverlay }
+        overlay.addLine(overlayText)
         Register.onTick(20) {
             if (!General.bobberOverlay || !World.isInSkyblock()) return@onTick
             val player = mc.player ?: return@onTick

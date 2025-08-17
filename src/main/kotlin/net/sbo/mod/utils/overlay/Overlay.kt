@@ -25,7 +25,7 @@ class Overlay(
     var scale: Float = 1.0f,
     var allowedGuis: List<String> = listOf("Chat screen", "Crafting")
 ) {
-    private val lines = mutableListOf<OverlayTextLine>()
+    private var lines = mutableListOf<OverlayTextLine>()
     private var renderGui: Boolean = true
     private var condition: () -> Boolean = { true }
 
@@ -52,13 +52,16 @@ class Overlay(
         lines.add(line)
     }
 
+    fun addLineAt(index: Int, line: OverlayTextLine) {
+        lines.add(index, line)
+    }
+
     fun addLines(newLines: List<OverlayTextLine>) {
         lines.addAll(newLines)
     }
 
     fun setLines(newLines: List<OverlayTextLine>) {
-        lines.clear()
-        lines.addAll(newLines)
+        lines = newLines.toMutableList()
     }
 
     fun removeLine(line: OverlayTextLine) {
@@ -66,7 +69,7 @@ class Overlay(
     }
 
     fun clearLines() {
-        lines.clear()
+        lines = mutableListOf()
     }
 
     fun overlayClicked(mouseX: Double, mouseY: Double) {

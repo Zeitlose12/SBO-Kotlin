@@ -118,7 +118,7 @@ object PartyCommands {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     val chimeraCount = dianaTrackerMayor.items.CHIMERA
                     val chimeraLsCount = dianaTrackerMayor.items.CHIMERA_LS
-                    val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "Chimera", "Minos Inquisitor")
+                    val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "CHIMERA", "MINOS_INQUISITOR")
                     sleep(200) {
                         Chat.command("pc Chimera: $chimeraCount ($percent%) +$chimeraLsCount LS")
                     }
@@ -132,7 +132,7 @@ object PartyCommands {
                 "!inq", "!inqs", "!inquisitor", "!inquis" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     val inquisCount = dianaTrackerMayor.mobs.MINOS_INQUISITOR
-                    val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "Minos Inquisitor")
+                    val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "MINOS_INQUISITOR")
                     sleep(200) {
                         Chat.command("pc Inquisitor: $inquisCount ($percent%)")
                     }
@@ -152,7 +152,7 @@ object PartyCommands {
                 "!relic", "!relics" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     val relicCount = dianaTrackerMayor.items.MINOS_RELIC
-                    val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "MINOS_RELIC", "Minos Champion")
+                    val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "MINOS_RELIC", "MINOS_CHAMPION")
                     sleep(200) {
                         Chat.command("pc Relics: $relicCount ($percent%)")
                     }
@@ -160,7 +160,7 @@ object PartyCommands {
                 "!chimls", "!chimerals", "!bookls", "!lschim", "!lsbook", "!lootsharechim", "!lschimera" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     val chimsLs = dianaTrackerMayor.items.CHIMERA_LS
-                    val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "ChimeraLs", "Minos Inquisitor Ls")
+                    val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "CHIMERALS", "MINOS_INQUISITOR_LS")
                     sleep(200) {
                         Chat.command("pc Chimera LS: $chimsLs ($percent%)")
                     }
@@ -168,7 +168,7 @@ object PartyCommands {
                 "!sticks", "!stick" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     val stickCount = dianaTrackerMayor.items.DAEDALUS_STICK
-                    val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "Daedalus Stick", "Minotaur")
+                    val percent = calcPercentOne(dianaTrackerMayor.items, dianaTrackerMayor.mobs, "DAEDALUS_STICK", "MINOTAUR")
                     sleep(200) {
                         Chat.command("pc Sticks: $stickCount ($percent%)")
                     }

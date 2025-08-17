@@ -1,6 +1,8 @@
 package net.sbo.mod.settings.categories
 
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
+import net.sbo.mod.SBOKotlin.mc
+import net.sbo.mod.utils.overlay.OverlayEditScreen
 
 object General : CategoryKt("General") {
     enum class TestColor {
@@ -23,6 +25,19 @@ object General : CategoryKt("General") {
         this.description = Translated("Tracks the players near you for legion buff /sboguis to move the overlay")
     }
 
+    init {
+        button {
+            title = "Move GUI's"
+            text = "Move GUI's"
+            description = "Opens Gui Move Menu you can use /sboguis too"
+            onClick {
+                mc.send {
+                    mc.setScreen(OverlayEditScreen())
+                }
+            }
+        }
+    }
+
 //    var test1 by boolean(false) {
 //        this.name = Translated("test1")
 //        this.description = Translated("test1 description")
@@ -35,16 +50,6 @@ object General : CategoryKt("General") {
 //        this.description = Translated("test2 description")
 //    }
 //
-//    init {
-//        button {
-//            title = "testButton"
-//            text = "Open"
-//            description = "opens the test screen"
-//            onClick {
-//                chat("This is a test button!")
-//            }
-//        }
-//    }
 //
 //    var backgroundColor by color(0xC0000000u.toInt()) {
 //        this.name = Translated("backgroundColor")
