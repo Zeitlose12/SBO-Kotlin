@@ -1,6 +1,8 @@
 package net.sbo.mod.diana
 
+import net.sbo.mod.overlays.DianaMobs
 import net.sbo.mod.overlays.DianaStats
+import net.sbo.mod.overlays.MagicFind
 import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.settings.categories.QOL
 import net.sbo.mod.utils.chat.Chat
@@ -43,6 +45,7 @@ object DianaTracker {
             timerSession.reset()
             SboDataObject.save("DianaTrackerSessionData")
             Chat.chat("§6[SBO] §aDiana session tracker has been reset.")
+            DianaMobs.updateLines()
         }
 
         Register.command("sboresetstatstracker") {
@@ -387,6 +390,8 @@ object DianaTracker {
         trackOne(dianaTrackerTotal, itemName, amount, fromInq)
         saveTrackerData()
         DianaStats.updateLines()
+        MagicFind.updateLines()
+        DianaMobs.updateLines()
     }
 
     fun trackOne(tracker: DianaTracker, item: String, amount: Int, fromInq: Boolean = false) {

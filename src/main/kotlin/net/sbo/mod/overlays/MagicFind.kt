@@ -10,16 +10,16 @@ object MagicFind {
     val overlay = Overlay("Diana MagicFind", 10f, 10f, 1f).setCondition { Diana.magicFindTracker }
 
     fun init() {
-        render()
+        updateLines()
     }
 
-    fun render() {
+    fun updateLines() {
         val lines = mutableListOf<OverlayTextLine>()
         lines.addAll(
             listOf(
                 OverlayTextLine("$YELLOW${BOLD}Diana MagicFind"),
-                OverlayTextLine("$GRAY - ${LIGHT_PURPLE}Chimera: $AQUA${sboData.highestChimMagicFind}"),
-                OverlayTextLine("$GRAY - ${GOLD}Sticks: $AQUA${sboData.highestStickMagicFind}")
+                OverlayTextLine("$GRAY - ${LIGHT_PURPLE}Chimera: $AQUA${sboData.highestChimMagicFind}%"),
+                OverlayTextLine("$GRAY - ${GOLD}Sticks: $AQUA${sboData.highestStickMagicFind}%")
             )
         )
         overlay.setLines(lines)
