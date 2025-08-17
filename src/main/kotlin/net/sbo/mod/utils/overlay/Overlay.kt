@@ -31,7 +31,7 @@ class Overlay(
 
     var selected: Boolean = false
 
-    init {
+    fun init() {
         if (overlayData.overlays.containsKey(name)) {
             val data = overlayData.overlays[name]!!
             x = data.x

@@ -10,6 +10,7 @@ object MagicFind {
     val overlay = Overlay("Diana MagicFind", 10f, 10f, 1f).setCondition { Diana.magicFindTracker }
 
     fun init() {
+        overlay.init()
         updateLines()
     }
 

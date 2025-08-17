@@ -16,6 +16,7 @@ object DianaMobDetect {
     private val mobHpOverlay: Overlay = Overlay("mythosMobHp", 10f, 10f, 1f, listOf("Chat screen")).setCondition { Diana.mythosMobHp }
 
     fun init() {
+        mobHpOverlay.init()
         Register.onTick(6) {
             val world = mc.world
             if (world != null) {

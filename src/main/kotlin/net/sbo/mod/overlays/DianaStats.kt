@@ -11,6 +11,7 @@ object DianaStats {
     val overlay = Overlay("Diana Stats", 10f, 10f, 1f, listOf("Chat screen")).setCondition { Diana.statsTracker }
 
     fun init() {
+        overlay.init()
         updateLines()
     }
 

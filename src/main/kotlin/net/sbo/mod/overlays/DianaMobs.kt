@@ -27,6 +27,21 @@ object DianaMobs {
             changeView.text = "$YELLOW${BOLD}Change View"
         }
 
+    fun init() {
+        overlay.init()
+        updateLines()
+        Register.onGuiOpen { screen, ci ->
+            if (screen.title.string == "Crafting") {
+                updateLines("CraftingOpen")
+            }
+        }
+        Register.onGuiClose { screen ->
+            if (screen.title.string == "Crafting") {
+                updateLines("CraftingClose")
+            }
+        }
+    }
+
     fun updateLines(screen: String = "") {
         val lines = mutableListOf<OverlayTextLine>()
         val type = Diana.mobTracker
@@ -68,19 +83,5 @@ object DianaMobs {
             )
         )
         overlay.setLines(lines)
-    }
-
-    fun init() {
-        updateLines()
-        Register.onGuiOpen { screen, ci ->
-            if (screen.title.string == "Crafting") {
-                updateLines("CraftingOpen")
-            }
-        }
-        Register.onGuiClose { screen ->
-            if (screen.title.string == "Crafting") {
-                updateLines("CraftingClose")
-            }
-        }
     }
 }

@@ -29,6 +29,20 @@ object DianaLoot {
             changeView.text = "$YELLOW${BOLD}Change View"
         }
 
+    fun init() {
+        overlay.init()
+        updateLines()
+        Register.onGuiOpen { screen, ci ->
+            if (screen.title.string == "Crafting") {
+                updateLines("CraftingOpen")
+            }
+        }
+        Register.onGuiClose { screen ->
+            if (screen.title.string == "Crafting") {
+                updateLines("CraftingClose")
+            }
+        }
+    }
 
     fun updateLines(screen: String = "") {
         val lines = mutableListOf<OverlayTextLine>()
@@ -140,19 +154,5 @@ object DianaLoot {
             }
         }
         return totalProfit + tracker.items.COINS + tracker.items.SCAVENGER_COINS + tracker.items.FISH_COINS
-    }
-
-    fun init() {
-        updateLines()
-        Register.onGuiOpen { screen, ci ->
-            if (screen.title.string == "Crafting") {
-                updateLines("CraftingOpen")
-            }
-        }
-        Register.onGuiClose { screen ->
-            if (screen.title.string == "Crafting") {
-                updateLines("CraftingClose")
-            }
-        }
     }
 }
