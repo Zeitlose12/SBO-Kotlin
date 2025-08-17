@@ -152,6 +152,6 @@ object DianaLoot {
                 totalProfit += itemPrice * itemValue
             }
         }
-        return totalProfit + tracker.items.COINS + tracker.items.SCAVENGER_COINS + tracker.items.FISH_COINS + Helper.getItemPriceFormatted("CHIMERA", tracker.items.CHIMERA_LS).toLong()
+        return totalProfit + tracker.items.COINS + tracker.items.SCAVENGER_COINS + tracker.items.FISH_COINS + Helper.getItemPrice("CHIMERA", tracker.items.CHIMERA_LS)
     }
 }
