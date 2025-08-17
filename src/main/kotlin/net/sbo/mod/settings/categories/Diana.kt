@@ -2,6 +2,7 @@ package net.sbo.mod.settings.categories
 
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
+import net.sbo.mod.overlays.DianaLoot
 import net.sbo.mod.overlays.DianaMobs
 import net.sbo.mod.utils.waypoint.AdditionalHubWarps
 
@@ -97,8 +98,7 @@ object Diana : CategoryKt("Diana") {
     ) { old, new ->
         if (old != new) {
             if (new != Tracker.OFF) {
-                DianaMobs.updateLines()
-            }
+                DianaLoot.updateLines()            }
         }
     }
 
@@ -109,7 +109,7 @@ object Diana : CategoryKt("Diana") {
     ) { old, new ->
         if (old != new) {
             if (new != Tracker.OFF) {
-                DianaMobs.updateLines()
+
             }
         }
     }

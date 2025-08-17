@@ -1,6 +1,5 @@
 package net.sbo.mod.overlays
 
-import net.minecraft.util.Formatting
 import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.utils.overlay.Overlay
 import net.sbo.mod.utils.overlay.OverlayTextLine
@@ -9,8 +8,6 @@ import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.Helper.calcPercentOne
 import net.sbo.mod.utils.data.DianaTracker
-import net.sbo.mod.utils.data.PastDianaEventsData
-import net.sbo.mod.utils.data.SboConfigBundle
 import net.sbo.mod.utils.data.SboDataObject.SBOConfigBundle
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.render.RenderUtils2D
@@ -33,7 +30,7 @@ object DianaLoot {
         }
 
 
-    fun updateLines() {
+    fun updateLines(screen: String = "") {
         val lines = mutableListOf<OverlayTextLine>()
         val type = Diana.lootTracker
         val totalEvents: Int = SBOConfigBundle.pastDianaEventsData.events.size
@@ -41,12 +38,15 @@ object DianaLoot {
             Diana.Tracker.TOTAL -> SBOConfigBundle.dianaTrackerTotalData
             Diana.Tracker.EVENT -> SBOConfigBundle.dianaTrackerMayorData
             Diana.Tracker.SESSION -> SBOConfigBundle.dianaTrackerSessionData
-            Diana.Tracker.OFF -> return
+            Diana.Tracker.OFF -> {
+                overlay.setLines(emptyList())
+                return
+            }
         }
 
-        val chimPercent = calcPercentOne(tracker.items, tracker.mobs, "CHIMERA_BOOK", "MINOS_INQUISITOR")
-        val chimLsPercent = calcPercentOne(tracker.items, tracker.mobs, "CHIMERA_BOOK_LS", "MINOS_INQUISITOR_LS")
-        val relicPercent = calcPercentOne(tracker.items, tracker.mobs, "RELIC", "MINOS_CHAMPION")
+        val chimPercent = calcPercentOne(tracker.items, tracker.mobs, "CHIMERA", "MINOS_INQUISITOR")
+        val chimLsPercent = calcPercentOne(tracker.items, tracker.mobs, "CHIMERA_LS", "MINOS_INQUISITOR_LS")
+        val relicPercent = calcPercentOne(tracker.items, tracker.mobs, "MINOS_RELIC", "MINOS_CHAMPION")
         val stickPercent = calcPercentOne(tracker.items, tracker.mobs, "DAEDALUS_STICK", "MINOTAUR")
         val playTimeHrs = tracker.items.TIME / TimeUnit.HOURS.toMillis(1)
         val burrowsPerHr = if (playTimeHrs > 0) {
@@ -54,31 +54,30 @@ object DianaLoot {
             BigDecimal(result).setScale(2, RoundingMode.HALF_UP).toDouble()
         } else 0.0
 
-        val chimPrice = Helper.getItemPrice("CHIMERA", tracker.items.CHIMERA)
-        val chimLsPrice = Helper.getItemPrice("CHIMERA", tracker.items.CHIMERA_LS)
-        val relicPrice = Helper.getItemPrice("MINOS_RELIC", tracker.items.MINOS_RELIC)
-        val stickPrice = Helper.getItemPrice("DAEDALUS_STICK", tracker.items.DAEDALUS_STICK)
-        val crownPrice = Helper.getItemPrice("CROWN_OF_GREED", tracker.items.CROWN_OF_GREED)
-        val sovenirPrice = Helper.getItemPrice("WASHED_UP_SOUVENIR", tracker.items.WASHED_UP_SOUVENIR)
-        val featherPrice = Helper.getItemPrice("GRIFFIN_FEATHER", tracker.items.GRIFFIN_FEATHER)
-        val shelmetPrice = Helper.getItemPrice("DWARF_TURTLE_SHELMET", tracker.items.DWARF_TURTLE_SHELMET)
-        val plushiePrice = Helper.getItemPrice("CROCHET_TIGER_PLUSHIE", tracker.items.CROCHET_TIGER_PLUSHIE)
-        val remediesPrice = Helper.getItemPrice("ANTIQUE_REMEDIES", tracker.items.ANTIQUE_REMEDIES)
-        val clawPrice= Helper.getItemPrice("ANCIENT_CLAW", tracker.items.ANCIENT_CLAW)
-        val echClawPrice = Helper.getItemPrice("ENCHANTED_ANCIENT_CLAW", tracker.items.ENCHANTED_ANCIENT_CLAW)
-        val echGoldPrice = Helper.getItemPrice("ENCHANTED_GOLD", tracker.items.ENCHANTED_GOLD)
-        val echIronPrice = Helper.getItemPrice("ENCHANTED_IRON", tracker.items.ENCHANTED_IRON)
-
-        val totalCoins = tracker.items.COINS + tracker.items.SCAVENGER_COINS + tracker.items.FISH_COINS
-        val totalProfit = chimPrice + chimLsPrice + relicPrice + stickPrice + crownPrice +
-                sovenirPrice + featherPrice + shelmetPrice + plushiePrice + remediesPrice +
-                clawPrice + echClawPrice + echGoldPrice + echIronPrice + totalCoins
+        val chimPrice = Helper.getItemPriceFormatted("CHIMERA", tracker.items.CHIMERA)
+        val chimLsPrice = Helper.getItemPriceFormatted("CHIMERA", tracker.items.CHIMERA_LS)
+        val relicPrice = Helper.getItemPriceFormatted("MINOS_RELIC", tracker.items.MINOS_RELIC)
+        val stickPrice = Helper.getItemPriceFormatted("DAEDALUS_STICK", tracker.items.DAEDALUS_STICK)
+        val crownPrice = Helper.getItemPriceFormatted("CROWN_OF_GREED", tracker.items.CROWN_OF_GREED)
+        val sovenirPrice = Helper.getItemPriceFormatted("WASHED_UP_SOUVENIR", tracker.items.WASHED_UP_SOUVENIR)
+        val featherPrice = Helper.getItemPriceFormatted("GRIFFIN_FEATHER", tracker.items.GRIFFIN_FEATHER)
+        val shelmetPrice = Helper.getItemPriceFormatted("DWARF_TURTLE_SHELMET", tracker.items.DWARF_TURTLE_SHELMET)
+        val plushiePrice = Helper.getItemPriceFormatted("CROCHET_TIGER_PLUSHIE", tracker.items.CROCHET_TIGER_PLUSHIE)
+        val remediesPrice = Helper.getItemPriceFormatted("ANTIQUE_REMEDIES", tracker.items.ANTIQUE_REMEDIES)
+        val clawPrice= Helper.getItemPriceFormatted("ANCIENT_CLAW", tracker.items.ANCIENT_CLAW)
+        val echClawPrice = Helper.getItemPriceFormatted("ENCHANTED_ANCIENT_CLAW", tracker.items.ENCHANTED_ANCIENT_CLAW)
+        val echGoldPrice = Helper.getItemPriceFormatted("ENCHANTED_GOLD", tracker.items.ENCHANTED_GOLD)
+        val echIronPrice = Helper.getItemPriceFormatted("ENCHANTED_IRON", tracker.items.ENCHANTED_IRON)
         val profitPerHr = if (playTimeHrs > 0) {
-            BigDecimal(totalProfit.toDouble() / playTimeHrs).setScale(2, RoundingMode.HALF_UP).toDouble()
+            BigDecimal(totalProfit(tracker) / playTimeHrs).setScale(2, RoundingMode.HALF_UP).toDouble()
         } else 0.0
         val poriftPerBurrow = if (tracker.items.TOTAL_BURROWS > 0) {
-            BigDecimal(totalProfit.toDouble() / tracker.items.TOTAL_BURROWS).setScale(2, RoundingMode.HALF_UP).toDouble()
+            BigDecimal(totalProfit(tracker) / tracker.items.TOTAL_BURROWS).setScale(2, RoundingMode.HALF_UP).toDouble()
         } else 0.0
+
+        if (screen == "CraftingOpen" || mc.currentScreen?.title?.string == "Crafting") {
+            lines.add(changeView)
+        }
 
         lines.addAll(
             listOf(
@@ -98,25 +97,26 @@ object DianaLoot {
                 OverlayTextLine("$GOLD$echGoldPrice $GRAY|$BLUE Enchanted Gold: $AQUA${Helper.formatNumber(tracker.items.ENCHANTED_GOLD)}"),
                 OverlayTextLine("$GOLD$echIronPrice $GRAY|$BLUE Enchanted Iron: $AQUA${Helper.formatNumber(tracker.items.ENCHANTED_IRON)}"),
                 OverlayTextLine("${GRAY}Total Burrows: $AQUA${Helper.formatNumber(tracker.items.TOTAL_BURROWS, true)} $GRAY[$AQUA$burrowsPerHr$GRAY/${AQUA}hr$GRAY]"),
-                OverlayTextLine("${GOLD}Total Coins: $AQUA${Helper.formatNumber(totalCoins)}")
+                OverlayTextLine("${GOLD}Total Coins: $AQUA${Helper.formatNumber(tracker.items.COINS)}")
                     .onHover { drawContext, textRenderer ->
                         val scaleFactor = mc.window.scaleFactor
                         val mouseX = mc.mouse.x / scaleFactor
                         val mouseY = mc.mouse.y / scaleFactor
                         RenderUtils2D.drawHoveringString(drawContext,
                                 "$YELLOW${BOLD}Coin Break Down:\n" +
-                                "${GOLD}Treasure: $AQUA${Helper.formatNumber(tracker.items.COINS)}\n" +
+                                "${GOLD}Treasure: $AQUA${Helper.formatNumber(tracker.items.COINS - tracker.items.FISH_COINS - tracker.items.SCAVENGER_COINS)}\n" +
                                 "${GOLD}Four-Eyed Fish: $AQUA${Helper.formatNumber(tracker.items.FISH_COINS)}\n" +
                                 "${GOLD}Scavenger: $AQUA${Helper.formatNumber(tracker.items.SCAVENGER_COINS)}",
                             mouseX, mouseY, textRenderer, overlay.scale)
                     },
-                OverlayTextLine("${YELLOW}Total Profit: $AQUA${Helper.formatNumber(totalProfit)}")
+                OverlayTextLine("${YELLOW}Total Profit: $AQUA${Helper.formatNumber(totalProfit(tracker))} coins")
                     .onHover { drawContext, textRenderer ->
                         val scaleFactor = mc.window.scaleFactor
                         val mouseX = mc.mouse.x / scaleFactor
                         val mouseY = mc.mouse.y / scaleFactor
                         RenderUtils2D.drawHoveringString(drawContext,
-                            "$GOLD$profitPerHr coins/hr\n $poriftPerBurrow coins/burrow",
+                            "$GOLD$profitPerHr coins/hr\n" +
+                                "$poriftPerBurrow coins/burrow",
                             mouseX, mouseY, textRenderer, overlay.scale)
                     },
                 OverlayTextLine("${YELLOW}Playtime: $AQUA${Helper.formatTime(tracker.items.TIME)}"),
@@ -126,17 +126,32 @@ object DianaLoot {
         overlay.setLines(lines)
     }
 
+    fun totalProfit(tracker: DianaTracker): Long {
+        var totalProfit = 0L
+        for (item in tracker.items::class.java.declaredFields) {
+            item.isAccessible = true
+            val itemName = item.name
+            if (itemName == "TIME" || itemName == "TOTAL_BURROWS" || itemName == "COINS" || itemName == "SCAVENGER_COINS" || itemName == "FISH_COINS") continue
+            val itemValue = item.get(tracker.items) as Int
+            if (itemValue <= 0) continue
+            val itemPrice = Helper.getItemPrice(itemName)
+            if (itemPrice > 0) {
+                totalProfit += itemPrice * itemValue
+            }
+        }
+        return totalProfit + tracker.items.COINS + tracker.items.SCAVENGER_COINS + tracker.items.FISH_COINS
+    }
+
     fun init() {
         updateLines()
         Register.onGuiOpen { screen, ci ->
             if (screen.title.string == "Crafting") {
-                overlay.addLineAt(0, changeView)
+                updateLines("CraftingOpen")
             }
         }
         Register.onGuiClose { screen ->
             if (screen.title.string == "Crafting") {
-                DianaMobs.updateLines()
-                overlay.removeLine(changeView)
+                updateLines("CraftingClose")
             }
         }
     }

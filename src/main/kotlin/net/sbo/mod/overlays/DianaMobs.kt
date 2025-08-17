@@ -27,14 +27,17 @@ object DianaMobs {
             changeView.text = "$YELLOW${BOLD}Change View"
         }
 
-    fun updateLines() {
+    fun updateLines(screen: String = "") {
         val lines = mutableListOf<OverlayTextLine>()
         val type = Diana.mobTracker
         val tracker = when (type) {
             Diana.Tracker.TOTAL -> SBOConfigBundle.dianaTrackerTotalData
             Diana.Tracker.EVENT -> SBOConfigBundle.dianaTrackerMayorData
             Diana.Tracker.SESSION -> SBOConfigBundle.dianaTrackerSessionData
-            Diana.Tracker.OFF -> return
+            Diana.Tracker.OFF -> {
+                overlay.setLines(emptyList())
+                return
+            }
         }
         val inqPercent = calcPercentOne(tracker.items, tracker.mobs, "MINOS_INQUISITOR")
         val champPercent = calcPercentOne(tracker.items, tracker.mobs, "MINOS_CHAMPION")
@@ -48,7 +51,7 @@ object DianaMobs {
             BigDecimal(result).setScale(2, RoundingMode.HALF_UP).toDouble()
         } else 0.0
 
-        if (mc.currentScreen?.title?.string == "Crafting") {
+        if (screen == "CraftingOpen" || mc.currentScreen?.title?.string == "Crafting") {
             lines.add(changeView)
         }
 
@@ -71,13 +74,12 @@ object DianaMobs {
         updateLines()
         Register.onGuiOpen { screen, ci ->
             if (screen.title.string == "Crafting") {
-                overlay.addLineAt(0, changeView)
+                updateLines("CraftingOpen")
             }
         }
         Register.onGuiClose { screen ->
             if (screen.title.string == "Crafting") {
-                updateLines()
-                overlay.removeLine(changeView)
+                updateLines("CraftingClose")
             }
         }
     }
