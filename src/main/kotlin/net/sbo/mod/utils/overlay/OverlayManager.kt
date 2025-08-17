@@ -3,21 +3,14 @@ package net.sbo.mod.utils.overlay
 import net.minecraft.util.Identifier
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer
-import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
-import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 import net.sbo.mod.SBOKotlin.mc
-import net.sbo.mod.overlays.Bobber
-import net.sbo.mod.overlays.Legion
-import net.sbo.mod.settings.categories.Diana
-import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.Register
-import net.sbo.mod.utils.render.RenderUtils2D
-import java.awt.Color
+import net.sbo.mod.utils.World
 
 object OverlayManager {
     val overlays = mutableListOf<Overlay>()
@@ -44,6 +37,7 @@ object OverlayManager {
     }
 
     fun render(drawContext: DrawContext, renderScreen: String = "") {
+        if (!World.isInSkyblock()) return
         val scaleFactor = mc.window.scaleFactor
         val mouseX = mc.mouse.x / scaleFactor
         val mouseY = mc.mouse.y / scaleFactor
@@ -54,6 +48,7 @@ object OverlayManager {
     }
 
     fun postRender(drawContext: DrawContext, renderScreen: Screen) {
+        if (!World.isInSkyblock()) return
         val scaleFactor = mc.window.scaleFactor
         val mouseX = mc.mouse.x / scaleFactor
         val mouseY = mc.mouse.y / scaleFactor
@@ -62,7 +57,6 @@ object OverlayManager {
                 overlay.render(drawContext, mouseX, mouseY)
         }
     }
-
 
     fun registerRenderer() {
         ScreenEvents.AFTER_INIT.register { client, screen, scaledWidth, scaledHeight ->

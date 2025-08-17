@@ -2,8 +2,8 @@ package net.sbo.mod.utils.overlay
 
 import net.minecraft.client.gui.DrawContext
 import net.sbo.mod.SBOKotlin.mc
-import net.sbo.mod.utils.Chat
 import net.sbo.mod.utils.Helper
+import net.sbo.mod.utils.World
 import net.sbo.mod.utils.data.OverlayValues
 import net.sbo.mod.utils.data.SboDataObject.overlayData
 import java.awt.Color
@@ -72,6 +72,7 @@ class Overlay(
     }
 
     fun overlayClicked(mouseX: Double, mouseY: Double) {
+        if (!World.isInSkyblock()) return
         if (!renderGui) return
         if (!condition()) return
         if (Helper.getGuiName() !in allowedGuis) return

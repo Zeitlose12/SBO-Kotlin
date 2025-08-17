@@ -2,7 +2,6 @@ package net.sbo.mod.utils.overlay
 
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.font.TextRenderer
-import net.sbo.mod.utils.render.RenderUtils2D
 
 import java.awt.Color
 

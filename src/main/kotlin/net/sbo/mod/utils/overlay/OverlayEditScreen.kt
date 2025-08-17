@@ -4,9 +4,7 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
 import net.sbo.mod.utils.data.SboDataObject.overlayData
-import net.sbo.mod.utils.waypoint.additionalHubWarps
 import org.lwjgl.glfw.GLFW
-import java.awt.Color
 
 class OverlayEditScreen : Screen(Text.literal("SBO_Overlay_Editor")) {
     private var selectedOverlay: Overlay? = null
