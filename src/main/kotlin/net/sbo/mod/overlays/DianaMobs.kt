@@ -37,7 +37,7 @@ object DianaMobs {
         }
         Register.onGuiClose { screen ->
             if (screen.title.string == "Crafting") {
-                updateLines("CraftingClose")
+                overlay.removeLine(changeView)
             }
         }
     }
@@ -60,10 +60,9 @@ object DianaMobs {
         val gaiaPercent = calcPercentOne(tracker.items, tracker.mobs, "GAIA_CONSTRUCT")
         val lynxPercent = calcPercentOne(tracker.items, tracker.mobs, "SIAMESE_LYNXES")
         val hunterPercent = calcPercentOne(tracker.items, tracker.mobs, "MINOS_HUNTER")
-        val playTimeHrs = tracker.items.TIME / TimeUnit.HOURS.toMillis(1)
+        val playTimeHrs = tracker.items.TIME.toDouble() / TimeUnit.HOURS.toMillis(1)
         val mobsPerHr = if (playTimeHrs > 0) {
-            val result = tracker.mobs.TOTAL_MOBS.toDouble() / playTimeHrs
-            BigDecimal(result).setScale(2, RoundingMode.HALF_UP).toDouble()
+            BigDecimal(tracker.mobs.TOTAL_MOBS.toDouble() / playTimeHrs).setScale(2, RoundingMode.HALF_UP).toDouble()
         } else 0.0
 
         if (screen == "CraftingOpen" || mc.currentScreen?.title?.string == "Crafting") {

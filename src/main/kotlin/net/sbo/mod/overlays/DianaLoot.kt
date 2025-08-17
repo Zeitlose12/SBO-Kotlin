@@ -39,7 +39,7 @@ object DianaLoot {
         }
         Register.onGuiClose { screen ->
             if (screen.title.string == "Crafting") {
-                updateLines("CraftingClose")
+                overlay.removeLine(changeView)
             }
         }
     }
@@ -62,10 +62,9 @@ object DianaLoot {
         val chimLsPercent = calcPercentOne(tracker.items, tracker.mobs, "CHIMERA_LS", "MINOS_INQUISITOR_LS")
         val relicPercent = calcPercentOne(tracker.items, tracker.mobs, "MINOS_RELIC", "MINOS_CHAMPION")
         val stickPercent = calcPercentOne(tracker.items, tracker.mobs, "DAEDALUS_STICK", "MINOTAUR")
-        val playTimeHrs = tracker.items.TIME / TimeUnit.HOURS.toMillis(1)
-        val burrowsPerHr = if (playTimeHrs > 0) {
-            val result = tracker.mobs.TOTAL_MOBS.toDouble() / playTimeHrs
-            BigDecimal(result).setScale(2, RoundingMode.HALF_UP).toDouble()
+        val playTimeHrs = tracker.items.TIME.toDouble() / TimeUnit.HOURS.toMillis(1)
+        val burrowsPerHr = if (tracker.items.TOTAL_BURROWS > 0) {
+            BigDecimal(tracker.items.TOTAL_BURROWS.toDouble() / playTimeHrs).setScale(2, RoundingMode.HALF_UP).toDouble()
         } else 0.0
 
         val chimPrice = Helper.getItemPriceFormatted("CHIMERA", tracker.items.CHIMERA)

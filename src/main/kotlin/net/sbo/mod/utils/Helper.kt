@@ -5,6 +5,7 @@ import net.minecraft.component.DataComponentTypes
 import net.minecraft.item.ItemStack
 import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.diana.DianaTracker
+import net.sbo.mod.overlays.DianaLoot
 import net.sbo.mod.settings.categories.Debug
 import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.utils.chat.Chat
@@ -14,6 +15,7 @@ import net.sbo.mod.utils.data.DianaItemsData
 import net.sbo.mod.utils.data.DianaMobsData
 import net.sbo.mod.utils.data.HypixelBazaarResponse
 import net.sbo.mod.utils.data.Item
+import net.sbo.mod.utils.events.EventBus
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.http.Http
 import kotlin.reflect.full.memberProperties
@@ -398,12 +400,14 @@ object Helper {
         Http.sendGetRequest("https://api.skyblockoverhaul.com/ahItems")
             .toJson<List<Map<String, Map<String, Long>>>> { json ->
                 priceDataAh = json.flatMap { it.entries }.associate { it.key to it.value["price"]!! }
+                DianaLoot.updateLines()
             }.error { error ->
                 Chat.chat("§6[SBO] §4Unexpected error while fetching AH item prices: $error")
             }
         Http.sendGetRequest("https://api.hypixel.net/skyblock/bazaar?product")
             .toJson<HypixelBazaarResponse> {
                 priceDataBazaar = it
+                DianaLoot.updateLines()
             }.error { error ->
                 Chat.chat("§6[SBO] §4Unexpected error while fetching Bazaar item prices: $error")
             }
