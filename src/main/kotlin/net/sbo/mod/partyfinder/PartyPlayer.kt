@@ -23,7 +23,7 @@ object PartyPlayer {
             } else {
                 cooldown = System.currentTimeMillis()
                 getPartyPlayerStats(true) { stats ->
-                    Chat.chat("§6[SBO] §aParty player stats reloaded: ${stats.name} (SB Level: ${stats.sbLvl})")
+                    Chat.chat("§6[SBO] §aPlayer stats reloaded: ${stats.name} (SB Level: ${stats.sbLvl})")
                 }
             }
         }
@@ -40,7 +40,7 @@ object PartyPlayer {
 
     fun load() {
         getPartyPlayerStats(true) { stats ->
-            Chat.chat("§6[SBO] §aParty player stats loaded: ${stats.name} (SB Level: ${stats.sbLvl})")
+            Chat.chat("§6[SBO] §aPlayer stats loaded: ${stats.name} (SB Level: ${stats.sbLvl})")
         }
     }
 

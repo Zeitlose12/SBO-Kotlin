@@ -9,7 +9,7 @@ import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.utils.waypoint.WaypointManager
 import net.sbo.mod.mixin.accessor.BeaconBlockEntityRendererInvoker
 import net.sbo.mod.settings.categories.Customization
-import net.sbo.mod.utils.SboVec
+import net.sbo.mod.utils.math.SboVec
 import java.awt.Color
 import kotlin.math.max
 

@@ -1,6 +1,6 @@
 package net.sbo.mod.utils.waypoint
 
-import net.sbo.mod.utils.SboVec
+import net.sbo.mod.utils.math.SboVec
 
 /**
  * Represents a single warp point with coordinates and optional data.

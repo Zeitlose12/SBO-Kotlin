@@ -5,7 +5,7 @@ import net.sbo.mod.utils.render.RenderUtil
 import net.sbo.mod.settings.categories.Customization
 import net.sbo.mod.settings.categories.Diana
 import java.awt.Color
-import net.sbo.mod.utils.SboVec
+import net.sbo.mod.utils.math.SboVec
 import net.sbo.mod.utils.Player
 import kotlin.math.sqrt
 import kotlin.math.pow

@@ -3,7 +3,6 @@ package net.sbo.mod
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import net.minecraft.client.MinecraftClient
-import net.sbo.mod.diana.DianaGuessHandler
 import net.sbo.mod.diana.DianaTracker
 import net.sbo.mod.utils.waypoint.WaypointManager
 import org.slf4j.LoggerFactory
@@ -23,6 +22,7 @@ import net.sbo.mod.utils.events.ClickActionManager
 import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.World
 import net.sbo.mod.diana.BurrowDetector
+import net.sbo.mod.diana.DianaGuess
 import net.sbo.mod.general.HelpCommand
 import net.sbo.mod.overlays.Bobber
 import net.sbo.mod.overlays.Legion
@@ -75,7 +75,7 @@ object SBOKotlin {
 		HypixelModApi.init()
 		PartyFinderManager.init()
 		PartyCheck.init()
-		DianaGuessHandler.init()
+		DianaGuess.init()
 		BurrowDetector.init()
 		Mayor.init()
 		DianaTracker.init()

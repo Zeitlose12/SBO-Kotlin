@@ -12,7 +12,7 @@ import net.minecraft.particle.ParticleTypes as MCParticleTypes
 import net.sbo.mod.utils.waypoint.Waypoint
 import java.awt.Color
 import net.sbo.mod.utils.waypoint.WaypointManager
-import net.sbo.mod.utils.SboVec
+import net.sbo.mod.utils.math.SboVec
 import net.sbo.mod.utils.World
 import java.util.regex.Pattern
 
