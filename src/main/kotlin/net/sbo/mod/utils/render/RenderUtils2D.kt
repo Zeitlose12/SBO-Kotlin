@@ -28,16 +28,17 @@ object RenderUtils2D {
         val textWidth = textRenderer.getWidth(text)
         val textHeight = textRenderer.fontHeight
 
-        val rectX1 = x.toInt() - padding
-        val rectY1 = y.toInt() - padding
-
+        val rectX1 = x.toInt() + padding
+        val rectY1 = y.toInt() + padding
         val rectX2 = rectX1 + textWidth + padding * 2
         val rectY2 = rectY1 + textHeight + padding * 2
 
         val backgroundColor = 0x80404040.toInt() // Semi-transparent gray
         val borderColor = 0x80202020.toInt() // Semi-transparent dark gray
+
         drawContext.matrices.push()
         drawContext.matrices.translate(0.0, 0.0, 400.0)
+
         // Draw the background rectangle.
         drawContext.fill(rectX1, rectY1, rectX2, rectY2, backgroundColor)
 
@@ -46,7 +47,7 @@ object RenderUtils2D {
         drawContext.fill(rectX1, rectY1, rectX1 + 1, rectY2, borderColor) // Left border
         drawContext.fill(rectX2 - 1, rectY1, rectX2, rectY2, borderColor) // Right border
 
-        drawContext.drawText(textRenderer, text, x.toInt(), y.toInt(), 0xFFFFFF, true)
+        drawContext.drawText(textRenderer, text, x.toInt() + padding, y.toInt() + padding, 0xFFFFFF, true)
         drawContext.matrices.pop()
     }
 }

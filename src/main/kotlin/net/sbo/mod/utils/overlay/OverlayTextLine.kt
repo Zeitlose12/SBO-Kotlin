@@ -6,7 +6,7 @@ import net.sbo.mod.utils.render.RenderUtils2D
 
 import java.awt.Color
 
-class OverlayTextLine(
+class OverlayTextLine( // todo: check if guis is chat or player inventory else dont execute actions and do this in overlay
     var text: String,
     var shadow: Boolean = true,
 ) {

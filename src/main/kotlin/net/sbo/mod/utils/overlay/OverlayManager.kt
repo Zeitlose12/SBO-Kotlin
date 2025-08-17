@@ -24,8 +24,8 @@ object OverlayManager {
         val textline = OverlayTextLine("Enjoy using SBO-Kotlin!")
         textline.onHover { drawContext, textRenderer ->
             val scaleFactor = mc.window.scaleFactor
-            val mouseX = mc.mouse.x / scaleFactor
-            val mouseY = mc.mouse.y / scaleFactor
+            val mouseX = mc.mouse.x / (scaleFactor * 2)
+            val mouseY = mc.mouse.y / (scaleFactor * 2)
             RenderUtils2D.drawHoveringString(drawContext, "this is hovered text", mouseX, mouseY, textRenderer)
         }
         val testOverlay = Overlay("test1",50.0f, 10.0f, 2.0f).apply {

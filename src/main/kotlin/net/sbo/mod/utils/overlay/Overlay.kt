@@ -54,7 +54,7 @@ class Overlay(
         lines.clear()
     }
 
-    fun overlayClicked(mouseX: Double, mouseY: Double) {
+    fun overlayClicked(mouseX: Double, mouseY: Double) { // todo: this line
         if (!renderGui) return
         if (!condition()) return
         val textRenderer = mc.textRenderer ?: return
@@ -105,7 +105,7 @@ class Overlay(
         }
 
         for (line in lines) {
-            line.updateMouseInteraction(mouseX, mouseY, x , currentY*this.scale, textRenderer, this.scale, drawContext)
+            line.updateMouseInteraction(mouseX, mouseY, x , currentY*this.scale, textRenderer, this.scale, drawContext) // todo: this line
 
             line.draw(drawContext, currentX.toInt(), currentY.toInt(), textRenderer)
             currentY += textRenderer.fontHeight + 1
