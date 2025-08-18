@@ -9,15 +9,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ClientPlayNetworkHandler.class)
-public class ClientPlayNetworkHandlerMixin {
-
-    @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
-    private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-        Text message = packet.content();
-        boolean allowMessage = ChatHandler.INSTANCE.processMessage(message);
-        if (!allowMessage) {
-            ci.cancel();
-        }
-    }
-}
+//@Mixin(ClientPlayNetworkHandler.class)
+//public class ClientPlayNetworkHandlerMixin {
+//
+//    @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
+//    private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
+//        Text message = packet.content();
+//        boolean allowMessage = ChatHandler.INSTANCE.processMessage(message);
+//        if (!allowMessage) {
+//            ci.cancel();
+//        }
+//    }
+//}

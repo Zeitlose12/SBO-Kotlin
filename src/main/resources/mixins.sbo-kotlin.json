@@ -3,7 +3,7 @@
   "package": "net.sbo.mod.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ClientPlayNetworkHandlerMixin",
+    "ChatHudMixin",
     "LivingEntityMixin",
     "MinecraftClientMixin",
     "PacketMixin",
