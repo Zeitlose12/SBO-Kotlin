@@ -23,7 +23,7 @@ class Overlay(
     var x: Float,
     var y: Float,
     var scale: Float = 1.0f,
-    var allowedGuis: List<String> = listOf("Chat screen", "Crafting")
+    var allowedGuis: List<String> = listOf("Chat screen")
 ) {
     private var lines = mutableListOf<OverlayTextLine>()
     private var renderGui: Boolean = true
