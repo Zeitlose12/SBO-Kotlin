@@ -1,5 +1,9 @@
 package net.sbo.mod.overlays
-
+/* todo: Refactoring
+* This Code definetly needs refactoring, but I don't have the time to do it right now.
+* I will do it in the future, but for now it works and I don't want to break it.
+* If you want to refactor it, feel free to do so, but please keep the functionality intact.
+*/
 import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.utils.overlay.Overlay
 import net.sbo.mod.utils.overlay.OverlayTextLine
@@ -16,16 +20,16 @@ import java.util.concurrent.TimeUnit
 
 object DianaMobs {
     val overlay = Overlay("Diana Mobs", 10f, 10f, 1f, listOf("Chat screen", "Crafting")).setCondition { Diana.mobTracker != Diana.Tracker.OFF }
-    val changeView: OverlayTextLine = OverlayTextLine("$YELLOW${BOLD}Change View")
+    val changeView: OverlayTextLine = OverlayTextLine("${YELLOW}Change View")
         .onClick {
             Diana.mobTracker = Diana.mobTracker.next()
             updateLines()
         }
         .onMouseEnter {
-            changeView.text = "$YELLOW$UNDERLINE${BOLD}Change View"
+            changeView.text = "$YELLOW${UNDERLINE}Change View"
         }
         .onMouseLeave {
-            changeView.text = "$YELLOW${BOLD}Change View"
+            changeView.text = "${YELLOW}Change View"
         }
 
     fun init() {
@@ -45,6 +49,7 @@ object DianaMobs {
 
     fun createLine(name: String, formattedText: String) : OverlayTextLine {
         val line = OverlayTextLine(formattedText).onClick {
+            if (mc.currentScreen?.title?.string != "Crafting") return@onClick
             if (SBOConfigBundle.sboData.hideTrackerLines.contains(name)) {
                 SBOConfigBundle.sboData.hideTrackerLines.remove(name)
             } else {
@@ -86,7 +91,7 @@ object DianaMobs {
             lines.add(changeView)
         }
 
-        lines.add(OverlayTextLine("$YELLOW${BOLD}Diana Mobs $GRAY($YELLOW$type$GRAY)"))
+        lines.add(OverlayTextLine("$YELLOW${BOLD}Diana Mobs $GRAY($YELLOW${Helper.toTitleCase(type.toString())}$GRAY)"))
 
         lines.addAll(
             listOf(

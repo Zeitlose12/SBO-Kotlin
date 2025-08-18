@@ -212,7 +212,7 @@ object SboTimerManager {
          * Starts the inactivity check by adding this timer to the central manager.
          */
         private fun startInactivityCheck() {
-            SboTimerManager.addTimer(this)
+            addTimer(this)
             inactivityFlag = false
         }
 
@@ -220,7 +220,7 @@ object SboTimerManager {
          * Stops the inactivity check by removing this timer from the central manager.
          */
         private fun stopInactivityCheck() {
-            SboTimerManager.removeTimer(this)
+            removeTimer(this)
             inactivityFlag = false
         }
     }

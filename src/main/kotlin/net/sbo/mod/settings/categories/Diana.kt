@@ -10,7 +10,15 @@ import net.sbo.mod.utils.waypoint.AdditionalHubWarps
 
 object Diana : CategoryKt("Diana") {
     enum class SettingDiana {
-        INSTASELL, SELLOFFER
+        INSTASELL, SELLOFFER;
+
+        fun next(): SettingDiana {
+            return if (this == INSTASELL) {
+                SELLOFFER
+            } else {
+                INSTASELL
+            }
+        }
     }
 
     enum class Tracker {
