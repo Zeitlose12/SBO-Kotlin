@@ -43,7 +43,7 @@ data class SboData(
     var inqsSinceLsChim: Int = 0,
     var highestChimMagicFind: Int = 0,
     var highestStickMagicFind: Int = 0,
-    var hideTrackerLines: List<String> = emptyList(),
+    var hideTrackerLines: MutableList<String> = mutableListOf(),
     var partyBlacklist: List<String> = emptyList(),
     var achievementFilter: String = "Locked",
     var lastInqDate: Long = 0,

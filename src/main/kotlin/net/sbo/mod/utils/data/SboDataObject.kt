@@ -65,7 +65,7 @@ object SboDataObject {
         partyFinderData = SBOConfigBundle.partyFinderData
         overlayData = SBOConfigBundle.overlayData
         saveAllDataThreaded("SBO")
-        savePeriodically(10)
+        savePeriodically(5)
         Register.onDisconnect {
             saveAndBackupAllDataThreaded("SBO")
         }
