@@ -124,6 +124,7 @@ class Overlay(
         }
 
         for (line in lines) {
+            if (!line.checkCondition()) continue
             if (Helper.getGuiName() in allowedGuis) line.updateMouseInteraction(mouseX, mouseY, x , currentY*this.scale, textRenderer, this.scale, drawContext)
 
             line.draw(drawContext, currentX.toInt(), currentY.toInt(), textRenderer)

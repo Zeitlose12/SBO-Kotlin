@@ -27,6 +27,10 @@ class OverlayTextLine(
         return this
     }
 
+    fun checkCondition(): Boolean {
+        return condition()
+    }
+
     /**
      * Executes the mouse enter action when the mouse enters the text line.
      * @param action The action to execute when the mouse enters the text line.
@@ -78,7 +82,7 @@ class OverlayTextLine(
     }
 
     fun lineClicked(mouseX: Double, mouseY: Double, x: Float, y: Float, textRenderer: TextRenderer, scale: Float) {
-        if (text.isEmpty() || clickAction == null || !condition()) return
+        if (text.isEmpty() || clickAction == null) return
         if (isMouseOver(mouseX, mouseY, x, y, textRenderer, scale)) {
             clickAction?.invoke()
         }
@@ -92,7 +96,7 @@ class OverlayTextLine(
     }
 
     fun updateMouseInteraction(mouseX: Double, mouseY: Double, x: Float, y: Float, textRenderer: TextRenderer, scale: Float, drawContext: DrawContext) {
-        if (text.isEmpty() || !condition()) return
+        if (text.isEmpty()) return
         if (mouseEnterAction == null && mouseLeaveAction == null && hoverAction == null) {
             return
         }
@@ -113,7 +117,6 @@ class OverlayTextLine(
 
     fun draw(drawContext: DrawContext, x: Int, y: Int, textRenderer: TextRenderer) {
         if (text.isEmpty()) return
-        if (!condition()) return
 
         this.x = x
         this.y = y
