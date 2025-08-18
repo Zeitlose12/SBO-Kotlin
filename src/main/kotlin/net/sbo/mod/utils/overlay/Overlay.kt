@@ -113,7 +113,7 @@ class Overlay(
         drawContext.matrices.scale(this.scale, this.scale, 1.0f)
 
         var currentY = (y / this.scale)
-        val currentX = (x / this.scale)
+        var currentX = (x / this.scale)
 
         val totalWidth = getTotalWidth()
         val totalHeight = getTotalHeight()
@@ -127,7 +127,12 @@ class Overlay(
             if (Helper.getGuiName() in allowedGuis) line.updateMouseInteraction(mouseX, mouseY, x , currentY*this.scale, textRenderer, this.scale, drawContext)
 
             line.draw(drawContext, currentX.toInt(), currentY.toInt(), textRenderer)
-            currentY += textRenderer.fontHeight + 1
+            if (line.linebreak) {
+                currentY += textRenderer.fontHeight + 1
+                currentX = (x / this.scale)
+            } else {
+                currentX += textRenderer.getWidth(line.text)
+            }
         }
 
         drawContext.matrices.pop()
