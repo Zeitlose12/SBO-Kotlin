@@ -420,7 +420,14 @@ object Helper {
         if (id == "CROWN_OF_GREED")
             ahPrice = if (ahPrice < 1000000.0) 1000000.0 else ahPrice
 
-        val bazaarPrice = priceDataBazaar?.products?.get(id)?.quick_status?.sellPrice
+        var bazaarPrice: Double? = null
+        bazaarPrice = if (Diana.bazaarSettingDiana == Diana.SettingDiana.INSTASELL) {
+            priceDataBazaar?.products?.get(id)?.quick_status?.sellPrice
+        }
+        else {
+            priceDataBazaar?.products?.get(id)?.quick_status?.buyPrice
+        }
+
         return when {
             ahPrice != 0.0 -> (ahPrice * amount).roundToLong()
             bazaarPrice != null -> (bazaarPrice * amount).roundToLong()
