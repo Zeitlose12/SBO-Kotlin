@@ -79,25 +79,58 @@ class Overlay(
         if (Helper.getGuiName() !in allowedGuis) return
         val textRenderer = mc.textRenderer ?: return
         if (!isOverOverlay(mouseX, mouseY)) return
+
         var currentY = y/this.scale
+        var currentX = x/this.scale
+
         for (line in lines) {
-            line.lineClicked(mouseX, mouseY, x, currentY * this.scale, textRenderer, this.scale)
-            currentY += textRenderer.fontHeight + 1
+            line.lineClicked(mouseX, mouseY, currentX * this.scale, currentY * this.scale, textRenderer, this.scale)
+
+            if (line.linebreak) {
+                currentY += textRenderer.fontHeight + 1
+                currentX = x/this.scale
+            } else {
+                currentX += textRenderer.getWidth(line.text) / this.scale
+            }
         }
     }
 
     fun getTotalHeight(): Int {
         val textRenderer = mc.textRenderer ?: return 0
-        return lines.sumOf { textRenderer.fontHeight + 1 }
+        var totalHeight = 0
+        for (line in lines) {
+            if (line.linebreak) {
+                totalHeight += textRenderer.fontHeight + 1
+            }
+        }
+
+        if (lines.isNotEmpty()) {
+            totalHeight += textRenderer.fontHeight + 1
+        }
+        return totalHeight
     }
 
     fun getTotalWidth(): Int {
         val textRenderer = mc.textRenderer ?: return 0
-        return lines.maxOfOrNull { textRenderer.getWidth(it.text) } ?: 0
+        var maxWidth = 0
+        var currentWidth = 0
+        for (line in lines) {
+            currentWidth += textRenderer.getWidth(line.text)
+            if (line.linebreak) {
+                if (currentWidth > maxWidth) {
+                    maxWidth = currentWidth
+                }
+                currentWidth = 0
+            }
+        }
+
+        if (currentWidth > maxWidth) {
+            maxWidth = currentWidth
+        }
+        return maxWidth
     }
 
     fun isOverOverlay(mouseX: Double, mouseY: Double): Boolean {
-        val textRenderer = mc.textRenderer ?: return false
         val totalWidth = getTotalWidth() * this.scale
         val totalHeight = getTotalHeight() * this.scale
 
@@ -125,7 +158,7 @@ class Overlay(
 
         for (line in lines) {
             if (!line.checkCondition()) continue
-            if (Helper.getGuiName() in allowedGuis) line.updateMouseInteraction(mouseX, mouseY, x , currentY*this.scale, textRenderer, this.scale, drawContext)
+            if (Helper.getGuiName() in allowedGuis) line.updateMouseInteraction(mouseX, mouseY, currentX*this.scale, currentY*this.scale, textRenderer, this.scale, drawContext)
 
             line.draw(drawContext, currentX.toInt(), currentY.toInt(), textRenderer)
             if (line.linebreak) {

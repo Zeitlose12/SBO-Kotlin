@@ -19,7 +19,7 @@ class OverlayTextLine(
     var y: Int = 0
     private var width: Int = 0
     private var height: Int = 0
-    var renderDebugBox: Boolean = false
+    var renderDebugBox: Boolean = true
     private var condition: () -> Boolean = { true }
 
     fun setCondition(condition: () -> Boolean): OverlayTextLine {
@@ -124,7 +124,7 @@ class OverlayTextLine(
         this.height = textRenderer.fontHeight
 
         if (renderDebugBox) {
-            drawContext.fill(x, y, x + width, y + height + 1, Color(128, 128, 128, 100).rgb)
+            drawContext.fill(x, y, x + width, y + height + 1, Color(128, 128, 128, 130).rgb)
         }
 
         drawContext.drawText(textRenderer, text, x, y, 0xFFFFFF, shadow)
