@@ -127,16 +127,16 @@ object BurrowDetector {
         }
         Register.command("sboclearburrows", "sbocb") {
             resetBurrows()
-            Chat.chat("§6[SBO] §4Burrow Waypoints Cleared!§r")
+            Chat.chat("§6[SBO] §4Burrow Waypoints Cleared!")
         }
 
-        Register.onChatMessageCancable(Pattern.compile("§r§eYou dug out a Griffin Burrow! (.*?)", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("§eYou dug out a Griffin Burrow! (.*?)", Pattern.DOTALL)) { message, matchResult ->
             if (!Diana.dianaBurrowDetect) return@onChatMessageCancable true
             refreshBurrows()
             true
         }
 
-        Register.onChatMessageCancable(Pattern.compile("§r§eYou finished the Griffin burrow chain!(.*?)", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("§eYou finished the Griffin burrow chain!(.*?)", Pattern.DOTALL)) { message, matchResult ->
             if (!Diana.dianaBurrowDetect) return@onChatMessageCancable true
             refreshBurrows()
             true

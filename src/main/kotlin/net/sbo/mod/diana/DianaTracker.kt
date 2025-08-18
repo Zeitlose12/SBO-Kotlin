@@ -14,16 +14,19 @@ import net.sbo.mod.utils.Helper.lastInqDeath
 import net.sbo.mod.utils.Helper.lastLootShare
 import net.sbo.mod.utils.Helper.removeFormatting
 import net.sbo.mod.utils.Helper.sleep
+import net.sbo.mod.utils.Mayor.getMayor
 import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.SboTimerManager.timerSession
 import net.sbo.mod.utils.data.DianaTracker
+import net.sbo.mod.utils.data.DianaTrackerMayorData
 import net.sbo.mod.utils.data.DianaTrackerSessionData
 import net.sbo.mod.utils.data.Item
 import net.sbo.mod.utils.data.SboDataObject
 import net.sbo.mod.utils.data.SboDataObject.dianaTrackerMayor
 import net.sbo.mod.utils.data.SboDataObject.dianaTrackerSession
 import net.sbo.mod.utils.data.SboDataObject.dianaTrackerTotal
+import net.sbo.mod.utils.data.SboDataObject.pastDianaEventsData
 import net.sbo.mod.utils.data.SboDataObject.saveTrackerData
 import net.sbo.mod.utils.data.SboDataObject.sboData
 import java.util.regex.Pattern
@@ -58,9 +61,35 @@ object DianaTracker {
             DianaStats.updateLines()
         }
 
-        Register.onChatMessageCancable(Pattern.compile("(.*?) (.*?) §r§efound a §r§cPhoenix §r§epet!(.*?)", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(
+            Pattern.compile("§eThe election room is now closed. Clerk Seraphine is doing a final count of the votes...", Pattern.DOTALL)
+        ) { _, _ ->
+            val lastYear = dianaTrackerMayor.year
+            if (lastYear == 0) return@onChatMessageCancable true
+            var allZero = true
+            for (item in dianaTrackerMayor.mobs::class.java.declaredFields) {
+                item.isAccessible = true
+                if (item.get(dianaTrackerMayor.mobs) is Int) {
+                    if (item.getInt(dianaTrackerMayor.mobs) > 0) {
+                        allZero = false
+                        break
+                    }
+                }
+            }
+            if (!allZero) {
+                pastDianaEventsData.events += dianaTrackerMayor
+                SboDataObject.save("PastDianaEventsData")
+            }
+            dianaTrackerMayor = DianaTrackerMayorData()
+            dianaTrackerMayor.year = lastYear + 1
+            SboDataObject.save("DianaTrackerMayorData")
+            getMayor()
+            true
+        }
+
+        Register.onChatMessageCancable(Pattern.compile("(.*?) §efound a §cPhoenix §epet!(.*?)", Pattern.DOTALL)) { message, matchResult ->
             if (QOL.phoenixAnnouncer) {
-                Chat.chat("§6[SBO] §cGG §eFound a Phoenix pet!")
+                Chat.chat("§6[SBO] §cGG §eFound a §cPhoenix §epet!")
                 Helper.showTitle("§c§lPhoenix Pet!", "", 0, 25, 35)
             }
             if (Helper.getSecondsPassed(lastDianaMobDeath) > 2) return@onChatMessageCancable true
@@ -148,7 +177,7 @@ object DianaTracker {
     }
 
     fun trackMobsWithChat() {
-        Register.onChatMessageCancable(Pattern.compile("(.*?) §r§eYou dug (.*?)§r§2(.*?)§r§e!(.*?)", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("(.*?) §eYou dug (.*?)§2(.*?)§e!(.*?)", Pattern.DOTALL)) { message, matchResult ->
             val mob = matchResult.group(3)
             when (mob) {
                 "Minos Inquisitor" -> {
@@ -197,7 +226,7 @@ object DianaTracker {
     }
 
     fun trackCoinsWithChat() {
-        Register.onChatMessageCancable(Pattern.compile("§r§6§lWow! §r§eYou dug out §r§6(.*?) coins§r§e!", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("§6§lWow! §eYou dug out §6(.*?) coins§e!", Pattern.DOTALL)) { message, matchResult ->
             val coins = matchResult.group(1).replace(",", "").toIntOrNull() ?: 0
             if (coins > 0) trackItem("COINS", coins)
             true
@@ -205,7 +234,7 @@ object DianaTracker {
     }
 
     fun trackTreasuresWithChat() {
-        Register.onChatMessageCancable(Pattern.compile("§r§6§lRARE DROP! §r§eYou dug out a §r(.*?)§r§e!", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("§6§lRARE DROP! §eYou dug out a (.*?)§e!", Pattern.DOTALL)) { message, matchResult ->
             val drop = matchResult.group(1).drop(2)
             when (drop) {
                 "Griffin Feather" -> trackItem(drop, 1)
@@ -217,7 +246,7 @@ object DianaTracker {
     }
 
     fun trackRngDropsWithChat() { // todo: play sound
-        Register.onChatMessageCancable(Pattern.compile("§r§6§lRARE DROP! §r(.*?)", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("§6§lRARE DROP! (.*?)", Pattern.DOTALL)) { message, matchResult ->
             if (!checkDiana()) return@onChatMessageCancable true
             var drop = matchResult.group(1)
 
@@ -314,7 +343,7 @@ object DianaTracker {
     }
 
     fun trackBurrowsWithChat() {
-        Register.onChatMessageCancable(Pattern.compile("§r§eYou dug out a Griffin Burrow! (.*?)", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("§eYou dug out a Griffin Burrow! (.*?)", Pattern.DOTALL)) { message, matchResult ->
             trackItem("TOTAL_BURROWS", 1)
             val burrow = matchResult.group(1).trim().removeFormatting()
             if (Diana.fourEyedFish) {
@@ -328,7 +357,7 @@ object DianaTracker {
             }
             true
         }
-        Register.onChatMessageCancable(Pattern.compile("§r§eYou finished the Griffin burrow chain!(.*?)", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("§eYou finished the Griffin burrow chain!(.*?)", Pattern.DOTALL)) { message, matchResult ->
             trackItem("TOTAL_BURROWS", 1)
             if (Diana.fourEyedFish) {
                 trackItem("FISH_COINS", 2000)

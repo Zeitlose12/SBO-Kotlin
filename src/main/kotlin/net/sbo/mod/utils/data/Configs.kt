@@ -121,7 +121,7 @@ data class DianaItemsData(
 
 @Suppress("PropertyName")
 data class DianaMobsData(
-            @SerializedName("Minos Inquisitor") var MINOS_INQUISITOR: Int = 0,
+    @SerializedName("Minos Inquisitor") var MINOS_INQUISITOR: Int = 0,
     @SerializedName("Minos Champion") var MINOS_CHAMPION: Int = 0,
     @SerializedName("Minotaur") var MINOTAUR: Int = 0,
     @SerializedName("Gaia Construct") var GAIA_CONSTRUCT: Int = 0,

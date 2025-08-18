@@ -47,10 +47,10 @@ object Pickuplog {
             updateOverlay()
         }
 
-        Register.onChatMessageCancable(Pattern.compile("§r(.*?) §r(.*?)§r item(.*?)§r (.*?)", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("(.*?) item(.*?) (.*?)", Pattern.DOTALL)) { message, matchResult ->
             if (World.isInSkyblock() && matchResult.group(1).contains("Sacks")) {
                 message.siblings.forEach { part ->
-                    if (part.string.contains("item")) {
+                    if (part.string.contains(" item")) {
                         val hover = part.style.hoverEvent
                         if (hover is HoverEvent.ShowText) {
                             val plain = hover.value().string
@@ -58,6 +58,7 @@ object Pickuplog {
                                 val amount = match.groupValues[1].replace(",", "")
                                 val item = match.groupValues[2].trim()
                                 DianaTracker.trackWithSacksMessage(item, amount.toInt())
+                                Chat.chat("§a+ $amount $item")
                             }
                         }
                     }
