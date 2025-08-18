@@ -19,7 +19,7 @@ class OverlayTextLine(
     var y: Int = 0
     private var width: Int = 0
     private var height: Int = 0
-    var renderDebugBox: Boolean = true
+    var renderDebugBox: Boolean = false
     private var condition: () -> Boolean = { true }
 
     fun setCondition(condition: () -> Boolean): OverlayTextLine {
