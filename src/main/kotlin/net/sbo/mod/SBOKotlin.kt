@@ -34,6 +34,7 @@ import net.sbo.mod.overlays.Legion
 import net.sbo.mod.overlays.MagicFind
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.SboTimerManager
+import net.sbo.mod.utils.SoundHandler
 import net.sbo.mod.utils.overlay.OverlayManager
 
 object SBOKotlin {
@@ -43,7 +44,7 @@ object SBOKotlin {
 	const val API_URL: String = "https://api.skyblockoverhaul.com"
 
 
-	private const val MOD_ID = "sbo-kotlin"
+	internal const val MOD_ID = "sbo-kotlin"
 	internal val logger = LoggerFactory.getLogger(MOD_ID)
 
 	val configurator = Configurator("sbo")
@@ -57,6 +58,9 @@ object SBOKotlin {
 		// Load configuration and data
 		SboDataObject.init()
 
+		// Load Custom Sound System
+		SoundHandler.init()
+
 		// load Main Features
 		PartyCommands.registerPartyChatListeners()
 		Register.command("sbo") {
@@ -66,14 +70,10 @@ object SBOKotlin {
 		}
 
 		Register.command("test", "Test Command", "tester") { args ->
-			Chat.chat("Test command executed with argument 1: ${args.getOrNull(0) ?: "No argument provided"}")
-			Chat.chat("Test command executed with argument 2: ${args.getOrNull(1) ?: "No second argument provided"}")
-			Chat.chat("This is a test command! Arguments: ${args.joinToString(", ")}")
+			SoundHandler.playCustomSound("buzzer", 100f)
 		}
 
-		// Registering Guis
 		guis.register()
-
 		HelpCommand.init()
 		ClickActionManager.init()
 		SboKeyBinds.init()
