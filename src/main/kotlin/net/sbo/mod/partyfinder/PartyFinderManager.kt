@@ -193,6 +193,7 @@ object PartyFinderManager {
         type: String,
         size: Int,
     ) {
+        if (!this.creatingParty) return
         this.partyReqs = reqs
         this.partyNote = checkPartyNote(note)
         this.partyType = type
@@ -205,6 +206,7 @@ object PartyFinderManager {
 
     fun queueParty() {
         if (!this.creatingParty) return
+        creatingParty = false
         if (partyMember.size < partySize && !inQueue) {
             try {
                 val currentTime = System.currentTimeMillis()
@@ -255,8 +257,9 @@ object PartyFinderManager {
     }
 
     fun updateParty() {
-        if (updateBool && inQueue && isInParty && isLeader) {
-            updateBool = false
+        if (!this.updateBool) return
+        updateBool = false
+        if (inQueue && isInParty && isLeader) {
             if (partyMember.size >= partySize || partyMember.size < 2) return
             val currentTime = System.currentTimeMillis()
             Http.sendGetRequest(
