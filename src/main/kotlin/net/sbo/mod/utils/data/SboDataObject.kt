@@ -221,14 +221,14 @@ object SboDataObject {
             val oldFormatData: Map<String, Any> = gson.fromJson(FileReader(dataFile), typeToken)
 
             val combinedUnlockedIds = mutableSetOf<Int>()
-            val achievementMap = mutableMapOf<String, Boolean>()
+            val achievementMap = mutableMapOf<Int, Boolean>()
             var isOldFormat = false
 
             // Iterate through all key-value pairs in the old file
             for ((key, value) in oldFormatData) {
                 if (key != "unlocked" && value is Boolean) {
                     // This handles the "1": true, "2": true, etc. pairs
-                    achievementMap[key] = value
+                    achievementMap[key.toInt()] = value
                     key.toIntOrNull()?.let { combinedUnlockedIds.add(it) }
                     isOldFormat = true
                 }
@@ -241,7 +241,7 @@ object SboDataObject {
             if (isOldFormat) {
                 SBOKotlin.logger.info("[$modName] Old achievements file format detected. Migrating to new format.")
                 val newAchievementsData = AchievementsData(
-                    unlocked = combinedUnlockedIds.toList().sorted(),
+//                    unlocked = combinedUnlockedIds.toList().sorted(),
                     achievements = achievementMap
                 )
                 save(modName, newAchievementsData, "sbo_achievements.json")

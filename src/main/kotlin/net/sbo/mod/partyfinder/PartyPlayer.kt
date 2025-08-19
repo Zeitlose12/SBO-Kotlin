@@ -1,6 +1,7 @@
 package net.sbo.mod.partyfinder
 
 import net.sbo.mod.SBOKotlin.API_URL
+import net.sbo.mod.diana.achievements.AchievementManager.trackWithCheckPlayer
 import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Player
@@ -59,6 +60,8 @@ object PartyPlayer {
                         stats = response.partyInfo.firstOrNull() ?: PartyPlayerStats()
                         if (stats.sbLvl == -1) {
                             Chat.chat("§6[SBO] §cYour stats are not available, please try again later.")
+                        } else {
+                            trackWithCheckPlayer(stats)
                         }
                         callback(stats)
                     }

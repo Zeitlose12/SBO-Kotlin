@@ -1,6 +1,7 @@
 package net.sbo.mod.partyfinder
 
 import net.sbo.mod.SBOKotlin.API_URL
+import net.sbo.mod.diana.achievements.AchievementManager.trackWithCheckPlayer
 import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.HypixelModApi
@@ -56,6 +57,7 @@ object PartyCheck {
                     if (partyInfo.firstOrNull() != null) {
                         if (!noMessage && partyInfo[0].uuid == Player.getUUIDString().replace("-", "")) {
                             printPartyInfo(partyInfo)
+                            trackWithCheckPlayer(partyInfo[0])
                         } else if (!noMessage) {
                             printPartyInfo(partyInfo, true)
                         }

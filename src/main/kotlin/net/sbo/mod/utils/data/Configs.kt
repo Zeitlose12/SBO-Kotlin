@@ -57,8 +57,7 @@ data class SboData(
 )
 
 data class AchievementsData(
-    var achievements: Map<String, Boolean> = emptyMap(),
-    var unlocked: List<Int> = emptyList()
+    var achievements: MutableMap<Int, Boolean> = mutableMapOf()
 )
 
 data class PastDianaEventsData(

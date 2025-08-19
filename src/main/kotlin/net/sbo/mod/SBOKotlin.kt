@@ -24,6 +24,7 @@ import net.sbo.mod.utils.World
 import net.sbo.mod.diana.BurrowDetector
 import net.sbo.mod.diana.DianaGuess
 import net.sbo.mod.diana.DianaMobDetect
+import net.sbo.mod.diana.achievements.AchievementManager
 import net.sbo.mod.general.HelpCommand
 import net.sbo.mod.overlays.Bobber
 import net.sbo.mod.overlays.DianaLoot
@@ -98,6 +99,7 @@ object SBOKotlin {
 		DianaMobDetect.init()
 		DianaLoot.init()
 		InquisLoot.init()
+		AchievementManager.init()
 
 		Register.onTick(100) { unregister ->
 			if (mc.player != null && World.isInSkyblock()) {
