@@ -193,7 +193,7 @@ object PartyFinderManager {
         type: String,
         size: Int,
     ) {
-        if (!this.creatingParty) return
+        if (this.creatingParty) return
         this.partyReqs = reqs
         this.partyNote = checkPartyNote(note)
         this.partyType = type
