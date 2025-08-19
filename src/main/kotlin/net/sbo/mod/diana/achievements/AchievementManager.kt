@@ -102,8 +102,8 @@ object AchievementManager {
         achievements[id]?.lock()
     }
 
-    fun trackAchievementsItem(tracker: DianaTrackerMayorData, backtrack: Boolean = false) {
-        if (isOnHypixel && !backtrack) return
+    fun trackAchievementsItem(tracker: DianaTrackerMayorData) {
+        if (isOnHypixel) return
         val itemsData = tracker.items
         val time = itemsData.TIME
         val totalBurrows = itemsData.TOTAL_BURROWS
@@ -227,7 +227,7 @@ object AchievementManager {
     fun backTrackAchievements() {
         Chat.chat("§6[SBO] §eBacktracking Achievements...")
         pastDianaEventsData.events.forEach { eventData ->
-            trackAchievementsItem(eventData, true)
+            trackAchievementsItem(eventData)
         }
         trackSinceMob()
     }
