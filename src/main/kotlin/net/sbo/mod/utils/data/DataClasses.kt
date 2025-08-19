@@ -182,7 +182,7 @@ data class CandidateData(
     @SerialName("key") val key: String,
     @SerialName("name") val name: String,
     @SerialName("perks") val perks: List<PerkData>,
-    @SerialName("votes") val votes: Int
+    @SerialName("votes") val votes: Int? = null
 )
 
 data class HighlightElement(
