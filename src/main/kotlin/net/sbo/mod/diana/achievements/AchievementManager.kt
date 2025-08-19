@@ -16,6 +16,8 @@ import java.lang.Thread.sleep
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
+// todo: call all the unlock methods to track achievements also fix the daxe achievements
+
 object AchievementManager {
     val rarityColorDict = mapOf(
         "Common" to "§f",

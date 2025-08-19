@@ -25,7 +25,6 @@ class Achievement(
     fun unlock() {
         achievementsData.achievements[id] = true
         SboDataObject.save("AchievementsData")
-        Helper.showTitle("$color$name", "§aAchievement Unlocked!", 0, 50, 20)
 
         var hiddenExtra = ""
         if (this.hidden) {
@@ -34,9 +33,12 @@ class Achievement(
         }
         val player = mc.player
         if (this.rarity == "Divine" || this.rarity == "Impossible") {
+            Helper.showTitle("§kd§r $color$name §kd§r", "§aAchievement Unlocked!", 0, 50, 20)
+            Chat.chat(textComponent("§6[SBO] §aAchievement Unlocked §7>> $color§kd§r $color$name §kd§r", "$hiddenExtra§a$description"))
             mc.world?.playSound(player, player?.blockPos, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.PLAYERS, 1.0f, 1.0f)
-            Chat.chat(textComponent("§6[SBO] §aAchievement Unlocked §7>> $color§k §r $color$name §k §r", "$hiddenExtra§a$description"))
+
         } else {
+            Helper.showTitle("$color$name", "§aAchievement Unlocked!", 0, 50, 20)
             Chat.chat(textComponent("§6[SBO] §aAchievement Unlocked §7>> $color$name", "$hiddenExtra§a$description"))
             mc.world?.playSound(player, player?.blockPos, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f)
         }
