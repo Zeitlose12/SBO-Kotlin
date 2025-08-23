@@ -3,6 +3,7 @@ package net.sbo.mod.utils.data
 import gg.essential.elementa.UIComponent
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonPrimitive
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.network.packet.Packet
 import net.minecraft.world.World
@@ -125,7 +126,7 @@ data class PartyPlayerStats(
     val enrichments: Int = 0,
     val missingEnrichments: Int = 0,
     val griffinRarity: String = "",
-    val griffinItem: String = "",
+    val griffinItem: JsonPrimitive? = null,
     val killLeaderboard: Int = 999999,
     val mythosKills: Int = 0
 )

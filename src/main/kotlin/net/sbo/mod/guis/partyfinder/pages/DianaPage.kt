@@ -34,7 +34,7 @@ class DianaPage(private val parent: PartyFinderGUI) {
             Pair("&9Clover: ", if (info.clover) "&a✔" else "&c✘"),
             Pair("&9Looting 5: ", Helper.getNumberColor(info.daxeLootingLvl, 5)),
             Pair("&9Chimera: ", Helper.getNumberColor(info.daxeChimLvl, 5)),
-            Pair("&9Griffin Item: ", Helper.getGriffinItemColor(info.griffinItem)),
+            Pair("&9Griffin Item: ", Helper.getGriffinItemColor(info.griffinItem?.content)),
             Pair("&9Griffin Rarity: ", Helper.getRarity(info.griffinRarity)),
             Pair("&9Diana Kills: ", Helper.matchDianaKillsToColor(info.mythosKills)),
             Pair("&9Leaderboard: &b#", info.killLeaderboard),
@@ -199,9 +199,9 @@ class DianaPage(private val parent: PartyFinderGUI) {
         noteInput.maxChars = 30
         noteInput.textInputText.setTextScale(parent.getTextScale())
         if (pfConfigState.inputs.diana.note.isNotEmpty()) {
-            noteInput.textInputText.setText(pfConfigState.inputs.diana.note.toString())
+            noteInput.textInputText.setText(pfConfigState.inputs.diana.note)
         }
-//
+
         val l5e9box = UIBlock().constrain {
             x = 0.percent()
             y = SiblingConstraint(5f)
