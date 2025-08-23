@@ -15,7 +15,6 @@ import net.sbo.mod.utils.data.DianaItemsData
 import net.sbo.mod.utils.data.DianaMobsData
 import net.sbo.mod.utils.data.HypixelBazaarResponse
 import net.sbo.mod.utils.data.Item
-import net.sbo.mod.utils.events.EventBus
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.http.Http
 import kotlin.reflect.full.memberProperties
@@ -208,8 +207,8 @@ object Helper {
         }
     }
 
-    fun getGriffinItemColor(item: String): String {
-        if (item.isEmpty()) return ""
+    fun getGriffinItemColor(item: String?): String {
+        if (item.isNullOrEmpty()) return ""
         val name = item.replace("PET_ITEM_", "").replace("_", " ").replaceFirstChar { it.uppercase() }
         return when (name) {
             "Four Eyed Fish" -> "§5$name"
@@ -420,8 +419,7 @@ object Helper {
         if (id == "CROWN_OF_GREED")
             ahPrice = if (ahPrice < 1000000.0) 1000000.0 else ahPrice
 
-        var bazaarPrice: Double? = null
-        bazaarPrice = if (Diana.bazaarSettingDiana == Diana.SettingDiana.INSTASELL) {
+        val bazaarPrice = if (Diana.bazaarSettingDiana == Diana.SettingDiana.INSTASELL) {
             priceDataBazaar?.products?.get(id)?.quick_status?.sellPrice
         }
         else {
