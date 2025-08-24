@@ -69,13 +69,12 @@ internal object ParticleTypes {
             packet.parameters.type == MCParticleTypes.DRIPPING_LAVA &&
             packet.count == 2 &&
             packet.speed == 0.01f &&
-            packet.offsetX == 0.5f &&
+            packet.offsetX == 0.35f &&
             packet.offsetY == 0.1f &&
-            packet.offsetZ == 0.5f
+            packet.offsetZ == 0.35f
         },
         "FOOTSTEP" to ParticleCheck { packet ->
-            //todo: fix this check type
-            /*packet.parameters.type == MCParticleTypes.FOOTSTEP &&*/
+            packet.parameters.type == MCParticleTypes.CRIT &&
             packet.count == 1 &&
             packet.speed == 0.0f &&
             packet.offsetX == 0.05f &&

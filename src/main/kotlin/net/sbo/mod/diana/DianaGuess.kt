@@ -109,17 +109,15 @@ object DianaGuess {
         }
 
         fun onUseSpade(action: String, event: PlayerInteractEvent?) {
+            if (action != "useItem" && action != "useBlock") return
             val player = mc.player
             val item = player?.mainHandStack
             if (item?.isEmpty == true) return
-            if (item == null || !item.name.string.contains("Spade") || action != "useItem") return
-
+            if (item == null || !item.name.string.contains("Spade")) return
             if (System.currentTimeMillis() - this.lastLavaParticle < 200) {
                 event?.isCanceled = true
                 return
             }
-
-            if (System.currentTimeMillis() - lastGuessTime < 3000) return
             this.particleLocations.clear()
             lastGuessTime = System.currentTimeMillis()
         }

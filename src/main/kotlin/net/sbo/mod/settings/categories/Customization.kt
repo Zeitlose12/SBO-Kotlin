@@ -26,7 +26,7 @@ object Customization : CategoryKt("Customization") {
     }
 
     var TreasureColor by color(
-        Color(0.666f, 1.0f, 0.0f).rgb) {
+        Color(1f, 0.666f, 0.0f).rgb) {
         this.name = Translated("Treasure Burrow Color")
         this.description = Translated("Pick a color for treasure burrows")
         this.allowAlpha = true
