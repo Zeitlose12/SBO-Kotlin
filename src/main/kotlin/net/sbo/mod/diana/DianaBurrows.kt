@@ -112,6 +112,7 @@ object BurrowDetector {
     fun init() {
         Register.onPacketReceived(ParticleS2CPacket::class.java) { packet ->
             if (!Diana.dianaBurrowDetect) return@onPacketReceived
+
             burrowDetect(packet)
         }
         Register.onPacketSent(PlayerActionC2SPacket::class.java) { packet ->

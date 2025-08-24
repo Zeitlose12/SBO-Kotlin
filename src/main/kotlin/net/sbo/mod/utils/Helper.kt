@@ -33,7 +33,7 @@ object Helper {
 
     private var hasTrackedInq: Boolean = false
     private var prevInv = mutableMapOf<String, Item>()
-    private var dianaMobNames: List<String> = listOf("Minos Inquisitor", "Minotaur", "Minos Champion", "Iron Golem", "Ocelot", "Zombie")
+    private var dianaMobNames: List<String> = listOf("Minos Inquisitor", "Minotaur", "Minos Champion", "Gaia Construct", "Azrael", "Bagheera", "Minos Hunter")
     private var priceDataAh: Map<String, Long> = emptyMap()
     private var priceDataBazaar: HypixelBazaarResponse? = null
 
@@ -65,10 +65,12 @@ object Helper {
         }
         updateItemPriceInfo()
 
-        Register.onEntityDeath { entity, source ->
+        Register.onEntityDeath { entity ->
             val dist = entity.distanceTo(mc.player)
             val name = entity.name.string
-            if (name == "Minos Inquisitor") {
+            val isDianaMob = dianaMobNames.any { it in name }
+            if (dist > 10) return@onEntityDeath
+            if (name.contains("Minos Inquisitor")) {
                 if (getSecondsPassed(lastLootShare) < 2 && !hasTrackedInq) {
                     hasTrackedInq = true
                     DianaTracker.trackItem("MINOS_INQUISITOR_LS", 1)
@@ -78,7 +80,7 @@ object Helper {
                 }
                 lastInqDeath = System.currentTimeMillis()
             }
-            if (dianaMobNames.contains(name.trim())) {
+            if (isDianaMob) {
                 if (dist <= 30) {
                     allowSackTracking = true
                     lastDianaMobDeath = System.currentTimeMillis()
