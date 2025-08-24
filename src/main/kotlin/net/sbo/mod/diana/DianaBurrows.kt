@@ -7,6 +7,7 @@ import net.sbo.mod.SBOKotlin
 import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.settings.categories.Customization
+import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.chat.Chat
 import net.minecraft.particle.ParticleTypes as MCParticleTypes
 import net.sbo.mod.utils.waypoint.Waypoint
@@ -14,6 +15,7 @@ import java.awt.Color
 import net.sbo.mod.utils.waypoint.WaypointManager
 import net.sbo.mod.utils.math.SboVec
 import net.sbo.mod.utils.World
+import net.sbo.mod.utils.waypoint.WaypointManager.guessWp
 import java.util.regex.Pattern
 
 internal class EvictingQueue<T>(internal val maxSize: Int) {
@@ -104,7 +106,7 @@ internal data class Burrow(
 object BurrowDetector {
     internal var lastInteractedPos: BlockPos? = null
     internal val burrows = mutableMapOf<String, Burrow>()
-    internal var removePos: BlockPos? = null
+    internal var removePos: SboVec = SboVec(0.0, 0.0, 0.0)
     internal val burrowsHistory = EvictingQueue<String>(2)
 
     fun init() {
@@ -190,31 +192,24 @@ object BurrowDetector {
     fun playerDigBlock(packet: PlayerActionC2SPacket) {
         if (packet.action != PlayerActionC2SPacket.Action.START_DESTROY_BLOCK) return
 
-        val pos = packet.pos.down()
-        val adjustedX = if (pos.x < 0) pos.x + 1 else pos.x
-        val adjustedY = pos.y + 2
-        val adjustedZ = if (pos.z < 0) pos.z + 1 else pos.z
-        val posString = "$adjustedX $adjustedY $adjustedZ"
+        val pos = packet.pos
+        val posString = "${pos.x} ${pos.y} ${pos.z}"
 
         if (burrows.containsKey(posString)) {
-            removePos = BlockPos(adjustedX, adjustedY, adjustedZ)
+            removePos = SboVec(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
             lastInteractedPos = pos
         }
-        WaypointManager.removeWaypointAt(SboVec(adjustedX.toDouble(), adjustedY.toDouble(), adjustedZ.toDouble()), "burrow")
     }
 
     fun rightClickBlock(action: String, pos: BlockPos?) {
-        if (action == "useBlock") {
-            val currentPos = BlockPos(pos?.x ?: 0, pos?.y ?: 0, pos?.z ?: 0)
-            val adjustedX = if (currentPos.x < 0) currentPos.x + 1 else currentPos.x
-            val adjustedY = currentPos.y + 1
-            val adjustedZ = if (currentPos.z < 0) currentPos.z + 1 else currentPos.z
-            val targetPosString = "$adjustedX $adjustedY $adjustedZ"
+        if (action != "useBlock") return
+        if (pos == null) return
 
-            if (burrows.containsKey(targetPosString)) {
-                removePos = BlockPos(adjustedX, adjustedY, adjustedZ)
-                lastInteractedPos = currentPos
-            }
+        val posString = "${pos.x} ${pos.y} ${pos.z}"
+
+        if (burrows.containsKey(posString)) {
+            removePos = SboVec(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
+            lastInteractedPos = pos
         }
     }
 
@@ -230,13 +225,10 @@ object BurrowDetector {
     }
 
     fun refreshBurrows() {
-        if (removePos == null) return
-        removeBurrowWaypoint(removePos!!.x, removePos!!.y, removePos!!.z)
-        val player = SBOKotlin.mc.player ?: return
-        val playerPos = SboVec(player.x, player.y, player.z)
-        val guessWp = WaypointManager.guessWp
-        if (guessWp != null && guessWp.pos.distanceTo(playerPos) < 4) {
-            guessWp.hide()
+        WaypointManager.removeWaypointAt(removePos, "burrow")
+        val playerPos = Player.getLastPosition()
+        if (guessWp != null && guessWp!!.pos.distanceTo(playerPos) < 4) {
+            guessWp?.hide()
         }
     }
 
