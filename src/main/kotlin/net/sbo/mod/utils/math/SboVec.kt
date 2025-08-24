@@ -1,6 +1,7 @@
 package net.sbo.mod.utils.math
 
 import net.minecraft.util.math.Vec3d
+import kotlin.math.floor
 import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.sqrt
@@ -34,10 +35,7 @@ data class SboVec(var x: Double, var y: Double, var z: Double) {
     }
 
     fun roundLocationToBlock(): SboVec {
-        val roundedX = round(this.x - 0.499999)
-        val roundedY = round(this.y - 0.499999)
-        val roundedZ = round(this.z - 0.499999)
-        return SboVec(roundedX, roundedY, roundedZ)
+        return SboVec(floor(this.x), floor(this.y), floor(this.z))
     }
 
     fun toVec3d(): Vec3d {

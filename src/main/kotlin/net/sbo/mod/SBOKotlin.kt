@@ -25,6 +25,7 @@ import net.sbo.mod.diana.BurrowDetector
 import net.sbo.mod.diana.DianaGuess
 import net.sbo.mod.diana.DianaMobDetect
 import net.sbo.mod.diana.achievements.AchievementManager
+import net.sbo.mod.diana.achievements.AchievementManager.unlockAchievement
 import net.sbo.mod.general.HelpCommand
 import net.sbo.mod.overlays.Bobber
 import net.sbo.mod.overlays.DianaLoot
@@ -104,6 +105,7 @@ object SBOKotlin {
 		Register.onTick(100) { unregister ->
 			if (mc.player != null && World.isInSkyblock()) {
 				PartyPlayer.load()
+				unlockAchievement(38)
 				unregister()
 			}
 		}

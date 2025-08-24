@@ -94,7 +94,7 @@ internal object ParticleTypes {
 }
 
 internal data class Burrow(
-    val pos: BlockPos,
+    val pos: SboVec,
     var hasFootstep: Boolean = false,
     var hasEnchant: Boolean = false,
     var type: String? = null,
@@ -159,8 +159,8 @@ object BurrowDetector {
 
     private fun burrowDetect(packet: ParticleS2CPacket) {
         val particleType = ParticleTypes.getParticleType(packet) ?: return
-        val pos = BlockPos(packet.x.toInt(), packet.y.toInt(), packet.z.toInt()).down()
-        val posString = "${pos.x} ${pos.y} ${pos.z}"
+        val pos = SboVec(packet.x, packet.y - 1.0, packet.z).roundLocationToBlock()
+        val posString = "${pos.x.toInt()} ${pos.y.toInt()} ${pos.z.toInt()}"
 
         if (burrowsHistory.contains(posString)) return
         if (!burrows.containsKey(posString)) burrows[posString] = Burrow(pos)
@@ -179,7 +179,7 @@ object BurrowDetector {
             val color = getRGB(burrow.type!!)
             burrow.waypoint = Waypoint(
                 burrow.type!!,
-                pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(),
+                pos.x, pos.y, pos.z,
                 color.red.toFloat() / 255, color.green.toFloat() / 255, color.blue.toFloat() / 255,
                 type = "burrow"
             )
