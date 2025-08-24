@@ -439,5 +439,17 @@ object Helper {
         val price = getItemPrice(sbId, amount)
         return formatNumber(price)
     }
+
+    /**
+     * Checks if the player has received loot share recently.
+     * @param timeframe The timeframe in seconds to check against. Default is 2 seconds.
+     */
+    fun gotLootShareRecently(timeframe: Long = 2): Boolean {
+        return getSecondsPassed(lastLootShare) <= timeframe
+    }
+
+    fun dianaMobDiedRecently(seconds: Long = 2): Boolean {
+        return getSecondsPassed(lastDianaMobDeath) <= seconds
+    }
 }
 
