@@ -213,17 +213,6 @@ object BurrowDetector {
         }
     }
 
-    fun removeBurrowWaypoint(x: Int, y: Int, z: Int) {
-        val posString = "$x $y $z"
-        if (burrows.containsKey(posString)) {
-            val burrow = burrows[posString]
-            burrow?.waypoint?.let {
-                WaypointManager.removeWaypoint(it)
-            }
-            burrows.remove(posString)
-        }
-    }
-
     fun refreshBurrows() {
         WaypointManager.removeWaypointAt(removePos, "burrow")
         val playerPos = Player.getLastPosition()
