@@ -16,11 +16,10 @@ object Chat {
      * @param command The command to send, without the leading slash.
      */
     fun command(command: String) {
-        if (command.startsWith("/")) {
-            mc.networkHandler?.sendChatCommand(command.substring(1));
-        }
-        else {
-            mc.networkHandler?.sendChatCommand(command)
+        if (!command.startsWith("/")) {
+            mc.player?.networkHandler?.sendChatMessage("/$command")
+        } else {
+            mc.player?.networkHandler?.sendChatMessage(command)
         }
     }
 
