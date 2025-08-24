@@ -101,6 +101,7 @@ object SBOKotlin {
 		DianaLoot.init()
 		InquisLoot.init()
 		AchievementManager.init()
+		DianaTracker.init()
 
 		Register.onTick(100) { unregister ->
 			if (mc.player != null && World.isInSkyblock()) {
