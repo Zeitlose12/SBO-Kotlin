@@ -58,7 +58,6 @@ object Pickuplog {
                                 val amount = match.groupValues[1].replace(",", "")
                                 val item = match.groupValues[2].trim()
                                 DianaTracker.trackWithSacksMessage(item, amount.toInt())
-                                Chat.chat("§a+ $amount $item")
                             }
                         }
                     }

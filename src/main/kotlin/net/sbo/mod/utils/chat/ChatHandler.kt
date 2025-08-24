@@ -15,7 +15,8 @@ object ChatHandler {
     }
 
     fun processMessage(message: Text): Boolean {
-        val messageString = message.formattedString()
+        val messageString = message.formattedString().replace("§r", "")
+        if (messageString.contains("[SBO]")) return true
         if (Debug.debugMessages && !messageString.contains("❈ Defense")) {
             println("Processing chat message: $messageString")
         }

@@ -391,7 +391,7 @@ object PartyFinderManager {
                     isInParty = true
                     isLeader = false
                     removePartyFromQueue()
-                    Chat.chat("§6[SBO] §eParty leader changed")
+//                    Chat.chat("§6[SBO] §eParty leader changed")
                 }
             }
             partyDisbandRegexes.forEach {
@@ -401,7 +401,7 @@ object PartyFinderManager {
                     match = true
                     isInParty = false
                     removePartyFromQueue()
-                    Chat.chat("§6[SBO] §4Party has been disbanded.")
+//                    Chat.chat("§6[SBO] §4Party has been disbanded.")
                 }
             }
             partyJoinRegexes.forEach {
@@ -410,7 +410,7 @@ object PartyFinderManager {
                     partyMemberCount += 1
                     match = true
                     isInParty = true
-                    Chat.chat("§6[SBO] §eParty member joined")
+//                    Chat.chat("§6[SBO] §eParty member joined")
                 }
             }
             partyLeaveRegexes.forEach {
@@ -419,7 +419,7 @@ object PartyFinderManager {
                     partyMemberCount -= 1
                     match = true
                     isInParty = partyMemberCount > 1
-                    Chat.chat("§6[SBO] §eParty member left")
+//                    Chat.chat("§6[SBO] §eParty member left")
                 }
             }
             if (match) trackMemberCount()

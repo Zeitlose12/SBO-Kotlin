@@ -250,15 +250,16 @@ object DianaTracker {
     fun trackRngDropsWithChat() { // todo: play sound
         Register.onChatMessageCancable(Pattern.compile("§6§lRARE DROP! (.*?)", Pattern.DOTALL)) { message, matchResult ->
             if (!checkDiana()) return@onChatMessageCancable true
-            var drop = matchResult.group(1)
+            val drop = matchResult.group(1)
 
             val magicfind = Helper.getMagicFind(drop)
             var mfPrefix = ""
             if (magicfind > 0) mfPrefix = " (+$magicfind ✯ Magic Find)"
 
-            drop = drop.substring(2, 16)
-            when (drop) {
+            when (drop.substring(2, 16)) {
                 "Enchanted Book" -> {
+                    if (!drop.contains("Chimera 1")) return@onChatMessageCancable true
+
                     if (Diana.lootAnnouncerScreen) {
                         val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.getItemPriceFormatted("CHIMERA")} coins" else ""
                         Helper.showTitle("§d§lChimera!", subTitle, 0, 25, 35)

@@ -42,7 +42,7 @@ object DianaMobDetect {
     private fun getMatchingArmorStands(world: ClientWorld): Map<Int, String> {
         val entityIdSet = world.entities.map { it.id }.toSet()
         val armorstands = mutableMapOf<Int, String>()
-        val keywords = listOf("Inquisitor", "Exalted", "Stalwart", "Graveyard")
+        val keywords = listOf("Inquisitor", "Exalted", "Stalwart")
         for (entity in world.entities) {
             val armorStandId = entity.id + 1
             if (armorStandId in entityIdSet) {
