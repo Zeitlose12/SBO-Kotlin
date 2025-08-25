@@ -456,7 +456,10 @@ object Helper {
     }
 
     fun getBurrowsPerHr(tracker: DianaTrackerDataClass, timer: SboTimerManager.SBOTimer): Double {
-        val burrowsPerHr = tracker.items.TOTAL_BURROWS.toDouble() / timer.getHourTime()
+        val hours = timer.getHourTime()
+        if (hours <= 0.01) return 0.0
+        val totalBurrows = tracker.items.TOTAL_BURROWS.toDouble()
+        val burrowsPerHr = totalBurrows / hours
         return BigDecimal(burrowsPerHr).setScale(2, RoundingMode.HALF_UP).toDouble()
     }
 }
