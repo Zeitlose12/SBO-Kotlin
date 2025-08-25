@@ -5,6 +5,7 @@ import net.sbo.mod.diana.achievements.AchievementManager.unlockAchievement
 import net.sbo.mod.overlays.DianaLoot
 import net.sbo.mod.overlays.DianaMobs
 import net.sbo.mod.overlays.DianaStats
+import net.sbo.mod.overlays.InquisLoot
 import net.sbo.mod.overlays.MagicFind
 import net.sbo.mod.settings.categories.Customization
 import net.sbo.mod.settings.categories.Diana
@@ -43,7 +44,7 @@ import java.util.regex.Pattern
 object DianaTracker {
     private val rareDrops = mapOf<String, String>("DWARF_TURTLE_SHELLMET" to "§9", "CROCHET_TIGER_PLUSHIE" to "§5", "ANTIQUE_REMEDIES" to "§5", "MINOS_RELIC" to "§5")
     private val otherDrops = listOf("ENCHANTED_ANCIENT_CLAW", "ANCIENT_CLAW", "ENCHANTED_GOLD", "ENCHANTED_IRON")
-    private val sackDrops = listOf("Enchanted Gold", "Enchanted Iron", "Ancient Claw")
+    private val sackDrops = listOf("Enchanted Gold", "Enchanted Iron", "Ancient Claw", "Enchanted Ancient Claw")
     private val forbiddenCoins = listOf(1L, 5L, 20L, 1000L, 2000L, 3000L, 4000L, 5000L, 7500L, 8000L, 10000L, 12000L, 15000L, 20000L, 25000L, 40000L, 50000L)
 
     private val lootAnnouncerBuffer: MutableList<String> = mutableListOf()
@@ -141,7 +142,7 @@ object DianaTracker {
                 announceLootToParty(item.itemId)
                 SboDataObject.save("SboData")
             } else {
-                playCustomSound(Customization.relicSound[0], 1.0f)
+                playCustomSound(Customization.relicSound, 1.0f)
             }
 
             if (Diana.lootAnnouncerChat) {
@@ -248,17 +249,15 @@ object DianaTracker {
     fun trackTreasuresWithChat() {
         Register.onChatMessageCancable(Pattern.compile("^§l§6RARE DROP! §eYou dug out a (.*?)§e!$", Pattern.DOTALL)) { message, matchResult ->
             val drop = matchResult.group(1).drop(2)
-            Chat.chat("§6[SBO] §6drop from chat you dug out:${Helper.toUpperSnakeCase(drop)}") // debug
             when (drop) {
                 "Griffin Feather" -> trackItem(drop, 1)
                 "Crown of Greed" -> trackItem(drop, 1)
-                "Washed-Up Souvenir" -> trackItem(drop, 1)
+                "Washed-up Souvenir" -> trackItem(drop, 1)
             }
             true
         }
     }
 
-    // todo: play sound
     fun trackRngDropsWithChat() {
         Register.onChatMessageCancable(Pattern.compile("^§l§6RARE DROP! (.*?)$", Pattern.DOTALL)) { message, matchResult ->
             if (!checkDiana()) return@onChatMessageCancable true
@@ -432,43 +431,44 @@ object DianaTracker {
         MagicFind.updateLines()
         DianaMobs.updateLines()
         DianaLoot.updateLines()
+        if (fromInq) InquisLoot.updateLines()
         SboTimerManager.updateAllActivity()
     }
 
     fun trackOne(tracker: DianaTracker, item: String, amount: Int, fromInq: Boolean = false) {
-        if (!fromInq) {
-            when (item) {
-                "COINS" -> tracker.items.COINS += amount
-                "GRIFFIN_FEATHER" -> tracker.items.GRIFFIN_FEATHER += amount
-                "CROWN_OF_GREED" -> tracker.items.CROWN_OF_GREED += amount
-                "WASHED_UP_SOUVENIR" -> tracker.items.WASHED_UP_SOUVENIR += amount
-                "CHIMERA" -> tracker.items.CHIMERA += amount
-                "CHIMERA_LS" -> tracker.items.CHIMERA_LS += amount
-                "DAEDALUS_STICK" -> tracker.items.DAEDALUS_STICK += amount
-                "DWARF_TURTLE_SHELMET" -> tracker.items.DWARF_TURTLE_SHELMET += amount
-                "ANTIQUE_REMEDIES" -> tracker.items.ANTIQUE_REMEDIES += amount
-                "ENCHANTED_ANCIENT_CLAW" -> tracker.items.ENCHANTED_ANCIENT_CLAW += amount
-                "ANCIENT_CLAW" -> tracker.items.ANCIENT_CLAW += amount
-                "MINOS_RELIC" -> tracker.items.MINOS_RELIC += amount
-                "ENCHANTED_GOLD" -> tracker.items.ENCHANTED_GOLD += amount
-                "ENCHANTED_IRON" -> tracker.items.ENCHANTED_IRON += amount
-                "MINOS_INQUISITOR" -> tracker.mobs.MINOS_INQUISITOR += amount
-                "MINOS_INQUISITOR_LS" -> tracker.mobs.MINOS_INQUISITOR_LS += amount
-                "MINOS_CHAMPION" -> tracker.mobs.MINOS_CHAMPION += amount
-                "MINOTAUR" -> tracker.mobs.MINOTAUR += amount
-                "GAIA_CONSTRUCT" -> tracker.mobs.GAIA_CONSTRUCT += amount
-                "SIAMESE_LYNXES" -> tracker.mobs.SIAMESE_LYNXES += amount
-                "MINOS_HUNTER" -> tracker.mobs.MINOS_HUNTER += amount
-                "TOTAL_MOBS" -> tracker.mobs.TOTAL_MOBS += amount
-                "DWARF_TURTLE_SHELMET_LS" -> tracker.inquis.DWARF_TURTLE_SHELMET_LS += amount
-                "CROCHET_TIGER_PLUSHIE" -> tracker.inquis.CROCHET_TIGER_PLUSHIE += amount
-                "CROCHET_TIGER_PLUSHIE_LS" -> tracker.inquis.CROCHET_TIGER_PLUSHIE_LS += amount
-                "ANTIQUE_REMEDIES_LS" -> tracker.inquis.ANTIQUE_REMEDIES_LS += amount
-                "SCAVENGER_COINS" -> tracker.items.SCAVENGER_COINS += amount
-                "FISH_COINS" -> tracker.items.FISH_COINS += amount
-                "TOTAL_BURROWS" -> tracker.items.TOTAL_BURROWS += amount
-            }
-        } else {
+        when (item) {
+            "COINS" -> tracker.items.COINS += amount
+            "GRIFFIN_FEATHER" -> tracker.items.GRIFFIN_FEATHER += amount
+            "CROWN_OF_GREED" -> tracker.items.CROWN_OF_GREED += amount
+            "WASHED_UP_SOUVENIR" -> tracker.items.WASHED_UP_SOUVENIR += amount
+            "CHIMERA" -> tracker.items.CHIMERA += amount
+            "CHIMERA_LS" -> tracker.items.CHIMERA_LS += amount
+            "DAEDALUS_STICK" -> tracker.items.DAEDALUS_STICK += amount
+            "DWARF_TURTLE_SHELMET" -> tracker.items.DWARF_TURTLE_SHELMET += amount
+            "ANTIQUE_REMEDIES" -> tracker.items.ANTIQUE_REMEDIES += amount
+            "ENCHANTED_ANCIENT_CLAW" -> tracker.items.ENCHANTED_ANCIENT_CLAW += amount
+            "ANCIENT_CLAW" -> tracker.items.ANCIENT_CLAW += amount
+            "MINOS_RELIC" -> tracker.items.MINOS_RELIC += amount
+            "ENCHANTED_GOLD" -> tracker.items.ENCHANTED_GOLD += amount
+            "ENCHANTED_IRON" -> tracker.items.ENCHANTED_IRON += amount
+            "MINOS_INQUISITOR" -> tracker.mobs.MINOS_INQUISITOR += amount
+            "MINOS_INQUISITOR_LS" -> tracker.mobs.MINOS_INQUISITOR_LS += amount
+            "MINOS_CHAMPION" -> tracker.mobs.MINOS_CHAMPION += amount
+            "MINOTAUR" -> tracker.mobs.MINOTAUR += amount
+            "GAIA_CONSTRUCT" -> tracker.mobs.GAIA_CONSTRUCT += amount
+            "SIAMESE_LYNXES" -> tracker.mobs.SIAMESE_LYNXES += amount
+            "MINOS_HUNTER" -> tracker.mobs.MINOS_HUNTER += amount
+            "TOTAL_MOBS" -> tracker.mobs.TOTAL_MOBS += amount
+            "DWARF_TURTLE_SHELMET_LS" -> tracker.inquis.DWARF_TURTLE_SHELMET_LS += amount
+            "CROCHET_TIGER_PLUSHIE" -> tracker.inquis.CROCHET_TIGER_PLUSHIE += amount
+            "CROCHET_TIGER_PLUSHIE_LS" -> tracker.inquis.CROCHET_TIGER_PLUSHIE_LS += amount
+            "ANTIQUE_REMEDIES_LS" -> tracker.inquis.ANTIQUE_REMEDIES_LS += amount
+            "SCAVENGER_COINS" -> tracker.items.SCAVENGER_COINS += amount
+            "FISH_COINS" -> tracker.items.FISH_COINS += amount
+            "TOTAL_BURROWS" -> tracker.items.TOTAL_BURROWS += amount
+        }
+
+        if (fromInq) {
             when (item) {
                 "DWARF_TURTLE_SHELMET" -> tracker.inquis.DWARF_TURTLE_SHELMET += amount
                 "DWARF_TURTLE_SHELMET_LS" -> tracker.inquis.DWARF_TURTLE_SHELMET_LS += amount
