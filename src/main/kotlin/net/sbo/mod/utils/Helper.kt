@@ -5,6 +5,7 @@ import net.minecraft.component.DataComponentTypes
 import net.minecraft.item.ItemStack
 import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.diana.DianaTracker
+import net.sbo.mod.utils.data.DianaTracker as DianaTrackerDataClass
 import net.sbo.mod.overlays.DianaLoot
 import net.sbo.mod.settings.categories.Debug
 import net.sbo.mod.settings.categories.Diana
@@ -17,6 +18,8 @@ import net.sbo.mod.utils.data.HypixelBazaarResponse
 import net.sbo.mod.utils.data.Item
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.http.Http
+import java.math.BigDecimal
+import java.math.RoundingMode
 import kotlin.reflect.full.memberProperties
 import java.text.DecimalFormat
 import java.util.Locale
@@ -450,6 +453,16 @@ object Helper {
 
     fun dianaMobDiedRecently(seconds: Long = 2): Boolean {
         return getSecondsPassed(lastDianaMobDeath) <= seconds
+    }
+
+    fun getBurrowsPerHr(tracker: DianaTrackerDataClass): Double {
+        val totalBurrows = tracker.items.TOTAL_BURROWS.toDouble()
+        val rawMiliTime = tracker.items.TIME.toDouble()
+        if (rawMiliTime <= 0) return 0.0
+        val hours = rawMiliTime / (1000.0 * 60.0 * 60.0)
+        val adjustedHours = if (hours <= 0.01) 0.01 else hours
+        val burrowsPerHr = totalBurrows / adjustedHours
+        return BigDecimal(burrowsPerHr).setScale(2, RoundingMode.HALF_UP).toDouble()
     }
 }
 

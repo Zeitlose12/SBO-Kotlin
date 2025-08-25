@@ -11,6 +11,7 @@ import net.sbo.mod.utils.Helper.calcPercentOne
 import net.sbo.mod.utils.Helper.formatNumber
 import net.sbo.mod.utils.Helper.formatTime
 import net.sbo.mod.diana.DianaStats
+import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.Helper.removeFormatting
 import net.sbo.mod.utils.Player
 import java.util.concurrent.TimeUnit
@@ -140,11 +141,7 @@ object PartyCommands {
                 "!burrows", "!burrow" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
                     val burrows = dianaTrackerMayor.items.TOTAL_BURROWS
-                    val playTimeHrs = dianaTrackerMayor.items.TIME / TimeUnit.HOURS.toMillis(1)
-                    val burrowsPerHr = if (playTimeHrs > 0) {
-                        val result = burrows.toDouble() / playTimeHrs
-                        BigDecimal(result).setScale(2, RoundingMode.HALF_UP).toDouble()
-                    }  else 0.0
+                    val burrowsPerHr = Helper.getBurrowsPerHr(dianaTrackerMayor)
                     sleep(200) {
                         Chat.command("pc Burrows: $burrows ($burrowsPerHr/h)")
                     }
