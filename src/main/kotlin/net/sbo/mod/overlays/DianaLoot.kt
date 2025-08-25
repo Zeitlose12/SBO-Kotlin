@@ -56,6 +56,7 @@ object DianaLoot {
             SboTimerManager.timerSession.reset()
             SBOConfigBundle.dianaTrackerSessionData.reset().save()
             updateLines()
+            DianaMobs.updateLines()
         }
         .onMouseEnter {
             resetSession.text = "$RED${UNDERLINE}Reset Session"

@@ -11,7 +11,11 @@ object TabList {
      */
     fun getTabEntries(): List<PlayerListEntry> {
         val client = mc
-        return client.player?.networkHandler?.playerList?.toList() ?: emptyList()
+        return try {
+            client.player?.networkHandler?.playerList?.toList() ?: emptyList()
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
 
     /**
