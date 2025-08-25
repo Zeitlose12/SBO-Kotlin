@@ -46,6 +46,10 @@ object SboTimerManager {
         activeTimers.remove(timer)
     }
 
+    fun updateAllActivity() {
+        SBOTimer.timerList.forEach { it.updateActivity() }
+    }
+
     class SBOTimer(
         val name: String,
         inactiveTimeLimit: Float,
@@ -205,6 +209,8 @@ object SboTimerManager {
          * Updates the last activity time to the current time.
          */
         fun updateActivity() {
+            this.start()
+            this.continueTimer()
             lastActivityTime = System.currentTimeMillis()
         }
 

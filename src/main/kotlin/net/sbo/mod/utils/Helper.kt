@@ -306,7 +306,7 @@ object Helper {
     }
 
     fun toUpperSnakeCase(input: String): String {
-        return input.replace("-", "_").split(" ").joinToString("_") { it.uppercase() }
+        return input.replace("-", " ").split(" ").joinToString("_") { it.uppercase() }
     }
 
     fun getSecondsPassed(timestamp: Long): Long {

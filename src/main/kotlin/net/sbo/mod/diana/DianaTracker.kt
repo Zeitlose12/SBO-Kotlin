@@ -1,10 +1,12 @@
 package net.sbo.mod.diana
 
+import net.sbo.mod.diana.achievements.AchievementManager.trackMagicFind
 import net.sbo.mod.diana.achievements.AchievementManager.unlockAchievement
 import net.sbo.mod.overlays.DianaLoot
 import net.sbo.mod.overlays.DianaMobs
 import net.sbo.mod.overlays.DianaStats
 import net.sbo.mod.overlays.MagicFind
+import net.sbo.mod.settings.categories.Customization
 import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.settings.categories.QOL
 import net.sbo.mod.utils.chat.Chat
@@ -20,8 +22,10 @@ import net.sbo.mod.utils.Helper.removeFormatting
 import net.sbo.mod.utils.Helper.sleep
 import net.sbo.mod.utils.Mayor.getMayor
 import net.sbo.mod.utils.Player
+import net.sbo.mod.utils.SboTimerManager
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.SboTimerManager.timerSession
+import net.sbo.mod.utils.SoundHandler.playCustomSound
 import net.sbo.mod.utils.World.isInSkyblock
 import net.sbo.mod.utils.data.DianaTracker
 import net.sbo.mod.utils.data.DianaTrackerMayorData
@@ -37,7 +41,7 @@ import net.sbo.mod.utils.data.SboDataObject.sboData
 import java.util.regex.Pattern
 
 object DianaTracker {
-    private val rareDrops = mapOf<String, String>("DWARF_TURTLE_SHELLMET" to "§9", "CROCHET_TIGER_PLUSHIE" to "§5", "ANTIQUE_REMEDIES" to "$5", "MINOS_RELIC" to "§5")
+    private val rareDrops = mapOf<String, String>("DWARF_TURTLE_SHELLMET" to "§9", "CROCHET_TIGER_PLUSHIE" to "§5", "ANTIQUE_REMEDIES" to "§5", "MINOS_RELIC" to "§5")
     private val otherDrops = listOf("ENCHANTED_ANCIENT_CLAW", "ANCIENT_CLAW", "ENCHANTED_GOLD", "ENCHANTED_IRON")
     private val sackDrops = listOf("Enchanted Gold", "Enchanted Iron", "Ancient Claw")
     private val forbiddenCoins = listOf(1L, 5L, 20L, 1000L, 2000L, 3000L, 4000L, 5000L, 7500L, 8000L, 10000L, 12000L, 15000L, 20000L, 25000L, 40000L, 50000L)
@@ -65,7 +69,7 @@ object DianaTracker {
         }
 
         Register.onChatMessageCancable(
-            Pattern.compile("§eThe election room is now closed. Clerk Seraphine is doing a final count of the votes...", Pattern.DOTALL)
+            Pattern.compile("^§eThe election room is now closed. Clerk Seraphine is doing a final count of the votes...$", Pattern.DOTALL)
         ) { _, _ ->
             val lastYear = dianaTrackerMayor.year
             if (lastYear == 0) return@onChatMessageCancable true
@@ -90,7 +94,7 @@ object DianaTracker {
             true
         }
 
-        Register.onChatMessageCancable(Pattern.compile("(.*?) §efound a §cPhoenix §epet!(.*?)", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("(.*?) §efound a §cPhoenix §epet!(.*?)$", Pattern.DOTALL)) { message, matchResult ->
             if (QOL.phoenixAnnouncer) {
                 Chat.chat("§6[SBO] §cGG §eFound a §cPhoenix §epet!")
                 Helper.showTitle("§c§lPhoenix Pet!", "", 0, 25, 35)
@@ -98,7 +102,9 @@ object DianaTracker {
             if (Helper.getSecondsPassed(lastDianaMobDeath) > 2) return@onChatMessageCancable true
             val player = matchResult.group(2).removeFormatting()
             if (Player.getName() != Helper.getPlayerName(player)) return@onChatMessageCancable true
-            if (isInSkyblock() && checkDiana()) unlockAchievement(77) // phoenix pet
+            sleep(1000) {
+                if (isInSkyblock() && checkDiana() && dianaMobDiedRecently(3)) unlockAchievement(77) // phoenix pet
+            }
             true
         }
 
@@ -112,7 +118,6 @@ object DianaTracker {
     fun trackWithPickuplog(item: Item) {
         val isLootShare = gotLootShareRecently(2)
         if (Helper.getSecondsPassed(item.creation) > 2) return
-        if (!dianaMobDiedRecently(2) && !isLootShare) return
         if (!checkDiana()) return
         if (item.itemId in rareDrops.keys) {
             val msg = Helper.toTitleCase(item.itemId.replace("_", " "))
@@ -135,6 +140,8 @@ object DianaTracker {
 
                 announceLootToParty(item.itemId)
                 SboDataObject.save("SboData")
+            } else {
+                playCustomSound(Customization.relicSound[0], 1.0f)
             }
 
             if (Diana.lootAnnouncerChat) {
@@ -154,11 +161,13 @@ object DianaTracker {
     }
 
     fun trackWithPickuplogStackable(item: Item, amount: Int) {
-        if (!dianaMobDiedRecently(2) && gotLootShareRecently(2)) return
-        if (!checkDiana()) return
-        if (item.itemId in otherDrops) {
-            trackItem(item.itemId, amount)
-            return
+        sleep (1000) {
+            if (!dianaMobDiedRecently(3) && gotLootShareRecently(3)) return@sleep
+            if (!checkDiana()) return@sleep
+            if (item.itemId in otherDrops) {
+                trackItem(item.itemId, amount)
+                return@sleep
+            }
         }
     }
 
@@ -180,7 +189,7 @@ object DianaTracker {
     }
 
     fun trackMobsWithChat() {
-        Register.onChatMessageCancable(Pattern.compile("(.*?) §eYou dug (.*?)§2(.*?)§e!(.*?)", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("(.*?) §eYou dug (.*?)§2(.*?)§e!(.*?)$", Pattern.DOTALL)) { message, matchResult ->
             val mob = matchResult.group(3)
             when (mob) {
                 "Minos Inquisitor" -> {
@@ -228,17 +237,18 @@ object DianaTracker {
         }
     }
 
-    fun trackCoinsWithChat() { // not working
-        Register.onChatMessageCancable(Pattern.compile("§l§6Wow! §eYou dug out §6(.*?) coins§e!", Pattern.DOTALL)) { message, matchResult ->
+    fun trackCoinsWithChat() {
+        Register.onChatMessageCancable(Pattern.compile("^§l§6Wow! §eYou dug out §6(.*?) coins§e!$", Pattern.DOTALL)) { message, matchResult ->
             val coins = matchResult.group(1).replace(",", "").toIntOrNull() ?: 0
             if (coins > 0) trackItem("COINS", coins)
             true
         }
     }
 
-    fun trackTreasuresWithChat() { // not working
-        Register.onChatMessageCancable(Pattern.compile("§l§6RARE DROP! §eYou dug out a (.*?)§e!", Pattern.DOTALL)) { message, matchResult ->
+    fun trackTreasuresWithChat() {
+        Register.onChatMessageCancable(Pattern.compile("^§l§6RARE DROP! §eYou dug out a (.*?)§e!$", Pattern.DOTALL)) { message, matchResult ->
             val drop = matchResult.group(1).drop(2)
+            Chat.chat("§6[SBO] §6drop from chat you dug out:${Helper.toUpperSnakeCase(drop)}") // debug
             when (drop) {
                 "Griffin Feather" -> trackItem(drop, 1)
                 "Crown of Greed" -> trackItem(drop, 1)
@@ -249,15 +259,15 @@ object DianaTracker {
     }
 
     // todo: play sound
-    fun trackRngDropsWithChat() { // should be working
-        Register.onChatMessageCancable(Pattern.compile("§6§lRARE DROP! (.*?)", Pattern.DOTALL)) { message, matchResult ->
+    fun trackRngDropsWithChat() {
+        Register.onChatMessageCancable(Pattern.compile("^§l§6RARE DROP! (.*?)$", Pattern.DOTALL)) { message, matchResult ->
             if (!checkDiana()) return@onChatMessageCancable true
             val drop = matchResult.group(1)
+            val isLootShare = gotLootShareRecently(2)
 
             val magicfind = Helper.getMagicFind(drop)
             var mfPrefix = ""
             if (magicfind > 0) mfPrefix = " (+$magicfind ✯ Magic Find)"
-
             when (drop.substring(2, 16)) {
                 "Enchanted Book" -> {
                     if (!drop.contains("Chimera 1")) return@onChatMessageCancable true
@@ -271,11 +281,13 @@ object DianaTracker {
                     if (customChimMsg.first) {
                         Chat.chat(customChimMsg.second)
                         announceLootToParty("Chimera!", customChimMsg.second, true)
-                    } else
+                    } else {
                         announceLootToParty("Chimera!", "Chimera!$mfPrefix")
+                    }
 
-                    if (!gotLootShareRecently(2)) {
+                    if (!isLootShare) {
                         // normal chim
+                        trackMagicFind(magicfind, true)
                         if (magicfind > sboData.highestChimMagicFind) sboData.highestChimMagicFind = magicfind
                         if (Diana.sendSinceMessage) Chat.chat("§6[SBO] §eTook §c${sboData.inqsSinceChim} §eInquisitors to get a Chimera!")
 
@@ -322,11 +334,12 @@ object DianaTracker {
                     if (Diana.sendSinceMessage) Chat.chat("§6[SBO] §eTook §c${sboData.minotaursSinceStick} §eMinotaurs to get a Daedalus Stick!")
                     announceLootToParty("Daedalus Stick!", "Daedalus Stick!$mfPrefix")
 
-                    if (gotLootShareRecently(2)) { // lootshare stick
+                    if (isLootShare) { // lootshare stick
                         Chat.chat("§6[SBO] §cLootshared a Daedalus Stick!")
                         unlockAchievement(15)
                     } else if (magicfind > sboData.highestStickMagicFind) {
                         sboData.highestStickMagicFind = magicfind
+                        trackMagicFind(magicfind)
                     }
 
                     trackItem("DAEDALUS_STICK", 1)
@@ -347,11 +360,9 @@ object DianaTracker {
         }
     }
 
-    fun trackBurrowsWithChat() { // not working
-        // §eYou dug out a Griffin Burrow! §7(2/4)
+    fun trackBurrowsWithChat() {
         Register.onChatMessageCancable(Pattern.compile("^§eYou (.*?) Griffin [Bb]urrow(.*?)$", Pattern.DOTALL)) { message, matchResult ->
             val burrow = matchResult.group(2).removeFormatting()
-            Chat.chat("[SBO] burrow dug detected, $burrow")
             trackItem("TOTAL_BURROWS", 1)
             if (Diana.fourEyedFish) {
                 if (burrow.contains("(2/4)") || burrow.contains("(3/4)")) {
@@ -392,7 +403,7 @@ object DianaTracker {
         Chat.command("pc [SBO] RARE DROP! $msg")
     }
 
-    fun getB2BMessage(itemName: String, streak: Int): String? {
+    fun getB2BMessage(itemName: String, streak: Int): String? { // not used yet
         if (streak <= 1) return null
 
         val prettyName = Helper.toTitleCase(itemName.replace("_", " "))
@@ -413,7 +424,6 @@ object DianaTracker {
         val itemName = Helper.toUpperSnakeCase(item)
         if (itemName == "MINOS_INQUISITOR_LS") sboData.inqsSinceLsChim += 1
 
-
         trackOne(dianaTrackerMayor, itemName, amount, fromInq)
         trackOne(dianaTrackerSession, itemName, amount, fromInq)
         trackOne(dianaTrackerTotal, itemName, amount, fromInq)
@@ -422,6 +432,7 @@ object DianaTracker {
         MagicFind.updateLines()
         DianaMobs.updateLines()
         DianaLoot.updateLines()
+        SboTimerManager.updateAllActivity()
     }
 
     fun trackOne(tracker: DianaTracker, item: String, amount: Int, fromInq: Boolean = false) {

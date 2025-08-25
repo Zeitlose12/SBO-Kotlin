@@ -1,7 +1,12 @@
 package net.sbo.mod.settings.categories
 
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
+import net.fabricmc.loader.api.FabricLoader
+import net.sbo.mod.SBOKotlin.mc
+import net.sbo.mod.utils.overlay.OverlayEditScreen
 import java.awt.Color
+import java.awt.Desktop
+import java.io.File
 
 object Customization : CategoryKt("Customization") {
 
@@ -55,5 +60,35 @@ object Customization : CategoryKt("Customization") {
         this.description = Translated("Scale of the waypoint text")
         this.range = 0.5f..2.0f
         this.slider = true
+    }
+
+    init {
+        separator {
+            this.title = "Sounds"
+        }
+
+        button {
+            title = "Open Sound Folder"
+            text = "open"
+            description = "Custom sounds go in here (sound must be a .ogg). You need to restart minecraft after adding a sound"
+            onClick {
+                val path = "${FabricLoader.getInstance().configDir}/sbo/sounds"
+                val directory = File(path)
+                if (directory.exists()) {
+                    try {
+                        Desktop.getDesktop().open(directory)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                } else {
+                    println("Directory not found: $path")
+                }
+            }
+        }
+    }
+
+    var relicSound by strings("") {
+        this.name = Translated("Relic Drop Sound")
+        this.description = Translated("Set the sound that plays when you get a minos relic. (enter filename)")
     }
 }
