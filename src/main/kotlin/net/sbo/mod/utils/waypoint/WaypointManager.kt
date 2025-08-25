@@ -108,6 +108,7 @@ object WaypointManager {
     fun addWaypoint(waypoint: Waypoint) {
         if (waypoint.type.lowercase() != "guess") {
             waypoints.getOrPut(waypoint.type.lowercase()) { mutableListOf() }.add(waypoint)
+            if (waypoint.type.lowercase() == "burrow") playCustomSound(Customization.burrowSound[0], Customization.burrowVolume)
         }
     }
 
