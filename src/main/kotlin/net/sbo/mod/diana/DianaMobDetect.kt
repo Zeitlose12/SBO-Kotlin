@@ -68,9 +68,11 @@ object DianaMobDetect {
             Chat.command("pc x: ${playerPos.x.roundToInt()}, y: ${playerPos.y.roundToInt() - 1}, z: ${playerPos.z.roundToInt()} ")
         }
 
-        if (Diana.announceKilltext[0].isNotEmpty()) {
-            Helper.sleep(5000) {
-                Chat.command("pc " + Diana.announceKilltext[0])
+        Diana.announceKilltext.firstOrNull()?.let { killText ->
+            if (killText.isNotBlank()) {
+                Helper.sleep(5000) {
+                    Chat.command("pc " + Diana.announceKilltext[0])
+                }
             }
         }
     }
