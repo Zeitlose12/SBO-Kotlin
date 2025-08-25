@@ -236,7 +236,12 @@ object Diana : CategoryKt("Diana") {
 
     var shareInq by boolean(true) {
         this.name = Translated("Share Inquisitor")
-        this.description = Translated("Sends coords for inquisitor in party message.")
+        this.description = Translated("Sends the coordinates of the inquisitor to party chat when it spawns")
+    }
+
+    var receiveInq by boolean(true) {
+        this.name = Translated("Receive Inquisitor")
+        this.description = Translated("Create a waypoint when someone in your party shares an inquisitor")
     }
 
     var announceKilltext by strings("") {

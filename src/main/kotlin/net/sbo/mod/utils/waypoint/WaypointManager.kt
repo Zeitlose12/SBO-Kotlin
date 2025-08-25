@@ -6,6 +6,9 @@ import net.sbo.mod.diana.DianaGuess
 import net.sbo.mod.settings.categories.Customization
 import net.sbo.mod.utils.render.WaypointRenderer
 import net.sbo.mod.settings.categories.Diana
+import net.sbo.mod.settings.categories.General.HideOwnWaypoints
+import net.sbo.mod.settings.categories.General.hideOwnWaypoints
+import net.sbo.mod.settings.categories.General.patcherWaypoints
 import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.Helper.checkDiana
@@ -57,13 +60,15 @@ object WaypointManager {
             val z = match.groups["z"]?.value?.toIntOrNull() ?: 0.0
 
             val trailing = match.groups["trailing"]?.value ?: ""
-
+            val playername = Player.getName() ?: ""
             if (!channel.contains("Guild")) {
-                if ((!trailing.startsWith(" ") || trailing.lowercase().contains("inquisitor") || Diana.allWaypointsAreInqs) && checkDiana()) {
+                if ((!trailing.startsWith(" ") || trailing.lowercase().contains("inquisitor") || Diana.allWaypointsAreInqs) && Diana.receiveInq && checkDiana()) {
+                    if (hideOwnWaypoints.contains(HideOwnWaypoints.INQ) && player.contains(playername)) return@onChatMessage
                     Helper.showTitle("§r§6§l<§b§l§kO§6§l> §b§lINQUISITOR! §6§l<§b§l§kO§6§l>", player, 0, 90, 20)
                     playCustomSound(Customization.inqSound[0], Customization.inqVolume)
                     addWaypoint(Waypoint(player, x.toDouble(), y.toDouble(), z.toDouble(), 1.0f, 0.84f, 0.0f, 45, type = "inq"))
-                } else {
+                } else if (patcherWaypoints) {
+                    if (hideOwnWaypoints.contains(HideOwnWaypoints.NORMAL) && player.contains(playername)) return@onChatMessage
                     addWaypoint(Waypoint(player, x.toDouble(), y.toDouble(), z.toDouble(), 0.0f, 0.2f, 1.0f, 30, type = "world"))
                 }
             }
