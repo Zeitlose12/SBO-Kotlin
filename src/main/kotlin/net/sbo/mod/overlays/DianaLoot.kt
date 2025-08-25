@@ -17,8 +17,6 @@ import net.sbo.mod.utils.data.DianaTracker
 import net.sbo.mod.utils.data.SboDataObject.SBOConfigBundle
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.render.RenderUtils2D
-import java.math.BigDecimal
-import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
 
 object DianaLoot {
@@ -109,12 +107,8 @@ object DianaLoot {
         val chimLsPercent = calcPercentOne(tracker.items, tracker.mobs, "CHIMERA_LS", "MINOS_INQUISITOR_LS")
         val relicPercent = calcPercentOne(tracker.items, tracker.mobs, "MINOS_RELIC", "MINOS_CHAMPION")
         val stickPercent = calcPercentOne(tracker.items, tracker.mobs, "DAEDALUS_STICK", "MINOTAUR")
-        var playTimeHrs = tracker.items.TIME.toDouble() / TimeUnit.HOURS.toMillis(1)
-        if (playTimeHrs < 0.01) playTimeHrs = 0.01
-        val burrowsPerHr = if (tracker.items.TOTAL_BURROWS > 0) {
-            BigDecimal(tracker.items.TOTAL_BURROWS.toDouble() / playTimeHrs).setScale(2, RoundingMode.HALF_UP).toDouble()
-        } else 0.0
-
+        val playTimeHrs = tracker.items.TIME.toDouble() / TimeUnit.HOURS.toMillis(1)
+        val burrowsPerHr = Helper.getBurrowsPerHr(tracker)
         val chimPrice = Helper.getItemPriceFormatted("CHIMERA", tracker.items.CHIMERA)
         val chimLsPrice = Helper.getItemPriceFormatted("CHIMERA", tracker.items.CHIMERA_LS)
         val relicPrice = Helper.getItemPriceFormatted("MINOS_RELIC", tracker.items.MINOS_RELIC)

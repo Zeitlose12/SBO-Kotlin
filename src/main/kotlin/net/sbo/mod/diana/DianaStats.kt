@@ -41,7 +41,7 @@ object DianaStats {
         val playtime = tracker.items.TIME
         val playTimeHrs = playtime.toDouble() / TimeUnit.HOURS.toMillis(1)
 
-        val burrowsPerHour = if (playTimeHrs > 0) tracker.items.TOTAL_BURROWS.toDouble() / playTimeHrs else 0.0
+        val burrowsPerHour = Helper.getBurrowsPerHr(tracker)
         val mobsPerHour = if (playTimeHrs > 0) tracker.mobs.TOTAL_MOBS.toDouble() / playTimeHrs else 0.0
 
         val totalValue = 0.0 // todo: getTotalValue(tracker)
