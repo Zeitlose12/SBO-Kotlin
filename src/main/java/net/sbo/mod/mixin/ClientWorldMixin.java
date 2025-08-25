@@ -17,6 +17,7 @@ public class ClientWorldMixin {
         Entity entity = world.getEntityById(entityId);
 
         if (entity != null) {
+//            System.out.println("Entity removed: " + entity + " Reason: " + reason);
             Register.INSTANCE.runEntityDeathActions(entity);
         }
     }
