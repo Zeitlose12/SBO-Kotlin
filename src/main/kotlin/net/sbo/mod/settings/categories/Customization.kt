@@ -156,7 +156,7 @@ object Customization : CategoryKt("Customization") {
         this.slider = true
     }
 
-    var sprSound by strings("Shelmet, Plushie and Remedies Drop Sound") {
+    var sprSound by strings("") {
         this.name = Translated("Shelmet/Plushie/Remedies Drop Sound")
         this.description = Translated("Set the sound that plays when you drop a Shelmet/Plushie/Remedies. (enter filename)")
     }
