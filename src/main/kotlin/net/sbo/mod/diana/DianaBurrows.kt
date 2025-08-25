@@ -3,7 +3,6 @@ package net.sbo.mod.diana
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket
 import net.minecraft.util.math.BlockPos
-import net.sbo.mod.SBOKotlin
 import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.settings.categories.Customization
@@ -112,11 +111,13 @@ object BurrowDetector {
     fun init() {
         Register.onPacketReceived(ParticleS2CPacket::class.java) { packet ->
             if (!Diana.dianaBurrowDetect) return@onPacketReceived
-
+            if (World.getWorld() != "Hub") return@onPacketReceived
+            smokeRemove(packet)
             burrowDetect(packet)
         }
         Register.onPacketSent(PlayerActionC2SPacket::class.java) { packet ->
             if (!Diana.dianaBurrowDetect) return@onPacketSent
+            if (World.getWorld() != "Hub") return@onPacketSent
             playerDigBlock(packet)
         }
         Register.onWorldChange {
@@ -125,6 +126,7 @@ object BurrowDetector {
         }
         Register.onPlayerInteract { action, pos, event ->
             if (!Diana.dianaBurrowDetect) return@onPlayerInteract
+            if (World.getWorld() != "Hub") return@onPlayerInteract
             rightClickBlock(action, pos)
         }
         Register.command("sboclearburrows", "sbocb") {
@@ -145,8 +147,8 @@ object BurrowDetector {
         }
 
         Register.onChatMessageCancable(Pattern.compile(" ☠ You (.*?)", Pattern.DOTALL)) { message, matchResult ->
-            if (Diana.dianaBurrowDetect && World.getWorld() == "Hub")
-                refreshBurrows()
+            if (World.getWorld() != "Hub") return@onChatMessageCancable true
+            refreshBurrows()
             true
         }
     }
@@ -211,6 +213,14 @@ object BurrowDetector {
         if (burrows.containsKey(posString)) {
             removePos = SboVec(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
             lastInteractedPos = pos
+        }
+    }
+
+    fun smokeRemove(packet: ParticleS2CPacket) {
+        if (packet.parameters.type == MCParticleTypes.LARGE_SMOKE && packet.speed == 0.01f && packet.offsetX == 0.0f && packet.offsetY == 0.0f && packet.offsetZ == 0.0f) {
+            val pos = SboVec(packet.x, packet.y, packet.z).roundLocationToBlock().down(1.0)
+            WaypointManager.removeWaypointAt(pos, "burrow")
+            WaypointManager.removeWaypointAt(pos, "inq")
         }
     }
 
