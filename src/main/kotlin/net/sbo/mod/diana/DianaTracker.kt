@@ -42,7 +42,7 @@ import net.sbo.mod.utils.data.SboDataObject.sboData
 import java.util.regex.Pattern
 
 object DianaTracker {
-    private val rareDrops = mapOf<String, String>("DWARF_TURTLE_SHELLMET" to "§9", "CROCHET_TIGER_PLUSHIE" to "§5", "ANTIQUE_REMEDIES" to "§5", "MINOS_RELIC" to "§5")
+    private val rareDrops = mapOf<String, String>("DWARF_TURTLE_SHELMET" to "§9", "CROCHET_TIGER_PLUSHIE" to "§5", "ANTIQUE_REMEDIES" to "§5", "MINOS_RELIC" to "§5")
     private val otherDrops = listOf("ENCHANTED_ANCIENT_CLAW", "ANCIENT_CLAW", "ENCHANTED_GOLD", "ENCHANTED_IRON")
     private val sackDrops = listOf("Enchanted Gold", "Enchanted Iron", "Ancient Claw", "Enchanted Ancient Claw")
     private val forbiddenCoins = listOf(1L, 5L, 20L, 1000L, 2000L, 3000L, 4000L, 5000L, 7500L, 8000L, 10000L, 12000L, 15000L, 20000L, 25000L, 40000L, 50000L)
@@ -52,9 +52,7 @@ object DianaTracker {
 
     fun init() {
         Register.command("sboresetsession") {
-            dianaTrackerSession = DianaTrackerSessionData()
-            timerSession.reset()
-            SboDataObject.save("DianaTrackerSessionData")
+            dianaTrackerSession.reset().save()
             Chat.chat("§6[SBO] §aDiana session tracker has been reset.")
             DianaMobs.updateLines()
         }
@@ -88,9 +86,9 @@ object DianaTracker {
                 pastDianaEventsData.events += dianaTrackerMayor
                 SboDataObject.save("PastDianaEventsData")
             }
-            dianaTrackerMayor = DianaTrackerMayorData()
+            dianaTrackerMayor.reset()
             dianaTrackerMayor.year = lastYear + 1
-            SboDataObject.save("DianaTrackerMayorData")
+            dianaTrackerMayor.save()
             getMayor()
             true
         }
@@ -441,6 +439,7 @@ object DianaTracker {
 
     fun trackOne(tracker: DianaTracker, item: String, amount: Int, fromInq: Boolean = false) {
         when (item) {
+            // ITEMS
             "COINS" -> tracker.items.COINS += amount
             "GRIFFIN_FEATHER" -> tracker.items.GRIFFIN_FEATHER += amount
             "CROWN_OF_GREED" -> tracker.items.CROWN_OF_GREED += amount
@@ -449,12 +448,17 @@ object DianaTracker {
             "CHIMERA_LS" -> tracker.items.CHIMERA_LS += amount
             "DAEDALUS_STICK" -> tracker.items.DAEDALUS_STICK += amount
             "DWARF_TURTLE_SHELMET" -> tracker.items.DWARF_TURTLE_SHELMET += amount
+            "CROCHET_TIGER_PLUSHIE" -> tracker.items.CROCHET_TIGER_PLUSHIE += amount
             "ANTIQUE_REMEDIES" -> tracker.items.ANTIQUE_REMEDIES += amount
             "ENCHANTED_ANCIENT_CLAW" -> tracker.items.ENCHANTED_ANCIENT_CLAW += amount
             "ANCIENT_CLAW" -> tracker.items.ANCIENT_CLAW += amount
             "MINOS_RELIC" -> tracker.items.MINOS_RELIC += amount
             "ENCHANTED_GOLD" -> tracker.items.ENCHANTED_GOLD += amount
             "ENCHANTED_IRON" -> tracker.items.ENCHANTED_IRON += amount
+            "SCAVENGER_COINS" -> tracker.items.SCAVENGER_COINS += amount
+            "FISH_COINS" -> tracker.items.FISH_COINS += amount
+            "TOTAL_BURROWS" -> tracker.items.TOTAL_BURROWS += amount
+            // MOBS
             "MINOS_INQUISITOR" -> tracker.mobs.MINOS_INQUISITOR += amount
             "MINOS_INQUISITOR_LS" -> tracker.mobs.MINOS_INQUISITOR_LS += amount
             "MINOS_CHAMPION" -> tracker.mobs.MINOS_CHAMPION += amount
@@ -463,17 +467,11 @@ object DianaTracker {
             "SIAMESE_LYNXES" -> tracker.mobs.SIAMESE_LYNXES += amount
             "MINOS_HUNTER" -> tracker.mobs.MINOS_HUNTER += amount
             "TOTAL_MOBS" -> tracker.mobs.TOTAL_MOBS += amount
-            "DWARF_TURTLE_SHELMET_LS" -> tracker.inquis.DWARF_TURTLE_SHELMET_LS += amount
-            "CROCHET_TIGER_PLUSHIE" -> tracker.inquis.CROCHET_TIGER_PLUSHIE += amount
-            "CROCHET_TIGER_PLUSHIE_LS" -> tracker.inquis.CROCHET_TIGER_PLUSHIE_LS += amount
-            "ANTIQUE_REMEDIES_LS" -> tracker.inquis.ANTIQUE_REMEDIES_LS += amount
-            "SCAVENGER_COINS" -> tracker.items.SCAVENGER_COINS += amount
-            "FISH_COINS" -> tracker.items.FISH_COINS += amount
-            "TOTAL_BURROWS" -> tracker.items.TOTAL_BURROWS += amount
         }
 
         if (fromInq) {
             when (item) {
+                // ITEMS from inquis
                 "DWARF_TURTLE_SHELMET" -> tracker.inquis.DWARF_TURTLE_SHELMET += amount
                 "DWARF_TURTLE_SHELMET_LS" -> tracker.inquis.DWARF_TURTLE_SHELMET_LS += amount
                 "CROCHET_TIGER_PLUSHIE" -> tracker.inquis.CROCHET_TIGER_PLUSHIE += amount

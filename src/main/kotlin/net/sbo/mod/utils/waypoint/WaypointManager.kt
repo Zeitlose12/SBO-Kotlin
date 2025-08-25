@@ -158,7 +158,13 @@ object WaypointManager {
      */
     fun updateGuess(pos: SboVec?) {
         guessWp?.apply {
-            show()
+            val (exists, wp) = waypointExists("burrow", this.pos)
+            if (exists && wp != null) {
+                this.hidden = wp.distanceToPlayer() < 60
+            } else {
+                this.hidden = false
+            }
+
             if (pos != null) {
                 this.pos = pos
             }
