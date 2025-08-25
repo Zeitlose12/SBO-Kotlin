@@ -71,7 +71,7 @@ object Diana : CategoryKt("Diana") {
     }
 
     var warpDiff by int(10) {
-        this.range = 0..100
+        this.range = 0..60
         this.slider = true
         this.name = Translated("Warp Block Difference")
         this.description = Translated("The additional block difference to consider when warping to a waypoint. (0 to disable)")

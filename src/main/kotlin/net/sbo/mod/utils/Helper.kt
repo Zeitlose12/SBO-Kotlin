@@ -41,7 +41,7 @@ object Helper {
     private var priceDataBazaar: HypixelBazaarResponse? = null
 
     fun init() {
-        Register.onChatMessageCancable(Pattern.compile("§l§eLOOT SHARE §fYou received loot for assisting (.*?)", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("^§l§eLOOT SHARE §fYou received loot for assisting (.*?)$", Pattern.DOTALL)) { message, matchResult ->
             lastLootShare = System.currentTimeMillis()
             true
         }
