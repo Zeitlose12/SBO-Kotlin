@@ -51,6 +51,19 @@ object DianaLoot {
             updateLines()
         }
 
+    val resetSession : OverlayTextLine = OverlayTextLine("${RED}Reset Session")
+        .onClick {
+            SboTimerManager.timerSession.reset()
+            SBOConfigBundle.dianaTrackerSessionData.reset().save()
+            updateLines()
+        }
+        .onMouseEnter {
+            resetSession.text = "$RED${UNDERLINE}Reset Session"
+        }
+        .onMouseLeave {
+            resetSession.text = "${RED}Reset Session"
+        }
+
     fun init() {
         overlay.init()
         updateLines()
@@ -65,6 +78,7 @@ object DianaLoot {
                 overlay.removeLine(changeView)
                 overlay.removeLine(delimiter)
                 overlay.removeLine(changeSellType)
+                overlay.removeLine(resetSession)
             }
         }
         Register.onTick(1) {
@@ -187,6 +201,8 @@ object DianaLoot {
         )
         lines.add(timerLine)
         if (type == Diana.Tracker.TOTAL) lines.add(OverlayTextLine("${YELLOW}Total Events: $AQUA$totalEvents"))
+        if (screen == "CraftingOpen" || mc.currentScreen?.title?.string == "Crafting") lines.add(resetSession)
+
         overlay.setLines(lines)
     }
 
