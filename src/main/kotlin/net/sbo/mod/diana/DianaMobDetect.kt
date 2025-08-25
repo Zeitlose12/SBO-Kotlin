@@ -65,7 +65,7 @@ object DianaMobDetect {
     fun onInqSpawn() {
         if (Diana.shareInq) {
             val playerPos = Player.getLastPosition()
-            Chat.command("pc x: ${playerPos.x.roundToInt()}, y: ${playerPos.y.roundToInt() - 1}, z: ${playerPos.z.roundToInt()} ")
+            Chat.command("pc x: ${playerPos.x.roundToInt()}, y: ${playerPos.y.roundToInt() - 1}, z: ${playerPos.z.roundToInt()}")
         }
 
         Diana.announceKilltext.firstOrNull()?.let { killText ->
