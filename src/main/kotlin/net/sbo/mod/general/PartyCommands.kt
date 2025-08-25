@@ -23,7 +23,7 @@ import java.util.Date
 
 object PartyCommands {
 
-    val commandRegex = Regex("^§r§[0-9a-fk-or]Party §[0-9a-fk-or]> (.*?)§[0-9a-fk-or]*: ?(.*)\$")
+    val commandRegex = Regex("^§[0-9a-fk-or]Party §[0-9a-fk-or]> (.*?)§[0-9a-fk-or]*: ?(.*)\$")
 
     val settings = PartyCommands
     val carrot = listOf(
