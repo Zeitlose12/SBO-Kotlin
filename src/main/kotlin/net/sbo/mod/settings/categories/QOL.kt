@@ -13,4 +13,9 @@ object QOL : CategoryKt("QOL") {
         this.name = Translated("Phoenix Announcer")
         this.description = Translated("Announces on screen when you drop a phoenix pet")
     }
+
+    var dianaMessageHider by boolean(false) {
+        this.name = Translated("Diana Message Hider")
+        this.description = Translated("Hides all spammy Diana messages")
+    }
 }
