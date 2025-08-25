@@ -142,7 +142,7 @@ object DianaTracker {
                 announceLootToParty(item.itemId)
                 SboDataObject.save("SboData")
             } else {
-                playCustomSound(Customization.relicSound, 1.0f)
+                playCustomSound(Customization.relicSound[0], 1.0f)
             }
 
             if (Diana.lootAnnouncerChat) {
