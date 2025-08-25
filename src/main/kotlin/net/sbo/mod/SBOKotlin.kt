@@ -34,6 +34,7 @@ import net.sbo.mod.overlays.DianaStats
 import net.sbo.mod.overlays.InquisLoot
 import net.sbo.mod.overlays.Legion
 import net.sbo.mod.overlays.MagicFind
+import net.sbo.mod.qol.MessageHider
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.SboTimerManager
 import net.sbo.mod.utils.SoundHandler
@@ -101,6 +102,7 @@ object SBOKotlin {
 		DianaLoot.init()
 		InquisLoot.init()
 		AchievementManager.init()
+		MessageHider.init()
 
 		Register.onTick(100) { unregister ->
 			if (mc.player != null && World.isInSkyblock()) {

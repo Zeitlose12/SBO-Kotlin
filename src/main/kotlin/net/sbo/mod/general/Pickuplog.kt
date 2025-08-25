@@ -48,6 +48,7 @@ object Pickuplog {
         }
 
         Register.onChatMessageCancable(Pattern.compile("(.*?) item(.*?) (.*?)", Pattern.DOTALL)) { message, matchResult ->
+            var cancel = true
             if (World.isInSkyblock() && matchResult.group(1).contains("Sacks")) {
                 message.siblings.forEach { part ->
                     if (part.string.contains(" item")) {
@@ -60,10 +61,11 @@ object Pickuplog {
                                 DianaTracker.trackWithSacksMessage(item, amount.toInt())
                             }
                         }
+                        cancel = !QOL.hideSacksMSG
                     }
                 }
             }
-            true
+            cancel
         }
     }
 

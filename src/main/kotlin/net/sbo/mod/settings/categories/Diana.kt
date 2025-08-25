@@ -2,8 +2,12 @@ package net.sbo.mod.settings.categories
 
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
+import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.overlays.DianaLoot
 import net.sbo.mod.overlays.DianaMobs
+import net.sbo.mod.overlays.InquisLoot
+import net.sbo.mod.utils.chat.Chat
+import net.sbo.mod.utils.overlay.OverlayEditScreen
 import net.sbo.mod.utils.waypoint.AdditionalHubWarps
 
 
@@ -106,7 +110,8 @@ object Diana : CategoryKt("Diana") {
     ) { old, new ->
         if (old != new) {
             if (new != Tracker.OFF) {
-                DianaLoot.updateLines()            }
+                DianaLoot.updateLines()
+            }
         }
     }
 
@@ -117,7 +122,7 @@ object Diana : CategoryKt("Diana") {
     ) { old, new ->
         if (old != new) {
             if (new != Tracker.OFF) {
-
+                InquisLoot.updateLines()
             }
         }
     }
@@ -227,5 +232,26 @@ object Diana : CategoryKt("Diana") {
     var customChimMessage by strings("&6[SBO] &6&lRARE DROP! &d&lChimera! &b{mf} &b#{amount}") {
         this.name = Translated("Custom Chim Message Text")
         this.description = Translated("use: {mf} for MagicFind, {amount} for drop Amount this event and {percentage} for chimera/inquis ratio.")
+    }
+
+    var shareInq by boolean(true) {
+        this.name = Translated("Share Inquisitor")
+        this.description = Translated("Sends coords for inquisitor in party message.")
+    }
+
+    var announceKilltext by strings("") {
+        this.name = Translated("Send Text On Inq Spawn")
+        this.description = Translated("Sends a text on inq spawn 5 seconds after spawn, use {since} for mobs since inq, {chance} for inq chance")
+    }
+
+    init {
+        button {
+            title = "Send Test Inq Message"
+            text = "Send Test"
+            description = "Sends a test message for the inquisitor spawn message"
+            onClick {
+                Chat.chat(announceKilltext[0])
+            }
+        }
     }
 }

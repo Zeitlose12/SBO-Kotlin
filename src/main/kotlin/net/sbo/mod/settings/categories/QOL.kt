@@ -18,4 +18,19 @@ object QOL : CategoryKt("QOL") {
         this.name = Translated("Diana Message Hider")
         this.description = Translated("Hides all spammy Diana messages")
     }
+
+    var hideAutoPetMSG by boolean(false) {
+        this.name = Translated("Hide AutoPet Messages")
+        this.description = Translated("Hides all autopet messages")
+    }
+
+    var hideImplosionMSG by boolean(false) {
+        this.name = Translated("Hide Implosion Messages")
+        this.description = Translated("Hides all implosion messages")
+    }
+
+    var hideSacksMSG by boolean(false) {
+        this.name = Translated("Hide Sack Messages")
+        this.description = Translated("Hides all sack messages")
+    }
 }

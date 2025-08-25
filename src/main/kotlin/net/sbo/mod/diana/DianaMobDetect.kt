@@ -6,10 +6,13 @@ import net.sbo.mod.utils.events.Register
 import net.minecraft.entity.mob.MobEntity
 import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.settings.categories.Diana
+import net.sbo.mod.utils.Helper
+import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.chat.ChatUtils.formattedString
 import net.sbo.mod.utils.overlay.Overlay
 import net.sbo.mod.utils.overlay.OverlayTextLine
+import kotlin.math.roundToInt
 
 object DianaMobDetect {
     private val trackedArmorStands = mutableMapOf<Int, String>()
@@ -57,5 +60,18 @@ object DianaMobDetect {
             }
         }
         return armorstands
+    }
+
+    fun onInqSpawn() {
+        if (Diana.shareInq) {
+            val playerPos = Player.getLastPosition()
+            Chat.command("pc x: ${playerPos.x.roundToInt()}, y: ${playerPos.y.roundToInt() - 1}, z: ${playerPos.z.roundToInt()} ")
+        }
+
+        if (Diana.announceKilltext[0].isNotEmpty()) {
+            Helper.sleep(5000) {
+                Chat.command("pc " + Diana.announceKilltext[0])
+            }
+        }
     }
 }

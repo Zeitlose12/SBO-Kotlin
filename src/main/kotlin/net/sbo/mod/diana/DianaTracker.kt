@@ -194,6 +194,7 @@ object DianaTracker {
             val mob = matchResult.group(3)
             when (mob) {
                 "Minos Inquisitor" -> {
+                    DianaMobDetect.onInqSpawn()
                     sboData.inqsSinceChim += 1
                     trackMob(mob, 1)
 
@@ -234,7 +235,7 @@ object DianaTracker {
                 "Minos Hunter" -> trackMob(mob, 1)
             }
             SboDataObject.save("SboData")
-            true
+            !QOL.dianaMessageHider
         }
     }
 
@@ -372,7 +373,7 @@ object DianaTracker {
                     trackItem("COINS", 2000)
                 }
             }
-            true
+            !QOL.dianaMessageHider
         }
     }
 
