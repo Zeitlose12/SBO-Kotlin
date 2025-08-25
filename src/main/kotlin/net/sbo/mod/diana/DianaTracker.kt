@@ -70,7 +70,7 @@ object DianaTracker {
         }
 
         Register.onChatMessageCancable(
-            Pattern.compile("^§eThe election room is now closed. Clerk Seraphine is doing a final count of the votes...$", Pattern.DOTALL)
+            Pattern.compile("^§eThe election room is now closed\\. Clerk Seraphine is doing a final count of the votes\\.\\.\\.$", Pattern.DOTALL)
         ) { _, _ ->
             val lastYear = dianaTrackerMayor.year
             if (lastYear == 0) return@onChatMessageCancable true
@@ -123,6 +123,7 @@ object DianaTracker {
         if (item.itemId in rareDrops.keys) {
             val msg = Helper.toTitleCase(item.itemId.replace("_", " "))
             if (item.itemId == "MINOS_RELIC") {
+                playCustomSound(Customization.relicSound[0], Customization.relicVolume)
                 if (Diana.sendSinceMessage) Chat.chat("§6[SBO] §eTook §c${sboData.champsSinceRelic} §eChampions to get a Minos Relic!")
                 if (sboData.champsSinceRelic == 1) {
                     Chat.chat("&6[SBO] &cb2b Minos Relic!")
@@ -142,7 +143,7 @@ object DianaTracker {
                 announceLootToParty(item.itemId)
                 SboDataObject.save("SboData")
             } else {
-                playCustomSound(Customization.relicSound[0], 1.0f)
+                playCustomSound(Customization.sprSound[0], Customization.sprVolume)
             }
 
             if (Diana.lootAnnouncerChat) {
@@ -272,6 +273,7 @@ object DianaTracker {
                 "Enchanted Book" -> {
                     if (!drop.contains("Chimera 1")) return@onChatMessageCancable true
 
+                    playCustomSound(Customization.chimSound[0], Customization.chimVolume)
                     if (Diana.lootAnnouncerScreen) {
                         val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.getItemPriceFormatted("CHIMERA")} coins" else ""
                         Helper.showTitle("§d§lChimera!", subTitle, 0, 25, 35)
@@ -326,6 +328,7 @@ object DianaTracker {
                     }
                 }
                 "Daedalus Stick" -> {
+                    playCustomSound(Customization.stickSound[0], Customization.stickVolume)
                     if (Diana.lootAnnouncerScreen) {
                         val subTitle = if (Diana.lootAnnouncerPrice) "§6${Helper.getItemPriceFormatted("DAEDALUS_STICK")} coins" else ""
                         Helper.showTitle("§d§lDaedalus Stick!", subTitle, 0, 25, 35)
