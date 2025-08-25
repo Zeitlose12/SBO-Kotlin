@@ -3,7 +3,9 @@ package net.sbo.mod.diana.achievements
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.HypixelModApi.isOnHypixel
+import net.sbo.mod.utils.SboTimerManager
 import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.data.DianaTrackerMayorData
 import net.sbo.mod.utils.data.PartyPlayerStats
@@ -148,15 +150,14 @@ object AchievementManager {
         }
 
         if (time >= 18000000L) { // 5 hours
-            val burrowsPerHour = if (totalBurrows > 0) {
-                totalBurrows.toDouble() / (time.toDouble() / 3600000.0)
-            } else 0.0
+            val timer = SboTimerManager.timerMayor
+            val burrowsPerHour = Helper.getBurrowsPerHr(tracker,timer)
             when {
-                burrowsPerHour >= 550 -> unlockAchievement(72)
-                burrowsPerHour >= 480 -> unlockAchievement(71)
-                burrowsPerHour >= 420 -> unlockAchievement(70)
-                burrowsPerHour >= 360 -> unlockAchievement(69)
-                burrowsPerHour >= 300 -> unlockAchievement(68)
+                burrowsPerHour >= 600 -> unlockAchievement(72)
+                burrowsPerHour >= 520 -> unlockAchievement(71)
+                burrowsPerHour >= 460 -> unlockAchievement(70)
+                burrowsPerHour >= 400 -> unlockAchievement(69)
+                burrowsPerHour >= 340 -> unlockAchievement(68)
             }
         }
 
@@ -318,11 +319,11 @@ object AchievementManager {
         addAchievement(64, "Diana is my life", "Top 10 on the kills leaderboard", "Divine", 63, 2)
         addAchievement(65, "Back-to-Back LS Chimera", "Get 2 Lootshare Chimera in a row", "Divine")
         addAchievement(67, "b2b2b LS Chimera", "Get 3 Lootshare Chimera in a row", "Impossible", 66)
-        addAchievement(68, "Dedicated Digger", "Get 300 burrows/hour (5h playtime)", "Uncommon")
-        addAchievement(69, "Burrow Enthusiast", "Get 360 burrows/hour (5h playtime)", "Epic", 68)
-        addAchievement(70, "Shovel Expert", "Get 420 burrows/hour (5h playtime)", "Legendary", 69, 2)
-        addAchievement(71, "Burrow Maniac", "Get 480 burrows/hour (5h playtime)", "Divine", 70, 3)
-        addAchievement(72, "Nice macro!", "Get 550 burrows/hour (5h playtime)", "Impossible", 71, 4, true)
+        addAchievement(68, "Dedicated Digger", "Get 340 burrows/hour (5h playtime)", "Uncommon")
+        addAchievement(69, "Burrow Enthusiast", "Get 400 burrows/hour (5h playtime)", "Epic", 68)
+        addAchievement(70, "Shovel Expert", "Get 460 burrows/hour (5h playtime)", "Legendary", 69, 2)
+        addAchievement(71, "Burrow Maniac", "Get 520 burrows/hour (5h playtime)", "Divine", 70, 3)
+        addAchievement(72, "Nice macro!", "Get 600 burrows/hour (5h playtime)", "Impossible", 71, 4, true)
         addAchievement(73, "Can I craft a Chimera sword now?", "Get 1 stick & 2 chimeras in 1 event", "Epic")
         addAchievement(74, "Can I craft a Relic sword now?", "Get 1 stick & 2 relics in 1 event", "Legendary")
         addAchievement(75, "b2b king", "Get b2b chimera from b2b inquisitor", "Impossible", null, 1, true)

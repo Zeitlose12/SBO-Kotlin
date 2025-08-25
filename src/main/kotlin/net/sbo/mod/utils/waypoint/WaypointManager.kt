@@ -59,7 +59,7 @@ object WaypointManager {
             val trailing = match.groups["trailing"]?.value ?: ""
 
             if (!channel.contains("Guild")) {
-                if ((trailing.startsWith(" ") || trailing.lowercase().contains("inquisitor") || Diana.allWaypointsAreInqs) && checkDiana()) { // todo: play sound
+                if ((!trailing.startsWith(" ") || trailing.lowercase().contains("inquisitor") || Diana.allWaypointsAreInqs) && checkDiana()) { // todo: play sound
                     Helper.showTitle("§r§6§l<§b§l§kO§6§l> §b§lINQUISITOR! §6§l<§b§l§kO§6§l>", player, 0, 90, 20)
                     playCustomSound(Customization.inqSound[0], Customization.inqVolume)
                     addWaypoint(Waypoint(player, x.toDouble(), y.toDouble(), z.toDouble(), 1.0f, 0.84f, 0.0f, 45, type = "inq"))
