@@ -1,5 +1,6 @@
 package net.sbo.mod.diana
 
+import net.sbo.mod.overlays.DianaLoot
 import net.sbo.mod.utils.data.SboDataObject
 import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.Helper
@@ -46,7 +47,7 @@ object DianaStats {
         val burrowsPerHour = Helper.getBurrowsPerHr(tracker, timer)
         val mobsPerHour = if (playTimeHrs > 0) tracker.mobs.TOTAL_MOBS.toDouble() / playTimeHrs else 0.0
 
-        val totalValue = 0.0 // todo: getTotalValue(tracker)
+        val totalValue = DianaLoot.totalProfit(tracker)
         val profit = listOf(
             Helper.formatNumber(totalValue),
             Diana.bazaarSettingDiana.toString(),

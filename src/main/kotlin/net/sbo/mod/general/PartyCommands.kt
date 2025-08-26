@@ -11,6 +11,8 @@ import net.sbo.mod.utils.Helper.calcPercentOne
 import net.sbo.mod.utils.Helper.formatNumber
 import net.sbo.mod.utils.Helper.formatTime
 import net.sbo.mod.diana.DianaStats
+import net.sbo.mod.overlays.DianaLoot
+import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.Helper.removeFormatting
 import net.sbo.mod.utils.Player
@@ -211,12 +213,13 @@ object PartyCommands {
                 }
                 "!profits", "!profit" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
-                    // todo: getDianaMayorTotalProfitAndOfferType()
+                    val playtime = dianaTrackerMayor.items.TIME
+                    val playTimeHrs = playtime.toDouble() / TimeUnit.HOURS.toMillis(1)
                     sleep(200) {
-                        val profit = 0
-                        val offerType = "N/A"
-                        val profitHour = 0
-                        Chat.command("pc Profit: $profit ($offerType) $profitHour/h")
+                        val profit = DianaLoot.totalProfit(dianaTrackerMayor)
+                        val offerType = Diana.bazaarSettingDiana.toString()
+                        val profitHour = profit / playTimeHrs
+                        Chat.command("pc Profit: ${formatNumber(profit)} (${Helper.toTitleCase(offerType)}) ${formatNumber(profitHour)}/h")
                     }
                 }
                 "!stats", "!stat" -> {
@@ -254,11 +257,14 @@ object PartyCommands {
                         "lschim", "chimls", "lschimera", "chimerals", "lsbook", "bookls", "lootsharechim" -> sleep(200) {
                             Chat.command("pc Inqs since lootshare chim: ${sboData.inqsSinceLsChim}")
                         }
-                        else -> sleep(200) {
+                    }
+                    if (secondArg == null) {
+                        sleep(200) {
                             Chat.command("pc Mobs since inq: ${sboData.mobsSinceInq}")
                         }
                     }
                 }
+
             }
         }
     }
