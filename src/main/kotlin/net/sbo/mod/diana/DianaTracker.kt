@@ -55,6 +55,7 @@ object DianaTracker {
             dianaTrackerSession.reset().save()
             Chat.chat("§6[SBO] §aDiana session tracker has been reset.")
             DianaMobs.updateLines()
+            DianaLoot.updateLines()
         }
 
         Register.command("sboresetstatstracker") {

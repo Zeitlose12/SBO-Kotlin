@@ -29,7 +29,7 @@ import java.util.regex.Pattern
 import kotlin.collections.mutableMapOf
 
 object PartyFinderManager {
-    private var creatingParty = false
+    var creatingParty = false
     var inQueue = false
     private var updateBool = false
     private var requeue = false
@@ -198,10 +198,9 @@ object PartyFinderManager {
         this.partyNote = checkPartyNote(note)
         this.partyType = type
         this.partySize = size
-        this.creatingParty = true
         this.usedPf = true
 
-        HypixelModApi.sendPartyInfoPacket()
+        HypixelModApi.sendPartyInfoPacket(true)
     }
 
     fun queueParty() {
@@ -222,7 +221,7 @@ object PartyFinderManager {
                         val timeTaken = System.currentTimeMillis() - currentTime
                         inQueue = true
                         creatingParty = false
-                        partyReqsMap = response.partyReqs
+                        partyReqsMap = response.partyReqs!!
                         EventBus.emit("refreshPartyList")
 
                         if (ghostParty) {
@@ -240,7 +239,7 @@ object PartyFinderManager {
                         if (isInParty) Chat.command("pc [SBO] Party now in queue.")
                     } else {
                         val errorMessage = response.error ?: "Unknown error"
-                        Chat.chat("§6[SBO] §4Failed to create party: $errorMessage")
+                        Chat.chat("§6[SBO] §4Failed to create party: ${errorMessage.replace("&", "§")}")
 
                     }
 
@@ -272,12 +271,12 @@ object PartyFinderManager {
             ).toJson<PartyUpdateResponse> { response ->
                 if (response.success) {
                     val timeTaken = System.currentTimeMillis() - currentTime
-                    partyReqsMap = response.partyReqs
+                    partyReqsMap = response.partyReqs!!
                     Chat.chat("§6[SBO] §eParty updated successfully! Time taken: ${timeTaken}ms")
                 } else {
                     inQueue = false
                     val errorMessage = response.error ?: "Unknown error"
-                    Chat.chat("§6[SBO] §4Failed to update party: $errorMessage")
+                    Chat.chat("§6[SBO] §4Failed to update party: ${errorMessage.replace("&", "§")}")
                 }
             }.error { error ->
                 inQueue = false
