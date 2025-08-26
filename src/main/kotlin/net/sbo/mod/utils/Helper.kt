@@ -392,7 +392,7 @@ object Helper {
     }
 
     fun getMagicFind(mf: String): Int {
-        val mfMatch = Regex("""(\+)?(&r&b)?(\d+)%""").find(mf)
+        val mfMatch = Regex("""(\+)?(&r&b)?(\d+)""").find(mf)
         if (mfMatch != null) {
             val mfValue = mfMatch.groupValues[3].toIntOrNull() ?: 0
             return mfValue

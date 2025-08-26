@@ -224,16 +224,6 @@ object Diana : CategoryKt("Diana") {
         this.description = Translated("Displays HP of mythological mobs near you. /sboguis to move it")
     }
 
-    var chimMessageBool by boolean(false) {
-        this.name = Translated("Chim Message")
-        this.description = Translated("Enables custom chim message")
-    }
-
-    var customChimMessage by strings("&6[SBO] &6&lRARE DROP! &d&lChimera! &b{mf} &b#{amount}") {
-        this.name = Translated("Custom Chim Message Text")
-        this.description = Translated("use: {mf} for MagicFind, {amount} for drop Amount this event and {percentage} for chimera/inquis ratio.")
-    }
-
     var shareInq by boolean(true) {
         this.name = Translated("Share Inquisitor")
         this.description = Translated("Sends the coordinates of the inquisitor to party chat when it spawns")
@@ -247,6 +237,16 @@ object Diana : CategoryKt("Diana") {
     var announceKilltext by strings("") {
         this.name = Translated("Send Text On Inq Spawn")
         this.description = Translated("Sends a text on inq spawn 5 seconds after spawn, use {since} for mobs since inq, {chance} for inq chance")
+    }
+
+    var chimMessageBool by boolean(false) {
+        this.name = Translated("Chim Message")
+        this.description = Translated("Enables custom chim message")
+    }
+
+    var customChimMessage by strings("&6[SBO] &6&lRARE DROP! &d&lChimera! &b{mf} &b#{amount}") {
+        this.name = Translated("Custom Chim Message Text")
+        this.description = Translated("use: {mf} for MagicFind, {amount} for drop Amount this event and {percentage} for chimera/inquis ratio.")
     }
 
     init {
