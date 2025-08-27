@@ -20,7 +20,7 @@ object DianaMobDetect {
 
     fun init() {
         mobHpOverlay.init()
-        Register.onTick(6) {
+        Register.onTick(1) {
             val world = mc.world
             if (world != null) {
                 updateTrackedArmorStands(world)
@@ -45,7 +45,7 @@ object DianaMobDetect {
     private fun getMatchingArmorStands(world: ClientWorld): Map<Int, String> {
         val entityIdSet = world.entities.map { it.id }.toSet()
         val armorstands = mutableMapOf<Int, String>()
-        val keywords = listOf("Inquisitor", "Exalted", "Stalwart")
+        val keywords = listOf("Inquisitor", "Exalted", "Stalwart", "Azrael", "Bagheera")
         for (entity in world.entities) {
             val armorStandId = entity.id + 1
             if (armorStandId in entityIdSet) {
