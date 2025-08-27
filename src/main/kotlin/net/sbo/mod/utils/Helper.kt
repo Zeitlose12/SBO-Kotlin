@@ -415,7 +415,7 @@ object Helper {
                 priceDataBazaar = it
                 DianaLoot.updateLines()
             }.error { error ->
-                Chat.chat("§6[SBO] §4Unexpected error while fetching Bazaar item prices: $error")
+//                Chat.chat("§6[SBO] §4Unexpected error while fetching Bazaar item prices: $error")
             }
     }
 
