@@ -240,7 +240,7 @@ object DianaTracker {
     }
 
     fun trackCoinsWithChat() {
-        Register.onChatMessageCancable(Pattern.compile("^§l§6Wow! §eYou dug out §6(.*?) coins§e!$", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("^§6§lWow! §eYou dug out §6(.*?) coins§e!$", Pattern.DOTALL)) { message, matchResult ->
             val coins = matchResult.group(1).replace(",", "").toIntOrNull() ?: 0
             if (coins > 0) trackItem("COINS", coins)
             true
@@ -248,7 +248,7 @@ object DianaTracker {
     }
 
     fun trackTreasuresWithChat() {
-        Register.onChatMessageCancable(Pattern.compile("^§l§6RARE DROP! §eYou dug out a (.*?)§e!$", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("^§6§lRARE DROP! §eYou dug out a (.*?)§e!$", Pattern.DOTALL)) { message, matchResult ->
             val drop = matchResult.group(1).drop(2)
             when (drop) {
                 "Griffin Feather" -> trackItem(drop, 1)
@@ -260,7 +260,7 @@ object DianaTracker {
     }
 
     fun trackRngDropsWithChat() {
-        Register.onChatMessageCancable(Pattern.compile("^§l§6RARE DROP! (.*?)$", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("^§6§lRARE DROP! (.*?)$", Pattern.DOTALL)) { message, matchResult ->
             if (!checkDiana()) return@onChatMessageCancable true
             val drop = matchResult.group(1)
             val isLootShare = gotLootShareRecently(2)

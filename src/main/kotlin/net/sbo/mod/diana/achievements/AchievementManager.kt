@@ -256,8 +256,8 @@ object AchievementManager {
     fun addAllAchievements() {
         addAchievement(1, "Back-to-Back Chimera", "Get 2 Chimera in a row", "Mythic")
         addAchievement(2, "b2b2b Chimera", "Get 3 Chimera in a row", "Divine")
-        addAchievement(65, "Back-to-Back LS Chimera", "Get 2 Lootshare Chimera in a row", "Divine")
-        addAchievement(67, "b2b2b LS Chimera", "Get 3 Lootshare Chimera in a row", "Impossible", 65)
+        addAchievement(66, "Back-to-Back LS Chimera", "Get 2 Lootshare Chimera in a row", "Divine")
+        addAchievement(67, "b2b2b LS Chimera", "Get 3 Lootshare Chimera in a row", "Impossible", 66)
         addAchievement(3, "Back-to-Back Stick", "Get 2 Sticks in a row", "Divine")
         addAchievement(5, "Back-to-Back Relic", "Get 2 Relics in a row", "Impossible")
         addAchievement(6, "Inquisitor Double Trouble", "Get 2 Inquisitors in a row", "Epic")
@@ -291,7 +291,7 @@ object AchievementManager {
 
         addAchievement(29, "lf Stick", "200 Minotaur since Stick", "Common")
         addAchievement(30, "lf Relic", "1000 Champions since Relic", "Uncommon")
-        addAchievement(66, "Where is my Relic?", "3000 champions since Relic", "Mythic", 30, 2)
+        addAchievement(65, "Where is my Relic?", "3000 champions since Relic", "Mythic", 30, 2)
         addAchievement(31, "lf Inquisitor", "250 mobs since Inquisitor", "Common")
         addAchievement(32, "You have legi Griffin right?", "500 mobs since Inquisitor", "Rare", 31)
         addAchievement(33, "Why do you still play?", "1000 mobs since Inquisitor", "Legendary", 32, 2)

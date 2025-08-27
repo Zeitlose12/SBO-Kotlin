@@ -36,14 +36,6 @@ object WaypointManager {
             Chat.command("pc x: ${playerPos.x.roundToInt()}, y: ${playerPos.y.roundToInt() - 1}, z: ${playerPos.z.roundToInt()}")
         }
 
-        Register.onChatMessage(
-            Regex("^LOOT SHARE You received loot for assisting (.+)$"),
-            true
-        ) { message, match ->
-            removeWithinDistance("inq", 30)
-            1
-        }
-
         Register.onWorldChange {
             guessWp?.hide()
             removeAllOfType("world")
@@ -92,6 +84,10 @@ object WaypointManager {
         }
 
         WorldRenderEvents.AFTER_TRANSLUCENT.register(WaypointRenderer)
+    }
+
+    fun onLootshare() {
+        removeWithinDistance("inq", 30)
     }
 
     /**

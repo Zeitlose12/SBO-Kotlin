@@ -18,6 +18,7 @@ import net.sbo.mod.utils.data.HypixelBazaarResponse
 import net.sbo.mod.utils.data.Item
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.http.Http
+import net.sbo.mod.utils.waypoint.WaypointManager.onLootshare
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.reflect.full.memberProperties
@@ -41,7 +42,8 @@ object Helper {
     private var priceDataBazaar: HypixelBazaarResponse? = null
 
     fun init() {
-        Register.onChatMessageCancable(Pattern.compile("^§l§eLOOT SHARE §fYou received loot for assisting (.*?)$", Pattern.DOTALL)) { message, matchResult ->
+        Register.onChatMessageCancable(Pattern.compile("^§e§lLOOT SHARE §fYou received loot for assisting (.*?)$", Pattern.DOTALL)) { message, matchResult ->
+            onLootshare()
             lastLootShare = System.currentTimeMillis()
             true
         }

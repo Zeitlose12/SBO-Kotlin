@@ -112,7 +112,7 @@ object PartyFinderManager {
         }
 
         Register.onChatMessageCancable(
-            Pattern.compile("§d(.*?) (.*?)§7: §7(.*?) join party request - id:(.*)", Pattern.DOTALL)
+            Pattern.compile("§d(.*?) (.*?)§7: (.*?) join party request - id:(.*)", Pattern.DOTALL)
         ) { message, matchResult ->
             if (matchResult.group(1).contains("From")) {
                 if (partyMemberCount < partySize) {
@@ -135,7 +135,7 @@ object PartyFinderManager {
         }
 
         Register.onChatMessageCancable(
-            Pattern.compile("^§m§9(.*?) §ehas invited you to join their party!(.*?)$", Pattern.DOTALL)
+            Pattern.compile("^§9§m(.*?) §ehas invited you to join their party!(.*?)$", Pattern.DOTALL)
         ) { message, matchResult ->
             val playername = Helper.getPlayerName(matchResult.group(1) ?: "")
             if (playersSentRequest.containsKey(playername)) {
