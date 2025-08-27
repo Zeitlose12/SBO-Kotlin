@@ -91,6 +91,7 @@ object Helper {
             }
         }
 
+        // old entity death listener, kept for reference
 //        Register.onEntityDeath { entity ->
 //            val dist = entity.distanceTo(mc.player)
 //            val name = entity.name.string
