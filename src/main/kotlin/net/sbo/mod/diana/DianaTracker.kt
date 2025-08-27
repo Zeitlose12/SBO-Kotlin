@@ -278,14 +278,6 @@ object DianaTracker {
                         Helper.showTitle("§d§lChimera!", subTitle, 0, 25, 35)
                     }
 
-                    val customChimMsg = Helper.checkCustomChimMessage(magicfind)
-                    if (customChimMsg.first) {
-                        Chat.chat(customChimMsg.second)
-                        announceLootToParty("Chimera!", customChimMsg.second, true)
-                    } else {
-                        announceLootToParty("Chimera!", "Chimera!$mfPrefix")
-                    }
-
                     if (!isLootShare) {
                         // normal chim
                         trackMagicFind(magicfind, true)
@@ -324,6 +316,14 @@ object DianaTracker {
                             }
                             sboData.inqsSinceLsChim = 0
                         }
+                    }
+
+                    val customChimMsg = Helper.checkCustomChimMessage(magicfind)
+                    if (customChimMsg.first) {
+                        Chat.chat(customChimMsg.second)
+                        announceLootToParty("Chimera!", customChimMsg.second, true)
+                    } else {
+                        announceLootToParty("Chimera!", "Chimera!$mfPrefix")
                     }
                 }
                 "Daedalus Stick" -> {
