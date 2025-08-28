@@ -16,7 +16,7 @@ import kotlin.math.roundToInt
 object DianaMobDetect {
     private val trackedArmorStands = mutableMapOf<Int, String>()
     private val defeatedMobs = mutableSetOf<Int>()
-    private val mobDeathListeners = mutableListOf<(String) -> Unit>() // <-- NEW
+    private val mobDeathListeners = mutableListOf<(String, ArmorStandEntity) -> Unit>() // <-- NEW
     private val mobHpOverlay: Overlay = Overlay("mythosMobHp", 10f, 10f, 1f, listOf("Chat screen")).setCondition { Diana.mythosMobHp }
 
     fun init() {
@@ -29,7 +29,7 @@ object DianaMobDetect {
         }
     }
 
-    fun onMobDeath(listener: (String) -> Unit) {
+    fun onMobDeath(listener: (String, ArmorStandEntity) -> Unit) {
         mobDeathListeners.add(listener)
     }
 
@@ -60,7 +60,7 @@ object DianaMobDetect {
                     val currentHealth = extractHealth(name)
                     if (currentHealth != null && currentHealth <= 0 && entity.id !in defeatedMobs) {
                         defeatedMobs.add(entity.id)
-                        mobDeathListeners.forEach { it(name) }
+                        mobDeathListeners.forEach { it(name, entity) }
                     }
                     armorstands[entity.id] = name
                 }
