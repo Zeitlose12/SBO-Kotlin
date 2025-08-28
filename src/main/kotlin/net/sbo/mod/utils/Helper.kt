@@ -408,7 +408,7 @@ object Helper {
                 priceDataAh = json.flatMap { it.entries }.associate { it.key to it.value["price"]!! }
                 DianaLoot.updateLines()
             }.error { error ->
-                Chat.chat("§6[SBO] §4Unexpected error while fetching AH item prices: $error")
+//                Chat.chat("§6[SBO] §4Unexpected error while fetching AH item prices: $error")
             }
         Http.sendGetRequest("https://api.hypixel.net/skyblock/bazaar?product")
             .toJson<HypixelBazaarResponse> {
