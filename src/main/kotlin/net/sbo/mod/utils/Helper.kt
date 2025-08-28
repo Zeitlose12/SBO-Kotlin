@@ -74,7 +74,6 @@ object Helper {
         // todo: test if this works as intended
         DianaMobDetect.onMobDeath { name, entity ->
             val dist = entity.distanceTo(mc.player)
-            if (dist > 10) return@onMobDeath
             if (name.contains("Minos Inquisitor")) {
                 if (getSecondsPassed(lastLootShare) < 2 && !hasTrackedInq) {
                     hasTrackedInq = true
