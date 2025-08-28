@@ -270,7 +270,7 @@ object DianaTracker {
             if (magicfind > 0) mfPrefix = " (+$magicfind ✯ Magic Find)"
             when (drop.substring(2, 16)) {
                 "Enchanted Book" -> {
-                    if (!drop.contains("Chimera 1")) return@onChatMessageCancable true
+                    if (!drop.contains("Chimera")) return@onChatMessageCancable true
 
                     playCustomSound(Customization.chimSound[0], Customization.chimVolume)
                     if (Diana.lootAnnouncerScreen) {
