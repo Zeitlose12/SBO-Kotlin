@@ -71,7 +71,6 @@ object Helper {
         }
         updateItemPriceInfo()
 
-        // todo: test if this works as intended
         DianaMobDetect.onMobDeath { name, entity ->
             val dist = entity.distanceTo(mc.player)
             if (name.contains("Minos Inquisitor")) {
@@ -89,30 +88,6 @@ object Helper {
                 lastDianaMobDeath = System.currentTimeMillis()
             }
         }
-
-        // old entity death listener, kept for reference
-//        Register.onEntityDeath { entity ->
-//            val dist = entity.distanceTo(mc.player)
-//            val name = entity.name.string
-//            val isDianaMob = dianaMobNames.any { it in name }
-//            if (dist > 10) return@onEntityDeath
-//            if (name.contains("Minos Inquisitor")) {
-//                if (getSecondsPassed(lastLootShare) < 2 && !hasTrackedInq) {
-//                    hasTrackedInq = true
-//                    DianaTracker.trackItem("MINOS_INQUISITOR_LS", 1)
-//                    sleep(2000) {
-//                        hasTrackedInq = false
-//                    }
-//                }
-//                lastInqDeath = System.currentTimeMillis()
-//            }
-//            if (isDianaMob) {
-//                if (dist <= 30) {
-//                    allowSackTracking = true
-//                    lastDianaMobDeath = System.currentTimeMillis()
-//                }
-//            }
-//        }
     }
 
     /**
