@@ -13,7 +13,7 @@ import net.sbo.mod.utils.waypoint.Waypoint
 import java.awt.Color
 import net.sbo.mod.utils.waypoint.WaypointManager
 import net.sbo.mod.utils.math.SboVec
-import net.sbo.mod.utils.World
+import net.sbo.mod.utils.game.World
 import net.sbo.mod.utils.waypoint.WaypointManager.guessWp
 import java.util.regex.Pattern
 

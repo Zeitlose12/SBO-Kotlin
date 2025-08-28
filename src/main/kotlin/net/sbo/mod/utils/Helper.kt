@@ -10,7 +10,6 @@ import net.sbo.mod.utils.data.DianaTracker as DianaTrackerDataClass
 import net.sbo.mod.overlays.DianaLoot
 import net.sbo.mod.settings.categories.Debug
 import net.sbo.mod.settings.categories.Diana
-import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.data.SboDataObject
 import kotlin.concurrent.thread
 import net.sbo.mod.utils.data.DianaItemsData
@@ -18,6 +17,9 @@ import net.sbo.mod.utils.data.DianaMobsData
 import net.sbo.mod.utils.data.HypixelBazaarResponse
 import net.sbo.mod.utils.data.Item
 import net.sbo.mod.utils.events.Register
+import net.sbo.mod.utils.game.Mayor
+import net.sbo.mod.utils.game.ScoreBoard
+import net.sbo.mod.utils.game.World
 import net.sbo.mod.utils.http.Http
 import net.sbo.mod.utils.waypoint.WaypointManager.onLootshare
 import java.math.BigDecimal
