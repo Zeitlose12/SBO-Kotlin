@@ -4,10 +4,11 @@ import net.sbo.mod.settings.categories.Diana
 import net.sbo.mod.utils.overlay.Overlay
 import net.sbo.mod.utils.overlay.OverlayTextLine
 import net.minecraft.util.Formatting.*
+import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.data.SboDataObject.sboData
 
 object MagicFind {
-    val overlay = Overlay("Diana MagicFind", 10f, 10f, 1f).setCondition { Diana.magicFindTracker }
+    val overlay = Overlay("Diana MagicFind", 10f, 10f, 1f).setCondition { Diana.magicFindTracker && Helper.checkDiana() }
 
     fun init() {
         overlay.init()

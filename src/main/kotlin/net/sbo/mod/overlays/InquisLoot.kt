@@ -15,7 +15,7 @@ import net.sbo.mod.utils.overlay.Overlay
 import net.sbo.mod.utils.overlay.OverlayTextLine
 
 object InquisLoot {
-    val overlay = Overlay("Inquis", 10f, 10f, 1f, listOf("Chat screen", "Crafting")).setCondition { Diana.inquisTracker != Diana.Tracker.OFF}
+    val overlay = Overlay("Inquis", 10f, 10f, 1f, listOf("Chat screen", "Crafting")).setCondition { Diana.inquisTracker != Diana.Tracker.OFF && Helper.checkDiana() }
     val changeView: OverlayTextLine = OverlayTextLine("${YELLOW}Change View")
         .onClick {
             Diana.inquisTracker = Diana.inquisTracker.next()

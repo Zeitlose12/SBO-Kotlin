@@ -8,7 +8,7 @@ import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.data.SboDataObject.sboData
 
 object DianaStats {
-    val overlay = Overlay("Diana Stats", 10f, 10f, 1f, listOf("Chat screen")).setCondition { Diana.statsTracker }
+    val overlay = Overlay("Diana Stats", 10f, 10f, 1f, listOf("Chat screen")).setCondition { Diana.statsTracker && Helper.checkDiana() }
 
     fun init() {
         overlay.init()

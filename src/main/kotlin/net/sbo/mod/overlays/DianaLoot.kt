@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
 object DianaLoot {
     private var isSellTypeHovered = false
     val timerLine: OverlayTextLine = OverlayTextLine("")
-    val overlay = Overlay("Diana Loot", 10f, 10f, 1f, listOf("Chat screen", "Crafting")).setCondition { Diana.lootTracker != Diana.Tracker.OFF }
+    val overlay = Overlay("Diana Loot", 10f, 10f, 1f, listOf("Chat screen", "Crafting")).setCondition { Diana.lootTracker != Diana.Tracker.OFF && Helper.checkDiana() }
     val changeView: OverlayTextLine = OverlayTextLine("${YELLOW}Change View", linebreak = false)
         .onClick {
             Diana.lootTracker = Diana.lootTracker.next()
