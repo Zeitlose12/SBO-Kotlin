@@ -7,7 +7,6 @@ import net.minecraft.util.Util
 import net.sbo.mod.SBOKotlin
 import net.sbo.mod.settings.categories.General
 import net.sbo.mod.settings.categories.Diana
-import net.sbo.mod.settings.categories.Slayer
 import net.sbo.mod.settings.categories.PartyCommands
 import net.sbo.mod.settings.categories.Customization
 import net.sbo.mod.settings.categories.QOL
@@ -46,7 +45,6 @@ object Settings : ConfigKt("sbo/config") {
 
         category(General)
         category(Diana)
-        category(Slayer)
         category(PartyCommands)
         category(Customization)
         category(PartyFinder)
