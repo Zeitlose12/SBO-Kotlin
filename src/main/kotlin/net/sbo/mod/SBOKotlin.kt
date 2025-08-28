@@ -108,6 +108,7 @@ object SBOKotlin {
 
 		Register.onTick(100) { unregister ->
 			if (mc.player != null && World.isInSkyblock()) {
+				DianaTracker.checkMayorTracker()
 				PartyPlayer.load()
 				unlockAchievement(38)
 				unregister()

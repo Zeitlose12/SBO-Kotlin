@@ -21,6 +21,7 @@ import net.sbo.mod.utils.Helper.lastInqDeath
 import net.sbo.mod.utils.Helper.lastLootShare
 import net.sbo.mod.utils.Helper.removeFormatting
 import net.sbo.mod.utils.Helper.sleep
+import net.sbo.mod.utils.Mayor
 import net.sbo.mod.utils.Mayor.getMayor
 import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.SboTimerManager
@@ -56,6 +57,7 @@ object DianaTracker {
             Chat.chat("§6[SBO] §aDiana session tracker has been reset.")
             DianaMobs.updateLines()
             DianaLoot.updateLines()
+            InquisLoot.updateLines()
         }
 
         Register.command("sboresetstatstracker") {
@@ -71,26 +73,7 @@ object DianaTracker {
         Register.onChatMessageCancable(
             Pattern.compile("^§eThe election room is now closed\\. Clerk Seraphine is doing a final count of the votes\\.\\.\\.$", Pattern.DOTALL)
         ) { _, _ ->
-            val lastYear = dianaTrackerMayor.year
-            if (lastYear == 0) return@onChatMessageCancable true
-            var allZero = true
-            for (item in dianaTrackerMayor.mobs::class.java.declaredFields) {
-                item.isAccessible = true
-                if (item.get(dianaTrackerMayor.mobs) is Int) {
-                    if (item.getInt(dianaTrackerMayor.mobs) > 0) {
-                        allZero = false
-                        break
-                    }
-                }
-            }
-            if (!allZero) {
-                pastDianaEventsData.events += dianaTrackerMayor
-                SboDataObject.save("PastDianaEventsData")
-            }
-            dianaTrackerMayor.reset()
-            dianaTrackerMayor.year = lastYear + 1
-            dianaTrackerMayor.save()
-            getMayor()
+            checkMayorTracker()
             true
         }
 
@@ -414,6 +397,31 @@ object DianaTracker {
         return "§6[SBO] §c$streakText $prettyName!"
     }
 
+    fun checkMayorTracker() {
+        if (dianaTrackerMayor.year == 0 || dianaTrackerMayor.year >= Mayor.mayorElectedYear) return
+        var allZero = true
+        for (item in dianaTrackerMayor.mobs::class.java.declaredFields) {
+            item.isAccessible = true
+            if (item.get(dianaTrackerMayor.mobs) is Int) {
+                if (item.getInt(dianaTrackerMayor.mobs) > 0) {
+                    allZero = false
+                    break
+                }
+            }
+        }
+        if (!allZero) {
+            pastDianaEventsData.events += dianaTrackerMayor
+            SboDataObject.save("PastDianaEventsData")
+        }
+        dianaTrackerMayor.reset()
+        dianaTrackerMayor.year = Mayor.mayorElectedYear
+        dianaTrackerMayor.save()
+        getMayor()
+        DianaMobs.updateLines()
+        DianaLoot.updateLines()
+        InquisLoot.updateLines()
+    }
+
     fun trackMob(item: String, amount: Int) {
         trackItem(item, amount)
         trackItem("TOTAL_MOBS", amount)
@@ -423,6 +431,7 @@ object DianaTracker {
     }
 
     fun trackItem(item: String, amount: Int, fromInq: Boolean = false) {
+        checkMayorTracker()
         val itemName = Helper.toUpperSnakeCase(item)
         if (itemName == "MINOS_INQUISITOR_LS") sboData.inqsSinceLsChim += 1
 

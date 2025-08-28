@@ -19,7 +19,7 @@ interface DianaTracker {
         when(this) {
             is DianaTrackerTotalData -> SboDataObject.save("DianaTrackerTotalData")
             is DianaTrackerSessionData -> SboDataObject.save("DianaTrackerSessionData")
-            is DianaTrackerMayorData -> SboDataObject.save("PastDianaEventsData")
+            is DianaTrackerMayorData -> SboDataObject.save("DianaTrackerMayorData")
             else -> {}
         }
         return this
