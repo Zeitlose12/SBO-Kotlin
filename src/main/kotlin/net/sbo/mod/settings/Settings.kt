@@ -17,7 +17,7 @@ import net.sbo.mod.settings.categories.PartyFinder
 object Settings : ConfigKt("sbo/config") {
     override val name: TranslatableValue
         get() = Literal("SBO v${SBOKotlin.version}")
-    override val description = Literal("Skyblock Overhaul — Mod for the Mythological Ritual event in hypixel skyblock and custom partyfinder")
+    override val description = Literal("Mod for the Mythological Ritual event in hypixel skyblock and custom partyfinder")
 
     init {
         separator {
