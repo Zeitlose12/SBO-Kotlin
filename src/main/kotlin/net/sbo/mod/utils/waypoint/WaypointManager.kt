@@ -286,6 +286,7 @@ object WaypointManager {
 
     var tryWarp: Boolean = false
     fun executeWarpCommand(warp: String) {
+        if (!checkDiana()) return
         if (Diana.warpDelay > 0 && System.currentTimeMillis() - DianaGuess.lastGuessTime < Diana.warpDelay) return
         if (warp.isNotEmpty() && !tryWarp) {
             tryWarp = true
