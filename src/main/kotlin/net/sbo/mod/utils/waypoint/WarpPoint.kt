@@ -24,7 +24,8 @@ val additionalHubWarps: Map<String, WarpPoint> = mapOf(
     "wizard" to WarpPoint(SboVec(42.0, 122.0, 69.0), true, "wizardWarp"),
     "crypt" to WarpPoint(SboVec(-161.0, 61.0, -99.0), true, "cryptWarp"),
     "stonks" to WarpPoint(SboVec(-53.0, 72.0, -53.0), true, "stonksWarp"),
-    "da" to WarpPoint(SboVec(92.0, 75.0, 174.0), true, "darkAuctionWarp")
+    "da" to WarpPoint(SboVec(92.0, 75.0, 174.0), true, "darkAuctionWarp"),
+    "taylor" to WarpPoint(SboVec(22.0, 71.0, -42.0), true, "taylorWarp")
 )
 
 enum class AdditionalHubWarps {
@@ -32,5 +33,6 @@ enum class AdditionalHubWarps {
     WIZARD,
     CRYPT,
     STONKS,
-    DA
+    DA,
+    TAYLOR
 }

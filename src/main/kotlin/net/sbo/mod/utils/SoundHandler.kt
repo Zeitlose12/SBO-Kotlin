@@ -122,7 +122,7 @@ object SoundHandler {
         val id = Identifier.of(MOD_ID, sound.lowercase())
         val event = SoundEvent.of(id)
 
-        if (!packManager.enabledIds.contains(packId)) Chat.chat("§6[SBO] §cCustom sound pack is not enabled. Please enable it in the resource packs menu.")
+        if (!packManager.enabledIds.contains(packId) && sound.isNotEmpty()) Chat.chat("§6[SBO] §cCustom sound pack is not enabled. Please enable it in the resource packs menu.")
         mc.soundManager.play(PositionedSoundInstance.master(event, pitch, volume))
     }
 }
