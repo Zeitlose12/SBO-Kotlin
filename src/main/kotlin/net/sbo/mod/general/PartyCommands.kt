@@ -63,7 +63,6 @@ object PartyCommands {
 
             if (!settings.partyCommands) return@onChatMessage
             if (messageParts.size > 1 && command !in commandsWithArgs) return@onChatMessage
-            println("command: $command, playerName: $playerName, user: $user, secondArg: $secondArg")
             when (command) {
                 "!w", "!warp" -> {
                     if (!settings.warpCommand) return@onChatMessage
@@ -232,7 +231,6 @@ object PartyCommands {
                 }
                 "!totalstats", "!totalstat" -> {
                     if (!settings.dianaPartyCommands) return@onChatMessage
-                    println("secondArg: $secondArg, user: $user")
                     if (secondArg?.lowercase() == user.lowercase()) {
                         sleep(200) {
                             DianaStats.sendPlayerStats(true)

@@ -125,7 +125,6 @@ object DianaGuess {
 
     fun init() {
         Register.onPlayerInteract { action, pos, player, world, event ->
-            println("PlayerInteract: action=$action, pos=$pos")
             if (!Diana.dianaBurrowGuess) return@onPlayerInteract
             preciseGuess.onUseSpade(action, event)
         }
