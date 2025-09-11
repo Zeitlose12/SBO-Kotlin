@@ -35,7 +35,6 @@ object Pickuplog {
         overlay.setCondition { QOL.pickuplogOverlay }
 
         EventBus.on(InventorySlotUpdateEvent::class) { event ->
-            val packet = event.packet
             if (mc.player == null || !World.isInSkyblock()) return@on
             newInventory = Helper.readPlayerInv()
             newPurse = Helper.getPurse()
