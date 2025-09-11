@@ -9,23 +9,28 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.entity.Entity
 import net.minecraft.network.packet.Packet
 import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
+import net.minecraft.world.World
 import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.utils.Helper.removeFormatting
 import net.sbo.mod.utils.chat.ChatHandler
 import net.sbo.mod.utils.chat.ChatUtils.formattedString
-import net.sbo.mod.utils.data.PacketActionPair
-import net.sbo.mod.utils.data.PlayerInteractEvent
 import net.sbo.mod.utils.events.TickScheduler.ScheduledTask
 import net.sbo.mod.utils.events.TickScheduler.tasks
+import net.sbo.mod.utils.events.impl.GuiOpenEvent
+import net.sbo.mod.utils.events.impl.PacketReceiveEvent
+import net.sbo.mod.utils.events.impl.PacketSendEvent
+import net.sbo.mod.utils.events.impl.PlayerInteractEvent
+import net.sbo.mod.utils.events.impl.GuiKeyEvent
+import net.sbo.mod.utils.events.impl.GuiRenderEvent
+import net.sbo.mod.utils.events.impl.GuiPostRenderEvent
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -33,53 +38,6 @@ import java.util.regex.Pattern
  * Utility object for registering events
  */
 object Register {
-    private val guiOpenActions = mutableListOf<(screen: Screen, ci: CallbackInfo) -> Unit>()
-    private val guiRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
-    private val guiPostRenderActions = mutableListOf<(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
-    private val guiKeyActions = mutableListOf<(client: MinecraftClient, screen: Screen, key: Int, cir: CallbackInfoReturnable<Boolean>) -> Unit>()
-    private val packetReceivedActions = mutableListOf<PacketActionPair<*>>()
-    private val sentPacketActions = mutableListOf<PacketActionPair<*>>() // Neue Liste
-    private val playerInteractActions = mutableListOf<(action: String, pos: BlockPos?, event: PlayerInteractEvent) -> Unit>()
-    private val entityDeathActions = mutableListOf<(entity: Entity) -> Unit>()
-
-    fun runGuiOpenActions(screen: Screen, ci: CallbackInfo) { guiOpenActions.forEach { action -> action(screen, ci) } }
-    fun runGuiRenderActions(client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
-    fun runGuiPostRenderActions( client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) { guiPostRenderActions.forEach { action -> action(client, screen, context, mouseX, mouseY, delta) } }
-    fun runGuiKeyActions(client: MinecraftClient, screen: Screen, key: Int, cir: CallbackInfoReturnable<Boolean>) { guiKeyActions.forEach { action -> action(client, screen, key, cir) } }
-    fun runEntityDeathActions(entity: Entity) { entityDeathActions.forEach { action -> action(entity) } }
-    fun runPacketReceivedActions(packet: Packet<*>) {
-        packetReceivedActions.forEach { pair ->
-            if (pair.packetClass == null || pair.packetClass.isInstance(packet)) {
-                @Suppress("UNCHECKED_CAST")
-                val typedAction = pair.action as (Packet<*>) -> Unit
-                typedAction(packet)
-            }
-        }
-    }
-    fun runPacketSentActions(packet: Packet<*>) {
-        sentPacketActions.forEach { pair ->
-            if (pair.packetClass == null || pair.packetClass.isInstance(packet)) {
-                @Suppress("UNCHECKED_CAST")
-                val typedAction = pair.action as (Packet<*>) -> Unit
-                typedAction(packet)
-            }
-        }
-    }
-    fun runPlayerInteractActions(action: String, pos: BlockPos?, event: PlayerInteractEvent?): Boolean {
-        var canceled = false
-        playerInteractActions.forEach { a ->
-            if (event != null) {
-                a(action, pos, event)
-            }
-
-            if (event != null && event.isCanceled) {
-                canceled = true
-            }
-        }
-        return canceled
-    }
-
-
     /**
      * Registers a command with the specified name and aliases.
      * The action is executed when the command is invoked, with the provided arguments.
@@ -203,7 +161,10 @@ object Register {
      * @param action The action to execute when a GUI is opened.
      */
     fun onGuiOpen(action: (screen: Screen, ci: CallbackInfo) -> Unit) {
-        guiOpenActions.add(action)
+        EventBus.on(GuiOpenEvent::class) { event ->
+            val screen = event.screen
+            action(screen, event.ci)
+        }
     }
 
     /**
@@ -222,36 +183,50 @@ object Register {
      * Registers an event that listens for GUI render events and executes an action.
      * @param action The action to execute when a GUI is rendered.
      */
-    fun onGuiRender(action: (client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit) {
-        guiRenderActions.add(action)
+    fun onGuiRender(action: (GuiRenderEvent) -> Unit) {
+        EventBus.on(GuiRenderEvent::class) { event -> action(event) }
     }
 
     /**
      * Registers an event that listens for GUI post-render events and executes an action.
      * @param action The action to execute after a GUI is rendered.
      */
-    fun onGuiPostRender(action: (client: MinecraftClient, screen: Screen, context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) -> Unit) {
-        guiPostRenderActions.add(action)
+    fun onGuiPostRender(action: (GuiPostRenderEvent) -> Unit) {
+        EventBus.on(GuiPostRenderEvent::class) { event -> action(event) }
     }
 
     /**
      * Registers an event that listens for key presses in the GUI and executes an action.
      * @param action The action to execute when a key is pressed in the GUI.
      */
-    fun onGuiKey(action: (client: MinecraftClient, screen: Screen, key: Int, cir: CallbackInfoReturnable<Boolean>) -> Unit) {
-        guiKeyActions.add(action)
+    fun onGuiKey(action: (GuiKeyEvent) -> Unit) {
+        EventBus.on(GuiKeyEvent::class) { event -> action(event) }
     }
 
-    fun <T: Packet<*>> onPacketReceived(packetClass: Class<T>, action: (packet: T) -> Unit) {
-        packetReceivedActions.add(PacketActionPair(packetClass, action))
+    fun <T : Packet<*>> onPacketReceived(packetClass: Class<T>, action: (packet: T) -> Unit) {
+        EventBus.on(PacketReceiveEvent::class) { event ->
+            val packet = event.packet
+            if (packetClass.isInstance(packet)) {
+                @Suppress("UNCHECKED_CAST")
+                action(packetClass.cast(packet))
+            }
+        }
     }
 
-    fun <T: Packet<*>> onPacketSent(packetClass: Class<T>, action: (packet: T) -> Unit) {
-        sentPacketActions.add(PacketActionPair(packetClass, action))
+    fun <T : Packet<*>> onPacketSent(packetClass: Class<T>, action: (packet: T) -> Unit) {
+        EventBus.on(PacketSendEvent::class) { event ->
+            val packet = event.packet
+            if (packetClass.isInstance(packet)) {
+                @Suppress("UNCHECKED_CAST")
+                action(packetClass.cast(packet))
+            }
+        }
     }
 
-    fun onPlayerInteract(action: (action: String, pos: BlockPos?, event: PlayerInteractEvent?) -> Unit) {
-        playerInteractActions.add(action)
+    fun onPlayerInteract(action: (action: String, pos: BlockPos?, player: ClientPlayerEntity, world: World, event: PlayerInteractEvent) -> Unit) {
+        EventBus.on(PlayerInteractEvent::class) { busEvent ->
+            action(busEvent.action, busEvent.pos, busEvent.player, busEvent.world, busEvent)
+        }
     }
 
     fun onEntityLoad(action: (entity: Entity, clientWorld: ClientWorld) -> Unit) {

@@ -6,8 +6,8 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.sbo.mod.utils.data.PlayerInteractEvent;
-import net.sbo.mod.utils.events.Register;
+import net.sbo.mod.utils.events.EventBus;
+import net.sbo.mod.utils.events.impl.PlayerInteractEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,8 +21,12 @@ public class PlayerInteractMixin {
     @Inject(method = "interactItem", at = @At("HEAD"), cancellable = true)
     private void onInteractItem(CallbackInfoReturnable<ActionResult> cir) {
         if (client.player != null) {
-            PlayerInteractEvent event = new PlayerInteractEvent(client.player, client.player.getWorld(), false);
-            if (Register.INSTANCE.runPlayerInteractActions("useItem", null, event)) {
+            PlayerInteractEvent event = new PlayerInteractEvent(
+                    "useItem", null, client.player, client.player.getWorld(), false
+            );
+            EventBus.INSTANCE.emit(event);
+
+            if (event.isCanceled()) {
                 cir.setReturnValue(ActionResult.FAIL);
                 cir.cancel();
             }
@@ -32,11 +36,16 @@ public class PlayerInteractMixin {
     @Inject(method = "interactBlock", at = @At("HEAD"), cancellable = true)
     private void onInteractBlock(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
         if (hand == Hand.MAIN_HAND) {
-            PlayerInteractEvent event = new PlayerInteractEvent(player, player.getWorld(), false);
-            if (Register.INSTANCE.runPlayerInteractActions("useBlock", hitResult.getBlockPos(), event)) {
+            PlayerInteractEvent event = new PlayerInteractEvent(
+                    "useBlock", hitResult.getBlockPos(), player, player.getWorld(), false
+            );
+            EventBus.INSTANCE.emit(event);
+
+            if (event.isCanceled()) {
                 cir.setReturnValue(ActionResult.FAIL);
                 cir.cancel();
             }
         }
     }
 }
+

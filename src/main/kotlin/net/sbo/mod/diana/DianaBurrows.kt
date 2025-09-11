@@ -124,7 +124,7 @@ object BurrowDetector {
             if (!Diana.dianaBurrowDetect) return@onWorldChange
             resetBurrows()
         }
-        Register.onPlayerInteract { action, pos, event ->
+        Register.onPlayerInteract { action, pos, player, world, event ->
             if (!Diana.dianaBurrowDetect) return@onPlayerInteract
             if (World.getWorld() != "Hub") return@onPlayerInteract
             rightClickBlock(action, pos)

@@ -10,9 +10,9 @@ import net.minecraft.particle.ParticleTypes
 import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.math.SboVec
-import net.sbo.mod.utils.data.PlayerInteractEvent
 import net.sbo.mod.utils.waypoint.WaypointManager
 import net.sbo.mod.settings.categories.Diana
+import net.sbo.mod.utils.events.impl.PlayerInteractEvent
 import net.sbo.mod.utils.game.World
 import net.sbo.mod.utils.math.PolynomialFitter
 import kotlin.math.PI
@@ -108,14 +108,14 @@ object DianaGuess {
             return guessPitch
         }
 
-        fun onUseSpade(action: String, event: PlayerInteractEvent?) {
+        fun onUseSpade(action: String, event: PlayerInteractEvent) {
             if (action != "useItem" && action != "useBlock") return
             val player = mc.player
             val item = player?.mainHandStack
             if (item?.isEmpty == true) return
             if (item == null || !item.name.string.contains("Spade")) return
             if (System.currentTimeMillis() - this.lastLavaParticle < 200) {
-                event?.isCanceled = true
+                event.isCanceled = true
                 return
             }
             this.particleLocations.clear()
@@ -124,7 +124,8 @@ object DianaGuess {
     }
 
     fun init() {
-        Register.onPlayerInteract { action, pos, event ->
+        Register.onPlayerInteract { action, pos, player, world, event ->
+            println("PlayerInteract: action=$action, pos=$pos")
             if (!Diana.dianaBurrowGuess) return@onPlayerInteract
             preciseGuess.onUseSpade(action, event)
         }

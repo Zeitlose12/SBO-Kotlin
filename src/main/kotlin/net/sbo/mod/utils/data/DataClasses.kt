@@ -5,7 +5,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonPrimitive
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.network.packet.Packet
 import net.minecraft.world.World
 
 @Serializable
@@ -190,17 +189,6 @@ data class HighlightElement(
     val page: String,
     val obj: UIComponent,
     val type: String
-)
-
-data class PlayerInteractEvent(
-    val player: PlayerEntity,
-    val world: World,
-    var isCanceled: Boolean = false
-)
-
-data class PacketActionPair<T : Packet<*>>(
-    val packetClass: Class<T>?, // Made nullable
-    val action: (packet: T) -> Unit
 )
 
 data class Item(

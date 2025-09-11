@@ -2,12 +2,14 @@ package net.sbo.mod.general
 
 import net.minecraft.text.HoverEvent
 import net.sbo.mod.SBOKotlin.mc
+import net.sbo.mod.utils.events.EventBus
 import net.sbo.mod.diana.DianaTracker
 import net.sbo.mod.settings.categories.QOL
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.game.World
 import net.sbo.mod.utils.data.Item
+import net.sbo.mod.utils.events.impl.InventorySlotUpdateEvent
 import net.sbo.mod.utils.overlay.Overlay
 import net.sbo.mod.utils.overlay.OverlayTextLine
 import java.util.regex.Pattern
@@ -31,19 +33,22 @@ object Pickuplog {
     fun init() {
         overlay.init()
         overlay.setCondition { QOL.pickuplogOverlay }
-        Register.onTick(10) {
-            if (mc.player == null || !World.isInSkyblock()) return@onTick
+
+        EventBus.on(InventorySlotUpdateEvent::class) { event ->
+            val packet = event.packet
+            if (mc.player == null || !World.isInSkyblock()) return@on
             newInventory = Helper.readPlayerInv()
             newPurse = Helper.getPurse()
             if (oldInventory.isEmpty()) {
                 oldInventory = newInventory
                 oldPurse = newPurse
-                return@onTick
+                return@on
             }
             compareInventory()
             oldInventory = newInventory
             oldPurse = newPurse
             updateOverlay()
+
         }
 
         Register.onChatMessageCancable(Pattern.compile("(.*?) item(.*?) (.*?)", Pattern.DOTALL)) { message, matchResult ->
