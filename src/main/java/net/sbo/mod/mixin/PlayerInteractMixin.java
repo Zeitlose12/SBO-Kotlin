@@ -9,6 +9,7 @@ import net.minecraft.util.Hand;
 import net.sbo.mod.utils.events.EventBus;
 import net.sbo.mod.utils.events.impl.PlayerInteractEvent;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -16,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ClientPlayerInteractionManager.class)
 public class PlayerInteractMixin {
 
+    @Unique
     private final MinecraftClient client = MinecraftClient.getInstance();
 
     @Inject(method = "interactItem", at = @At("HEAD"), cancellable = true)

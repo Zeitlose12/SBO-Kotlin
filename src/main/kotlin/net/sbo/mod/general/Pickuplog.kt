@@ -48,7 +48,6 @@ object Pickuplog {
             oldInventory = newInventory
             oldPurse = newPurse
             updateOverlay()
-
         }
 
         Register.onChatMessageCancable(Pattern.compile("(.*?) item(.*?) (.*?)", Pattern.DOTALL)) { message, matchResult ->
