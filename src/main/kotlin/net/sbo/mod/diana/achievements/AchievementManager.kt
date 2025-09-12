@@ -18,8 +18,7 @@ import java.lang.Thread.sleep
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
-// todo: call all the unlock methods to track achievements also fix the daxe achievements
-
+// todo: fix the daxe achievements
 object AchievementManager {
     val rarityColorDict = mapOf(
         "Common" to "§f",
@@ -207,7 +206,7 @@ object AchievementManager {
         }
     }
 
-    fun trackBeKills(gaiaKills: Int, champKills: Int, hunterKills: Int, inqKills: Int, minoKills: Int, catKills: Int) {
+    fun trackBeKills(gaiaKills: Int, champKills: Int, hunterKills: Int, inqKills: Int, minoKills: Int, catKills: Int) { // todo: add this
         if (isOnHypixel) return
 
         val allMaxed = listOf(

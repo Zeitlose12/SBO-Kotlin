@@ -10,19 +10,19 @@ import net.minecraft.world.World
 @Serializable
 data class GetAllParties(
     @SerialName("Success")
-    val success: Boolean,
+    val success: Boolean = false,
 
     @SerialName("Parties")
-    val parties: List<Party>
+    val parties: List<Party> = emptyList()
 )
 
 @Serializable
 data class PartyInfo(
     @SerialName("Success")
-    val success: Boolean,
+    val success: Boolean = false,
 
     @SerialName("PartyInfo")
-    val partyInfo: List<PartyPlayerStats>
+    val partyInfo: List<PartyPlayerStats> = emptyList(),
 )
 
 @Serializable
@@ -60,9 +60,9 @@ data class PartyUpdateResponse(
 
 @Serializable
 data class HypixelBazaarResponse(
-    val success: Boolean,
-    val lastUpdated: Long,
-    val products: Map<String, Product>
+    val success: Boolean = false,
+    val lastUpdated: Long = 0,
+    val products: Map<String, Product> = emptyMap()
 )
 
 @Suppress("PropertyName")

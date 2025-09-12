@@ -273,9 +273,9 @@ object Helper {
         val inventory = Player.getPlayerInventory()
         val invItems = mutableMapOf<String, Item>()
 
-        if (getCursorItemStack()?.count != 0) return prevInv // todo: do this but only of the overlay
+        if (getCursorItemStack()?.count != 0) return prevInv
 
-        for (slot in 0 until inventory.size) {
+        for (slot in 0 until (inventory.size - 5)) {
             if (slot == 8) continue // Skip SB Star
             val stack: ItemStack = inventory[slot]
 

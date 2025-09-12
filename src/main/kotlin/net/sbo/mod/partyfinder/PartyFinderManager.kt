@@ -311,8 +311,7 @@ object PartyFinderManager {
         }
     }
 
-    // todo: test this function,
-    //  add a way to prevent inviting more player then party has space (maybe every user has 10 seconds to accept else next player gets invited)
+    // todo: add a way to prevent inviting more player then party has space (maybe every user has 10 seconds to accept else next player gets invited)
     fun invitePlayerIfMeetsReqs(playerName: String) {
         PartyCheck.checkPlayer(playerName, true) { stats ->
             if (checkIfPlayerMeetsReqs(stats, partyReqsMap)) {
