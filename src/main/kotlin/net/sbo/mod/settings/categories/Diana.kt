@@ -62,13 +62,13 @@ object Diana : CategoryKt("Diana") {
         }
     }
 
-    var allowedWarps by select(AdditionalHubWarps.CRYPT, AdditionalHubWarps.DA) {
+    var allowedWarps by select(AdditionalHubWarps.WIZARD, AdditionalHubWarps.DA, AdditionalHubWarps.CASTLE) {
         this.name = Translated("Add Warps")
         this.description = Translated("Select the warps you want to be able to warp to with the guess and inquisitor warp keys.")
     }
 
     var dontWarpIfBurrowClose by boolean(true) {
-        this.name = Translated("Don't Warp If Burrow Close")
+        this.name = Translated("Don't Warp If a Burrow is nearby")
         this.description = Translated("If enabled, the warp key will not warp you if you are within 60 blocks of a burrow")
     }
 
@@ -82,7 +82,7 @@ object Diana : CategoryKt("Diana") {
     var warpDelay by int(0) {
         this.range = 0..1000
         this.slider = true
-        this.name = Translated("Warp Delay")
+        this.name = Translated("Warp Delay (<X>ms)")
         this.description = Translated("The delay bevor you can warp after guessing with spade. (0 to disable)")
     }
 
@@ -139,30 +139,9 @@ object Diana : CategoryKt("Diana") {
         this.description = Translated("Shows your highest magic find for sticks and chimeras (only after you dropped it once), /sboguis to move the overlay")
     }
 
-    var fourEyedFish by boolean(true) {
+    var fourEyedFish by boolean(false) {
         this.name = Translated("Four-Eyed Fish")
         this.description = Translated("Set if you have a Four-Eyed Fish on your griffin pet")
-    }
-
-    var lootAnnouncerChat by boolean(true) {
-        this.name = Translated("Rare Drop Announcer")
-        this.description = Translated("Announces relic/shelmet/plushie/remedies in chat")
-    }
-
-    var lootAnnouncerScreen by boolean(false) {
-        this.name = Translated("Loot Screen Announcer")
-        this.description = Translated("Announces chimera/stick/relic on screen")
-    }
-
-    var lootAnnouncerPrice by boolean(true) {
-        this.name = Translated("Show Price Title")
-        this.description = Translated("Shows chimera/stick/relic price as a subtitle on screen")
-        this.condition = { lootAnnouncerScreen }
-    }
-
-    var lootAnnouncerParty by boolean(false) {
-        this.name = Translated("Loot Party Announcer")
-        this.description = Translated("Announces chimera/stick/relic and Shelmet/Plushie/Remedies (only when dropped from Inquisitor) in party chat")
     }
 
     var sendSinceMessage by boolean(true) {
@@ -177,13 +156,65 @@ object Diana : CategoryKt("Diana") {
 
     init {
         separator {
-            this.title = "Diana Waypoints"
+            this.title = "Diana Announcer"
         }
     }
 
-    var allWaypointsAreInqs by boolean(false) {
-        this.name = Translated("All Waypoints From Chat Are Inqs")
-        this.description = Translated("All coordinates from chat are considered Inquisitor waypoints (only works in Hub and during Diana event)")
+    var lootAnnouncerChat by boolean(true) {
+        this.name = Translated("Rare Drop Announcer")
+        this.description = Translated("Announces relic/shelmet/plushie/remedies in chat")
+    }
+
+    var lootAnnouncerScreen by boolean(false) {
+        this.name = Translated("Loot Screen Announcer")
+        this.description = Translated("Announces chimera/stick/relic on screen")
+    }
+
+    var lootAnnouncerPrice by ObservableEntry(boolean(true) {
+            this.name = Translated("Show Price Title")
+            this.description = Translated("Shows chimera/stick/relic price as a subtitle on screen")
+        }
+    ) { old, new ->
+        if (old != new) {
+            if (new) {
+                lootAnnouncerScreen = true
+            }
+        }
+    }
+
+    var lootAnnouncerParty by boolean(false) {
+        this.name = Translated("Loot Party Announcer")
+        this.description = Translated("Announces chimera/stick/relic and Shelmet/Plushie/Remedies (only when dropped from Inquisitor) in party chat")
+    }
+
+    var chimMessageBool by boolean(false) {
+        this.name = Translated("Chim Message")
+        this.description = Translated("Enables custom chim message")
+    }
+
+    var customChimMessage by strings("&6[SBO] &6&lRARE DROP! &d&lChimera! &b{mf} &b#{amount}") {
+        this.name = Translated("Custom Chim Message Text")
+        this.description = Translated("use: {mf} for MagicFind, {amount} for drop Amount this event and {percentage} for chimera/inquis ratio.")
+    }
+
+    init {
+        button {
+            title = "Send Test Chim Message"
+            text = "Send Test"
+            description = "Sends a test message for the chimera message"
+            onClick {
+                val customChimMsg = Helper.checkCustomChimMessage(400)
+                if (customChimMsg.first) {
+                    Chat.chat(customChimMsg.second)
+                }
+            }
+        }
+    }
+
+    init {
+        separator {
+            this.title = "Diana Waypoints"
+        }
     }
 
     var guessLine by boolean(true) {
@@ -217,13 +248,8 @@ object Diana : CategoryKt("Diana") {
 
     init {
         separator {
-            this.title = "Other"
+            this.title = "Inquistor"
         }
-    }
-
-    var mythosMobHp by boolean(true) {
-        this.name = Translated("Mythos Mob HP")
-        this.description = Translated("Displays HP of mythological mobs near you. /sboguis to move it")
     }
 
     var shareInq by boolean(true) {
@@ -234,6 +260,11 @@ object Diana : CategoryKt("Diana") {
     var receiveInq by boolean(true) {
         this.name = Translated("Receive Inquisitor")
         this.description = Translated("Create a waypoint when someone in your party shares an inquisitor")
+    }
+
+    var allWaypointsAreInqs by boolean(false) {
+        this.name = Translated("All Waypoints From Chat Are Inqs")
+        this.description = Translated("All coordinates from chat are considered Inquisitor waypoints (only works in Hub and during Diana event)")
     }
 
     var announceKilltext by strings("") {
@@ -252,27 +283,14 @@ object Diana : CategoryKt("Diana") {
         }
     }
 
-    var chimMessageBool by boolean(false) {
-        this.name = Translated("Chim Message")
-        this.description = Translated("Enables custom chim message")
-    }
-
-    var customChimMessage by strings("&6[SBO] &6&lRARE DROP! &d&lChimera! &b{mf} &b#{amount}") {
-        this.name = Translated("Custom Chim Message Text")
-        this.description = Translated("use: {mf} for MagicFind, {amount} for drop Amount this event and {percentage} for chimera/inquis ratio.")
-    }
-
     init {
-        button {
-            title = "Send Test Chim Message"
-            text = "Send Test"
-            description = "Sends a test message for the chimera message"
-            onClick {
-                val customChimMsg = Helper.checkCustomChimMessage(400)
-                if (customChimMsg.first) {
-                    Chat.chat(customChimMsg.second)
-                }
-            }
+        separator {
+            this.title = "Other"
         }
+    }
+
+    var mythosMobHp by boolean(true) {
+        this.name = Translated("Mythos Mob HP")
+        this.description = Translated("Displays HP of mythological mobs near you. /sboguis to move it")
     }
 }

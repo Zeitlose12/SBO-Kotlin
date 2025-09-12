@@ -61,7 +61,6 @@ object PartyCommands {
             val user = Player.getName() ?: return@onChatMessage
             val commandsWithArgs = setOf("!since", "!demote", "!promote", "!ptme", "!transfer", "!stats", "!totalstats")
 
-            if (!settings.partyCommands) return@onChatMessage
             if (messageParts.size > 1 && command !in commandsWithArgs) return@onChatMessage
             when (command) {
                 "!w", "!warp" -> {

@@ -271,7 +271,11 @@ class CustomPage(private val parent: PartyFinderGUI) {
             val partyType = "Custom"
             val partySize = pfConfigState.inputs.custom.partySize
             val sboKey = sboData.sboKey
-            if (sboKey.isEmpty() && !sboKey.startsWith("sbo")) Chat.chat("§cPlease set your SBO key with /sboKey <key>, if you don't have one, get it in our discord.")
+            if (sboKey.isEmpty() && !sboKey.startsWith("sbo")) {
+                parent.closeCpWindow()
+                Chat.chat("§cPlease set your SBO key with /sboKey <key>, if you don't have one, get it in our discord.")
+                return@setOnClick
+            }
             parent.partyCreate(reqs = reqString, note = note, type = partyType, size = partySize)
             parent.closeCpWindow()
         }

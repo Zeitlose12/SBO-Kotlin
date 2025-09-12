@@ -92,7 +92,6 @@ object Mayor {
                     }
                 } else {
                     val errorMessage = response.error ?: "Unknown error"
-                    Chat.chat("§cError getting mayor from API: $errorMessage")
                     SBOKotlin.logger.error("API error: $errorMessage")
                     mayorApiError = true
                     mayor = "Diana"
@@ -103,7 +102,6 @@ object Mayor {
                 mayorApiError = true
                 mayor = "Diana"
                 perks = mutableSetOf("Mythological Ritual")
-                Chat.chat("§cError getting mayor from API: ${error.message}")
                 SBOKotlin.logger.error("Error getting mayor from API: ${error.message}")
                 refreshingMayor = false
             }

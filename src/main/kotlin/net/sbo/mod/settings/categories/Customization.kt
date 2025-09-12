@@ -37,6 +37,13 @@ object Customization : CategoryKt("Customization") {
         this.allowAlpha = true
     }
 
+    var StartColor by color(
+        Color(0.333f, 1.0f, 0.333f).rgb) {
+        this.name = Translated("Start Burrow Color")
+        this.description = Translated("Pick a color for start burrows")
+        this.allowAlpha = true
+    }
+
     var MobColor by color(
         Color(1.0f, 0.333f, 0.333f).rgb) {
         this.name = Translated("Mob Burrow Color")
@@ -48,13 +55,6 @@ object Customization : CategoryKt("Customization") {
         Color(1f, 0.666f, 0.0f).rgb) {
         this.name = Translated("Treasure Burrow Color")
         this.description = Translated("Pick a color for treasure burrows")
-        this.allowAlpha = true
-    }
-
-    var StartColor by color(
-        Color(0.333f, 1.0f, 0.333f).rgb) {
-        this.name = Translated("Start Burrow Color")
-        this.description = Translated("Pick a color for start burrows")
         this.allowAlpha = true
     }
 

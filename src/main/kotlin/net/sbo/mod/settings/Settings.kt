@@ -26,7 +26,7 @@ object Settings : ConfigKt("sbo/config") {
         }
 
         button {
-            title = "Check for Updates"
+            title = "Github"
             description = "Opens the GitHub releases page"
             text = "Open"
             onClick {
@@ -35,11 +35,29 @@ object Settings : ConfigKt("sbo/config") {
         }
 
         button {
-            title = "Join Discord"
+            title = "Discord"
             description = "Get support and updates on Discord"
             text = "Join"
             onClick {
                 Util.getOperatingSystem().open("https://discord.gg/QvM6b9jsJD")
+            }
+        }
+
+        button {
+            title = "Patreon"
+            description = "Support our development and keep the server running ☕"
+            text = "Support"
+            onClick {
+                Util.getOperatingSystem().open("https://www.patreon.com/Skyblock_Overhaul")
+            }
+        }
+
+        button {
+            title = "Website"
+            description = "Explore our website for tracking Magic Find upgrades"
+            text = "Visit"
+            onClick {
+                Util.getOperatingSystem().open("https://skyblockoverhaul.com/")
             }
         }
 
@@ -49,8 +67,8 @@ object Settings : ConfigKt("sbo/config") {
         category(Customization)
         category(PartyFinder)
         category(QOL)
-        category(Credits)
         category(Debug)
+        category(Credits)
     }
 
     fun save() = SBOKotlin.settings.save()
