@@ -1,38 +1,20 @@
 package net.sbo.mod.diana
 
-import net.sbo.mod.SBOKotlin
-import net.sbo.mod.utils.Chat
+import net.sbo.mod.overlays.DianaLoot
+import net.sbo.mod.utils.data.SboDataObject
+import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.Helper
-import net.sbo.mod.data.DianaTracker
+import net.sbo.mod.utils.data.DianaTracker
 import java.util.concurrent.TimeUnit
 import net.sbo.mod.settings.categories.Diana
-import net.sbo.mod.utils.Register
+import net.sbo.mod.utils.SboTimerManager
+import net.sbo.mod.utils.events.Register
 import java.util.regex.Pattern
 import java.util.Locale
 
-data class PlayerStats(
-    val playtime: String,
-    val profit: List<String>,
-    val burrows: String,
-    val burrowsPerHour: String,
-    val totalMobs: String,
-    val mobsPerHour: String,
-    val inquisitors: Int,
-    val inqPercentage: String,
-    val lsInqs: String,
-    val chimeraDrops: Int,
-    val chimeraDropRate: String,
-    val chimeraLSDrops: Int,
-    val chimeraLSDropRate: String,
-    val sticksDropped: Int,
-    val stickDropRate: String,
-    val relicsDropped: Int,
-    val relicDropRate: String
-)
-
 object DianaStats {
     val STATS_PATTERN = Pattern.compile(
-        "§9Party §8> (.*?)§f: Playtime: (.*?) - Profit: (.*?) \\((.*?)\\) - Burrows: (.*?) \\((.*?)\\) - Mobs: (.*?) \\((.*?)\\) - Inqs: (.*?) \\((.*?)\\) - LS Inqs: (.*?) - Chims: (.*?) \\((.*?)\\) - LS: (.*?) \\((.*?)\\) - Sticks: (.*?) \\((.*?)\\) - Relics: (.*?) \\((.*?)\\)",
+        "§9Party §8> (.*?)§f: Playtime: (.*?) - Profit: (.*?) - (.*?) - Burrows: (.*?) \\((.*?)\\) - Mobs: (.*?) \\((.*?)\\) - Inquisitors: (.*?) \\((.*?)\\) - LS Inqs: (.*?) - Chimeras: (.*?) \\((.*?)\\) - LS: (.*?) \\((.*?)\\) - Sticks: (.*?) \\((.*?)\\) - Relics: (.*?) \\((.*?)\\)(.*?)",
         Pattern.DOTALL
     )
 
@@ -56,15 +38,16 @@ object DianaStats {
     }
 
     fun getPlayerStats(total: Boolean = false): PlayerStats {
-        val tracker: DianaTracker = if (total) SBOKotlin.SBOConfigBundle.dianaTrackerTotalData else SBOKotlin.SBOConfigBundle.dianaTrackerMayorData
+        val tracker: DianaTracker = if (total) SboDataObject.dianaTrackerTotal else SboDataObject.dianaTrackerMayor
+        val timer: SboTimerManager.SBOTimer = if (total) SboTimerManager.timerTotal else SboTimerManager.timerMayor
 
-        val playtime = if (total) tracker.items.totalTime else tracker.items.mayorTime
+        val playtime = tracker.items.TIME
         val playTimeHrs = playtime.toDouble() / TimeUnit.HOURS.toMillis(1)
 
-        val burrowsPerHour = if (playTimeHrs > 0) tracker.items.`Total Burrows`.toDouble() / playTimeHrs else 0.0
-        val mobsPerHour = if (playTimeHrs > 0) tracker.mobs.TotalMobs.toDouble() / playTimeHrs else 0.0
+        val burrowsPerHour = Helper.getBurrowsPerHr(tracker, timer)
+        val mobsPerHour = if (playTimeHrs > 0) tracker.mobs.TOTAL_MOBS.toDouble() / playTimeHrs else 0.0
 
-        val totalValue = 0.0 // todo: getTotalValue(tracker)
+        val totalValue = DianaLoot.totalProfit(tracker)
         val profit = listOf(
             Helper.formatNumber(totalValue),
             Diana.bazaarSettingDiana.toString(),
@@ -73,21 +56,21 @@ object DianaStats {
         val stats = PlayerStats(
             playtime = Helper.formatTime(playtime),
             profit = profit,
-            burrows = Helper.formatNumber(tracker.items.`Total Burrows`),
+            burrows = Helper.formatNumber(tracker.items.TOTAL_BURROWS),
             burrowsPerHour = "%.2f".format(Locale.US, burrowsPerHour),
-            totalMobs = Helper.formatNumber(tracker.mobs.TotalMobs),
+            totalMobs = Helper.formatNumber(tracker.mobs.TOTAL_MOBS),
             mobsPerHour = "%.2f".format(Locale.US, mobsPerHour),
-            inquisitors = tracker.mobs.`Minos Inquisitor`,
-            inqPercentage = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "Minos Inquisitor")}%",
-            lsInqs = Helper.formatNumber(tracker.mobs.`Minos Inquisitor Ls`, withCommas = true),
-            chimeraDrops = tracker.items.Chimera,
-            chimeraDropRate = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "Chimera", "Minos Inquisitor")}%",
-            chimeraLSDrops = tracker.items.ChimeraLs,
-            chimeraLSDropRate = "${"%.2f".format(Locale.US, if (tracker.mobs.`Minos Inquisitor Ls` > 0) tracker.items.ChimeraLs.toDouble() / tracker.mobs.`Minos Inquisitor Ls`.toDouble() * 100.0 else 0.0)}%",
-            sticksDropped = tracker.items.`Daedalus Stick`,
-            stickDropRate = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "Daedalus Stick", "Minotaur")}%",
+            inquisitors = tracker.mobs.MINOS_INQUISITOR,
+            inqPercentage = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "MINOS_INQUISITOR")}%",
+            lsInqs = Helper.formatNumber(tracker.mobs.MINOS_INQUISITOR_LS, withCommas = true),
+            chimeraDrops = tracker.items.CHIMERA,
+            chimeraDropRate = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "CHIMERA", "MINOS_INQUISITOR")}%",
+            chimeraLSDrops = tracker.items.CHIMERA_LS,
+            chimeraLSDropRate = "${"%.2f".format(Locale.US, if (tracker.mobs.MINOS_INQUISITOR_LS > 0) tracker.items.CHIMERA_LS.toDouble() / tracker.mobs.MINOS_INQUISITOR_LS.toDouble() * 100.0 else 0.0)}%",
+            sticksDropped = tracker.items.DAEDALUS_STICK,
+            stickDropRate = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "DAEDALUS_STICK", "MINOTAUR")}%",
             relicsDropped = tracker.items.MINOS_RELIC,
-            relicDropRate = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "MINOS_RELIC", "Minos Champion")}%"
+            relicDropRate = "${Helper.calcPercentOne(tracker.items, tracker.mobs, "MINOS_RELIC", "MINOS_CHAMPION")}%"
         )
         return stats
     }
@@ -96,16 +79,36 @@ object DianaStats {
         val stats = getPlayerStats(total)
         val statsMessage = buildString {
             append("Playtime: ${stats.playtime} - ")
-            append("Profit: ${stats.profit[0]} (${stats.profit[2]}/h) - ")
-            append("Burrows: ${stats.burrows} (${stats.burrowsPerHour}/h)")
-            append(" - Mobs: ${stats.totalMobs} (${stats.mobsPerHour}/h) - ")
-            append("Inqs: ${stats.inquisitors} (${stats.inqPercentage}) - ")
+            append("Profit: ${stats.profit[0]} - ${stats.profit[2]}/h - ")
+            append("Burrows: ${stats.burrows} (${stats.burrowsPerHour}/h) - ")
+            append("Mobs: ${stats.totalMobs} (${stats.mobsPerHour}/h) - ")
+            append("Inquisitors: ${stats.inquisitors} (${stats.inqPercentage}) - ")
             append("LS Inqs: ${stats.lsInqs} - ")
-            append("Chims: ${stats.chimeraDrops} (${stats.chimeraDropRate}) - LS: ${stats.chimeraLSDrops} (${stats.chimeraLSDropRate}) - ")
+            append("Chimeras: ${stats.chimeraDrops} (${stats.chimeraDropRate}) - LS: ${stats.chimeraLSDrops} (${stats.chimeraLSDropRate}) - ")
             append("Sticks: ${stats.sticksDropped} (${stats.stickDropRate}) - ")
             append("Relics: ${stats.relicsDropped} (${stats.relicDropRate})")
         }
 
         Chat.command("pc $statsMessage")
     }
+
+    data class PlayerStats(
+        val playtime: String,
+        val profit: List<String>,
+        val burrows: String,
+        val burrowsPerHour: String,
+        val totalMobs: String,
+        val mobsPerHour: String,
+        val inquisitors: Int,
+        val inqPercentage: String,
+        val lsInqs: String,
+        val chimeraDrops: Int,
+        val chimeraDropRate: String,
+        val chimeraLSDrops: Int,
+        val chimeraLSDropRate: String,
+        val sticksDropped: Int,
+        val stickDropRate: String,
+        val relicsDropped: Int,
+        val relicDropRate: String
+    )
 }

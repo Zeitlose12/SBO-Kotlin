@@ -1,4 +1,14 @@
 {
+	"custom": {
+		"modmenu": {
+			"update_checker": true,
+			"links": {
+				"Website": "https://skyblockoverhaul.com/",
+				"Patreon": "https://www.patreon.com/Skyblock_Overhaul",
+				"Discord Link": "https://discord.gg/QvM6b9jsJD"
+			}
+		}
+	},
 	"schemaVersion": 1,
 	"id": "sbo-kotlin",
 	"version": "${version}",
@@ -10,7 +20,7 @@
 	],
 	"contact": {
 		"homepage": "https://skyblockoverhaul.com/",
-		"sources": "https://github.com/SkyblockOverhaul/SBO-Fabric"
+		"sources": "https://github.com/SkyblockOverhaul/SBO-Kotlin"
 	},
 	"license": "Apache License 2.0",
 	"icon": "assets/sbo-kotlin/icon.png",
@@ -20,6 +30,9 @@
 			{
 				"value": "net.sbo.mod.SBOKotlin::onInitializeClient"
 			}
+		],
+		"modmenu": [
+			"net.sbo.mod.settings.ModMenuInterop"
 		]
 	},
 	"mixins": [

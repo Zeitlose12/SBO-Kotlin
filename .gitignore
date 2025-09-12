@@ -39,3 +39,5 @@ replay_*.log
 *.hprof
 *.jfr
 .kotlin/errors
+
+.kotlin/sessions

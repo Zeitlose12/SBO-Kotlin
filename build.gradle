@@ -19,6 +19,18 @@ repositories {
 		name = "Team Resourceful Maven"
 		url = "https://maven.teamresourceful.com/repository/maven-public/"
 	}
+
+	maven {
+		name = "Terraformers"
+		url = "https://maven.terraformersmc.com/"
+	}
+
+	maven {
+		url = "https://maven.azureaaron.net/releases"
+		content {
+			includeGroup "net.azureaaron"
+		}
+	}
 }
 
 dependencies {
@@ -27,14 +39,19 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 
-	modImplementation(include("gg.essential:universalcraft-1.21.5-fabric:401"))
-	modImplementation(include("gg.essential:elementa:704"))
-	modImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.5:3.5.13"))
-	modImplementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:3.5.13"))
+	modImplementation(include("gg.essential:universalcraft-${project.minecraft_version}-fabric:${project.ucraft_version}"))
+	modImplementation(include("gg.essential:elementa:${project.elementa_version}"))
+	modImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-${project.minecraft_version}:${project.rconfig_version}"))
+	modImplementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-${project.minecraft_version}:${project.rconfig_version}"))
+	modImplementation(include("net.azureaaron:hm-api:1.0.1+1.21.2"))
+
+	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
-	modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.1")
+	modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:${project.devauth_version}")
+
+	implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3"
 }
 
 loom {
