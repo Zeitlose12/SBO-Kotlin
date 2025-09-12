@@ -28,7 +28,7 @@ data class PartyInfo(
 @Serializable
 data class PartyAddResponse(
     @SerialName("Success")
-    val success: Boolean,
+    val success: Boolean = false,
 
     @SerialName("Message")
     val message: String? = null,
@@ -46,7 +46,7 @@ data class PartyAddResponse(
 @Serializable
 data class PartyUpdateResponse(
     @SerialName("Success")
-    val success: Boolean,
+    val success: Boolean = false,
 
     @SerialName("Message")
     val message: String? = null,
