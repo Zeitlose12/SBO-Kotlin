@@ -19,7 +19,7 @@ import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
 
 object DianaMobs {
-    val overlay = Overlay("Diana Mobs", 10f, 10f, 1f, listOf("Chat screen", "Crafting")).setCondition { Diana.mobTracker != Diana.Tracker.OFF && Helper.checkDiana() }
+    val overlay = Overlay("Diana Mobs", 10f, 10f, 1f, listOf("Chat screen", "Crafting")).setCondition { (Diana.mobTracker != Diana.Tracker.OFF && Helper.checkDiana()) || Helper.hasSpade }
     val changeView: OverlayTextLine = OverlayTextLine("${YELLOW}Change View")
         .onClick {
             Diana.mobTracker = Diana.mobTracker.next()
