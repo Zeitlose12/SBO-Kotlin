@@ -13,7 +13,6 @@ class SboEventProcessor(
         val symbols = resolver.getSymbolsWithAnnotation("net.sbo.mod.utils.events.annotations.SboEvent")
         val generatedObjects = mutableListOf<String>()
 
-        // Group @SboEvent functions by class
         val classSymbols = symbols.filterIsInstance<KSFunctionDeclaration>()
             .groupBy { it.parentDeclaration as? KSClassDeclaration }
 
