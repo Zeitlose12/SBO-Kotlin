@@ -1,80 +1,79 @@
 package net.sbo.mod.utils.events
 
+import net.sbo.mod.utils.events.annotations.Subscribe
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.valueParameters
 
 object EventBus {
     private val listeners = ConcurrentHashMap<KClass<*>, MutableList<(Any) -> Unit>>()
     private val simpleListeners = ConcurrentHashMap<String, MutableList<(Any?) -> Unit>>()
 
-    /**
-     * Registers a listener for a specific event type.
-     * The callback is a function that takes the event data as an argument.
-     *
-     * @param T The type of the event data.
-     * @param eventType The class of the event data, e.g., `MyEventData::class`.
-     * @param callback The function to be executed when the event is emitted.
+    /* Register a listener for a specific event type.
+     * The callback will be invoked when an event of the specified type is emitted.
      */
     fun <T : Any> on(eventType: KClass<T>, callback: (T) -> Unit) {
         val callbacks = listeners.computeIfAbsent(eventType) { mutableListOf() }
-
         @Suppress("UNCHECKED_CAST")
         callbacks.add(callback as (Any) -> Unit)
     }
 
-    /**
-     * Emits an event with associated data.
-     * All registered listeners for the event's type will be notified.
-     *
-     * @param event The event object containing the data.
+    /* Emit an event to all registered listeners for the event's type.
+     * The event can be any object, and its class will be used to find matching listeners.
      */
     fun emit(event: Any) {
         val callbacks = listeners[event::class]
-        callbacks?.forEach { callback ->
-            callback(event)
-        }
+        callbacks?.forEach { callback -> callback(event) }
     }
 
-    /**
-     * Clears all listeners for a specific event type.
-     *
-     * @param eventType The class of the event data to clear, e.g., `MyEventData::class`.
+    /* Clear all listeners for a specific event type.
+     * This will remove all callbacks associated with the given event type.
      */
     fun clear(eventType: KClass<*>) {
         listeners.remove(eventType)
     }
 
-    // --- Simple String-based API ---
-
-    /**
-     * Registers a listener for an event identified by a string.
-     * The callback is a function that takes optional event data.
-     *
-     * @param eventName The name of the event as a string.
-     * @param callback The function to be executed, accepting optional data.
+    /* Simple string-based event system.
+     * Allows registering and emitting events identified by a string name.
      */
     fun on(eventName: String, callback: (Any?) -> Unit) {
         simpleListeners.computeIfAbsent(eventName) { mutableListOf() }.add(callback)
     }
 
-    /**
-     * Emits an event identified by a string, with optional data.
-     *
-     * @param eventName The name of the event to emit.
-     * @param data Optional data to pass to the listeners.
+    /* Emit a string-based event.
+     * All callbacks registered for the given event name will be invoked with the provided data.
      */
     fun emit(eventName: String, data: Any? = null) {
-        simpleListeners[eventName]?.forEach { callback ->
-            callback(data)
-        }
+        simpleListeners[eventName]?.forEach { callback -> callback(data) }
     }
 
-    /**
-     * Clears all listeners for a specific string-based event.
-     *
-     * @param eventName The name of the event to clear.
+    /* Clear all listeners for a specific string-based event.
+     * This will remove all callbacks associated with the given event name.
      */
     fun clear(eventName: String) {
         simpleListeners.remove(eventName)
+    }
+
+    /* Register all methods annotated with @Subscribe in the given listener object.
+     * The listener can have multiple methods annotated with @Subscribe, each taking a single parameter.
+     * When an event of the parameter's type is emitted, the corresponding method will be invoked.
+     */
+    fun register(listener: Any) {
+        val clazz = listener::class
+        for (method in clazz.members) {
+            val annotation = method.findAnnotation<Subscribe>() ?: continue
+            if (method.valueParameters.size != 1) {
+                error("@Subscribe-annotated methods must have exactly one parameter ${method.name}")
+            }
+            val paramType = method.valueParameters[0].type.classifier as? KClass<*> ?: continue
+
+            val callback: (Any) -> Unit = { event ->
+                if (paramType.isInstance(event)) {
+                    method.call(listener, event)
+                }
+            }
+            listeners.computeIfAbsent(paramType) { mutableListOf() }.add(callback)
+        }
     }
 }
