@@ -57,6 +57,7 @@ object DianaLoot {
             SBOConfigBundle.dianaTrackerSessionData.reset().save()
             updateLines()
             DianaMobs.updateLines()
+            InquisLoot.updateLines()
         }
         .onMouseEnter {
             resetSession.text = "$RED${UNDERLINE}Reset Session"
