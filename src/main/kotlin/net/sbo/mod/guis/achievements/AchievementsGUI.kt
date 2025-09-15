@@ -16,7 +16,6 @@ import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.percent
 import gg.essential.elementa.dsl.pixels
-import gg.essential.elementa.effects.OutlineEffect
 import net.sbo.mod.diana.achievements.Achievement
 import net.sbo.mod.diana.achievements.AchievementManager
 import java.awt.Color
@@ -37,7 +36,7 @@ class AchievementsGUI : WindowScreen(ElementaVersion.V10) {
     private lateinit var titleText : UIText
     private lateinit var unlockedCountText: UIText
     private lateinit var filterText: UIText
-    private lateinit var filterButton: UIBlock
+    private lateinit var filterButton: UIRoundedRectangle
     private lateinit var achievementsContainer: UIBlock
 
     init {
@@ -119,13 +118,21 @@ class AchievementsGUI : WindowScreen(ElementaVersion.V10) {
             height = ChildBasedSizeConstraint()
         }.setColor(Color(0,0,0,0)) childOf scrollComponent
 
-        filterButton = UIBlock().constrain {
+        val filterButtonOutline = UIRoundedRectangle(5f).constrain {
             x = achievementsContainer.getLeft().pixels
             y = (achievementsContainer.getTop() - 40).pixels
+            width = 122.pixels
+            height = 32.pixels
+        } childOf window
+        filterButtonOutline.setColor(Color(255, 255, 255, 255)) // White outline color
+
+        filterButton = UIRoundedRectangle(5f).constrain {
+            x = CenterConstraint()
+            y = CenterConstraint()
             width = 120.pixels
             height = 30.pixels
-        } childOf window
-        filterButton.setColor(Color(0, 0, 0, 150)).enableEffect(OutlineEffect(Color(255, 255, 255, 255), 1f))
+        } childOf filterButtonOutline
+        filterButton.setColor(Color.BLACK)
 
         filterText = UIText("Filter: ${filterType.name.lowercase().replaceFirstChar { it.uppercase() }}").constrain {
             x = CenterConstraint()
@@ -160,7 +167,8 @@ class AchievementsGUI : WindowScreen(ElementaVersion.V10) {
         val centeringOffset = ((scrollComponent.getWidth() - totalGridWidth) / 2f).coerceAtLeast(10f)
         var lastY = 0f
 
-        filterButton.constrain {
+        val filterButtonOutline = window.children.find { it.isChildOf(window) && it is UIRoundedRectangle } as? UIRoundedRectangle ?: return
+        filterButtonOutline.constrain {
             x = (achievementsContainer.getLeft() + centeringOffset).pixels
             y = if (columns == 1) {
                 (achievementsContainer.getTop() - 15).pixels
@@ -187,19 +195,19 @@ class AchievementsGUI : WindowScreen(ElementaVersion.V10) {
             lastY = posY
             val borderColor = if (achievement.isUnlocked()) Color(0, 255, 0) else Color(255, 0, 0)
 
-            UIRoundedRectangle(5f).constrain {
+            val roundedOutline = UIRoundedRectangle(5f).constrain {
                 x = posX.pixels
                 y = posY.pixels
+                width = (achievementBoxWidth + (1f * 2)).pixels
+                height = (achievementBoxHeight + (1f * 2)).pixels
+            }.setColor(borderColor)
+
+            UIRoundedRectangle(5f).constrain {
+                x = CenterConstraint()
+                y = CenterConstraint()
                 width = achievementBoxWidth.pixels
                 height = achievementBoxHeight.pixels
-            }.setColor(Color(0, 0, 0, 150))
-                .enableEffect(OutlineEffect(borderColor, 1f))
-                .onMouseEnter {
-                    this.setColor(Color(0, 0, 0, 200))
-                }
-                .onMouseLeave {
-                    this.setColor(Color(0, 0, 0, 150))
-                }
+            }.setColor(Color(0, 0, 0, 255))
                 .addChild(UIText(achievement.getDisplayName()).constrain {
                     x = 5.pixels
                     y = 5.pixels
@@ -214,7 +222,9 @@ class AchievementsGUI : WindowScreen(ElementaVersion.V10) {
                     x = 5.pixels
                     y = SiblingConstraint(5f)
                     textScale = 0.8.pixels
-                }) childOf contentPanel
+                }) childOf roundedOutline
+
+            roundedOutline childOf contentPanel
         }
 
         val requiredHeight = if (achievementList.isNotEmpty()) {
