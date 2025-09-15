@@ -1,5 +1,6 @@
 package net.sbo.mod.guis
 //todo: remake this with a newer/maintained gui library like PolyUI: https://github.com/Polyfrost/polyui-jvm
+//import org.polyfrost.polyui.component.impl.*
 
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.UIComponent
