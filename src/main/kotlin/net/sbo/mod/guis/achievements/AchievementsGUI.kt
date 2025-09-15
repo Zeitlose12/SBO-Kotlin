@@ -36,7 +36,7 @@ class AchievementsGUI : WindowScreen(ElementaVersion.V10) {
     private lateinit var titleText : UIText
     private lateinit var unlockedCountText: UIText
     private lateinit var filterText: UIText
-    private lateinit var filterButton: UIRoundedRectangle
+    private lateinit var filterButtonOutline: UIRoundedRectangle
     private lateinit var achievementsContainer: UIBlock
 
     init {
@@ -118,7 +118,7 @@ class AchievementsGUI : WindowScreen(ElementaVersion.V10) {
             height = ChildBasedSizeConstraint()
         }.setColor(Color(0,0,0,0)) childOf scrollComponent
 
-        val filterButtonOutline = UIRoundedRectangle(5f).constrain {
+        filterButtonOutline = UIRoundedRectangle(5f).constrain {
             x = achievementsContainer.getLeft().pixels
             y = (achievementsContainer.getTop() - 40).pixels
             width = 122.pixels
@@ -126,7 +126,7 @@ class AchievementsGUI : WindowScreen(ElementaVersion.V10) {
         } childOf window
         filterButtonOutline.setColor(Color(255, 255, 255, 255)) // White outline color
 
-        filterButton = UIRoundedRectangle(5f).constrain {
+        val filterButton = UIRoundedRectangle(5f).constrain {
             x = CenterConstraint()
             y = CenterConstraint()
             width = 120.pixels
@@ -167,7 +167,6 @@ class AchievementsGUI : WindowScreen(ElementaVersion.V10) {
         val centeringOffset = ((scrollComponent.getWidth() - totalGridWidth) / 2f).coerceAtLeast(10f)
         var lastY = 0f
 
-        val filterButtonOutline = window.children.find { it.isChildOf(window) && it is UIRoundedRectangle } as? UIRoundedRectangle ?: return
         filterButtonOutline.constrain {
             x = (achievementsContainer.getLeft() + centeringOffset).pixels
             y = if (columns == 1) {
