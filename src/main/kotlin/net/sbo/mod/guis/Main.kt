@@ -38,7 +38,6 @@ object Main {
                     achievementsGui = AchievementsGUI()
                 }
                 UScreen.displayScreen(achievementsGui!!)
-                EventBus.emit("gui_opened")
             }
         }
 

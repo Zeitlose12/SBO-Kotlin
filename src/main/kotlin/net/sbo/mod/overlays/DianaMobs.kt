@@ -14,6 +14,8 @@ import net.sbo.mod.utils.Helper.calcPercentOne
 import net.sbo.mod.utils.Helper.removeFormatting
 import net.sbo.mod.utils.data.SboDataObject.SBOConfigBundle
 import net.sbo.mod.utils.events.Register
+import net.sbo.mod.utils.events.annotations.SboEvent
+import net.sbo.mod.utils.events.impl.GuiOpenEvent
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
@@ -35,15 +37,17 @@ object DianaMobs {
     fun init() {
         overlay.init()
         updateLines()
-        Register.onGuiOpen { screen, ci ->
-            if (screen.title.string == "Crafting") {
-                updateLines("CraftingOpen")
-            }
-        }
         Register.onGuiClose { screen ->
             if (screen.title.string == "Crafting") {
                 overlay.removeLine(changeView)
             }
+        }
+    }
+
+    @SboEvent
+    fun onGuiOpen(event: GuiOpenEvent) {
+        if (event.screen.title.string == "Crafting") {
+            updateLines("CraftingOpen")
         }
     }
 

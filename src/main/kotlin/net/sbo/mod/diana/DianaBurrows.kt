@@ -8,6 +8,10 @@ import net.sbo.mod.utils.events.Register
 import net.sbo.mod.settings.categories.Customization
 import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.chat.Chat
+import net.sbo.mod.utils.events.annotations.SboEvent
+import net.sbo.mod.utils.events.impl.PacketReceiveEvent
+import net.sbo.mod.utils.events.impl.PacketSendEvent
+import net.sbo.mod.utils.events.impl.PlayerInteractEvent
 import net.minecraft.particle.ParticleTypes as MCParticleTypes
 import net.sbo.mod.utils.waypoint.Waypoint
 import java.awt.Color
@@ -109,26 +113,11 @@ object BurrowDetector {
     internal val burrowsHistory = EvictingQueue<String>(2)
 
     fun init() {
-        Register.onPacketReceived(ParticleS2CPacket::class.java) { packet ->
-            if (!Diana.dianaBurrowDetect) return@onPacketReceived
-            if (World.getWorld() != "Hub") return@onPacketReceived
-            smokeRemove(packet)
-            burrowDetect(packet)
-        }
-        Register.onPacketSent(PlayerActionC2SPacket::class.java) { packet ->
-            if (!Diana.dianaBurrowDetect) return@onPacketSent
-            if (World.getWorld() != "Hub") return@onPacketSent
-            playerDigBlock(packet)
-        }
         Register.onWorldChange {
             if (!Diana.dianaBurrowDetect) return@onWorldChange
             resetBurrows()
         }
-        Register.onPlayerInteract { action, pos, player, world, event ->
-            if (!Diana.dianaBurrowDetect) return@onPlayerInteract
-            if (World.getWorld() != "Hub") return@onPlayerInteract
-            rightClickBlock(action, pos)
-        }
+
         Register.command("sboclearburrows", "sbocb") {
             resetBurrows()
             Chat.chat("§6[SBO] §4Burrow Waypoints Cleared!")
@@ -145,6 +134,58 @@ object BurrowDetector {
             if (World.getWorld() != "Hub") return@onChatMessageCancable true
             refreshBurrows()
             true
+        }
+    }
+
+    @SboEvent
+    fun onParticleReceive(event: PacketReceiveEvent) {
+        val packet = event.packet
+        if (packet !is ParticleS2CPacket) return
+        println("ParticleS2CPacket: type=${packet.parameters.type}, count=${packet.count}, speed=${packet.speed}, offset=(${packet.offsetX}, ${packet.offsetY}, ${packet.offsetZ})")
+        if (!Diana.dianaBurrowDetect) return
+        if (World.getWorld() != "Hub") return
+
+        if (packet.parameters.type == MCParticleTypes.LARGE_SMOKE && packet.speed == 0.01f && packet.offsetX == 0.0f && packet.offsetY == 0.0f && packet.offsetZ == 0.0f) {
+            val pos = SboVec(packet.x, packet.y, packet.z).roundLocationToBlock().down(1.0)
+            WaypointManager.removeWaypointAt(pos, "burrow")
+            WaypointManager.removeWaypointAt(pos, "inq")
+        }
+        burrowDetect(packet)
+    }
+
+    @SboEvent
+    fun onPlayerActionSend(event: PacketSendEvent) {
+        val packet = event.packet
+        if (packet !is PlayerActionC2SPacket) return
+        if (!Diana.dianaBurrowDetect) return
+        if (World.getWorld() != "Hub") return
+
+        if (packet.action != PlayerActionC2SPacket.Action.START_DESTROY_BLOCK) return
+
+        val pos = packet.pos
+        val posString = "${pos.x} ${pos.y} ${pos.z}"
+
+        if (burrows.containsKey(posString)) {
+            removePos = SboVec(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
+            lastInteractedPos = pos
+        }
+    }
+
+    @SboEvent
+    fun onPlayerInteract(event: PlayerInteractEvent) {
+        if (!Diana.dianaBurrowDetect) return
+        if (World.getWorld() != "Hub") return
+        val action = event.action
+        val pos = event.pos
+
+        if (action != "useBlock") return
+        if (pos == null) return
+
+        val posString = "${pos.x} ${pos.y} ${pos.z}"
+
+        if (burrows.containsKey(posString)) {
+            removePos = SboVec(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
+            lastInteractedPos = pos
         }
     }
 
@@ -184,38 +225,6 @@ object BurrowDetector {
                 type = "burrow"
             )
             WaypointManager.addWaypoint(burrow.waypoint!!)
-        }
-    }
-
-    fun playerDigBlock(packet: PlayerActionC2SPacket) {
-        if (packet.action != PlayerActionC2SPacket.Action.START_DESTROY_BLOCK) return
-
-        val pos = packet.pos
-        val posString = "${pos.x} ${pos.y} ${pos.z}"
-
-        if (burrows.containsKey(posString)) {
-            removePos = SboVec(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
-            lastInteractedPos = pos
-        }
-    }
-
-    fun rightClickBlock(action: String, pos: BlockPos?) {
-        if (action != "useBlock") return
-        if (pos == null) return
-
-        val posString = "${pos.x} ${pos.y} ${pos.z}"
-
-        if (burrows.containsKey(posString)) {
-            removePos = SboVec(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
-            lastInteractedPos = pos
-        }
-    }
-
-    fun smokeRemove(packet: ParticleS2CPacket) {
-        if (packet.parameters.type == MCParticleTypes.LARGE_SMOKE && packet.speed == 0.01f && packet.offsetX == 0.0f && packet.offsetY == 0.0f && packet.offsetZ == 0.0f) {
-            val pos = SboVec(packet.x, packet.y, packet.z).roundLocationToBlock().down(1.0)
-            WaypointManager.removeWaypointAt(pos, "burrow")
-            WaypointManager.removeWaypointAt(pos, "inq")
         }
     }
 

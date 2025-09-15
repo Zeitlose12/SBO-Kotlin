@@ -179,56 +179,6 @@ object Register {
         }
     }
 
-    /**
-     * Registers an event that listens for GUI render events and executes an action.
-     * @param action The action to execute when a GUI is rendered.
-     */
-    fun onGuiRender(action: (GuiRenderEvent) -> Unit) {
-        EventBus.on(GuiRenderEvent::class) { event -> action(event) }
-    }
-
-    /**
-     * Registers an event that listens for GUI post-render events and executes an action.
-     * @param action The action to execute after a GUI is rendered.
-     */
-    fun onGuiPostRender(action: (GuiPostRenderEvent) -> Unit) {
-        EventBus.on(GuiPostRenderEvent::class) { event -> action(event) }
-    }
-
-    /**
-     * Registers an event that listens for key presses in the GUI and executes an action.
-     * @param action The action to execute when a key is pressed in the GUI.
-     */
-    fun onGuiKey(action: (GuiKeyEvent) -> Unit) {
-        EventBus.on(GuiKeyEvent::class) { event -> action(event) }
-    }
-
-    fun <T : Packet<*>> onPacketReceived(packetClass: Class<T>, action: (packet: T) -> Unit) {
-        EventBus.on(PacketReceiveEvent::class) { event ->
-            val packet = event.packet
-            if (packetClass.isInstance(packet)) {
-                @Suppress("UNCHECKED_CAST")
-                action(packetClass.cast(packet))
-            }
-        }
-    }
-
-    fun <T : Packet<*>> onPacketSent(packetClass: Class<T>, action: (packet: T) -> Unit) {
-        EventBus.on(PacketSendEvent::class) { event ->
-            val packet = event.packet
-            if (packetClass.isInstance(packet)) {
-                @Suppress("UNCHECKED_CAST")
-                action(packetClass.cast(packet))
-            }
-        }
-    }
-
-    fun onPlayerInteract(action: (action: String, pos: BlockPos?, player: ClientPlayerEntity, world: World, event: PlayerInteractEvent) -> Unit) {
-        EventBus.on(PlayerInteractEvent::class) { busEvent ->
-            action(busEvent.action, busEvent.pos, busEvent.player, busEvent.world, busEvent)
-        }
-    }
-
     fun onEntityLoad(action: (entity: Entity, clientWorld: ClientWorld) -> Unit) {
         ClientEntityEvents.ENTITY_LOAD.register(action)
     }

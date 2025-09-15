@@ -1,12 +1,7 @@
 package net.sbo.mod.utils.events
 
-import net.sbo.mod.utils.events.annotations.SboEvent
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
-import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.valueParameters
-import kotlin.reflect.jvm.javaMethod
 
 object EventBus {
     private val listeners = ConcurrentHashMap<KClass<*>, MutableList<(Any) -> Unit>>()

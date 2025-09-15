@@ -16,6 +16,8 @@ import net.sbo.mod.utils.SboTimerManager
 import net.sbo.mod.utils.data.DianaTracker
 import net.sbo.mod.utils.data.SboDataObject.SBOConfigBundle
 import net.sbo.mod.utils.events.Register
+import net.sbo.mod.utils.events.annotations.SboEvent
+import net.sbo.mod.utils.events.impl.GuiOpenEvent
 import net.sbo.mod.utils.render.RenderUtils2D
 import java.util.concurrent.TimeUnit
 
@@ -70,11 +72,6 @@ object DianaLoot {
         overlay.init()
         updateLines()
         updateTimerText()
-        Register.onGuiOpen { screen, ci ->
-            if (screen.title.string == "Crafting") {
-                updateLines("CraftingOpen")
-            }
-        }
         Register.onGuiClose { screen ->
             if (screen.title.string == "Crafting") {
                 overlay.removeLine(changeView)
@@ -85,6 +82,13 @@ object DianaLoot {
         }
         Register.onTick(1) {
             updateTimerText()
+        }
+    }
+
+    @SboEvent
+    fun onGuiOpen(event: GuiOpenEvent) {
+        if (event.screen.title.string == "Crafting") {
+            updateLines("CraftingOpen")
         }
     }
 

@@ -22,7 +22,7 @@ import net.sbo.mod.utils.events.ClickActionManager
 import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.game.World
 import net.sbo.mod.diana.BurrowDetector
-import net.sbo.mod.diana.DianaGuess
+import net.sbo.mod.diana.guess.DianaGuess
 import net.sbo.mod.diana.DianaMobDetect
 import net.sbo.mod.diana.achievements.AchievementManager
 import net.sbo.mod.diana.achievements.AchievementManager.unlockAchievement

@@ -11,6 +11,8 @@ import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.Helper.removeFormatting
 import net.sbo.mod.utils.data.SboDataObject.SBOConfigBundle
 import net.sbo.mod.utils.events.Register
+import net.sbo.mod.utils.events.annotations.SboEvent
+import net.sbo.mod.utils.events.impl.GuiOpenEvent
 import net.sbo.mod.utils.overlay.Overlay
 import net.sbo.mod.utils.overlay.OverlayTextLine
 
@@ -31,15 +33,17 @@ object InquisLoot {
     fun init() {
         overlay.init()
         updateLines()
-        Register.onGuiOpen { screen, ci ->
-            if (screen.title.string == "Crafting") {
-                updateLines("CraftingOpen")
-            }
-        }
         Register.onGuiClose { screen ->
             if (screen.title.string == "Crafting") {
                 overlay.removeLine(changeView)
             }
+        }
+    }
+
+    @SboEvent
+    fun onGuiOpen(event: GuiOpenEvent) {
+        if (event.screen.title.string == "Crafting") {
+            updateLines("CraftingOpen")
         }
     }
 
