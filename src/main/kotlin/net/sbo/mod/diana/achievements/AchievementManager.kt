@@ -31,7 +31,7 @@ object AchievementManager {
         "Impossible" to "§4",
     )
 
-    private val achievements = mutableMapOf<Int, Achievement>()
+    internal val achievements = mutableMapOf<Int, Achievement>()
     var achievementsUnlocked = 0
     private val achievementQueue = ConcurrentLinkedQueue<Int>()
     private val isProcessingQueue = AtomicBoolean(false)
