@@ -76,7 +76,6 @@ object SBOKotlin {
 		SboEventGeneratedRegistry.registerAll()
 
 		// load Main Features
-
 		PartyCommands.registerPartyChatListeners()
 		Register.command("sbo") {
 			mc.send{

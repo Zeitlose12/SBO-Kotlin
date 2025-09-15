@@ -1,4 +1,5 @@
 package net.sbo.mod.guis.partyfinder
+//todo: remake this with a newer/maintained gui library like PolyUI: https://github.com/Polyfrost/polyui-jvm
 
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import gg.essential.elementa.ElementaVersion
