@@ -11,7 +11,7 @@ class SboEventProcessor(
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation("net.sbo.mod.utils.events.annotations.SboEvent")
-        val generatedObjects = mutableListOf<String>()
+        val generatedObjects = mutableSetOf<String>()
 
         val classSymbols = symbols.filterIsInstance<KSFunctionDeclaration>()
             .groupBy { it.parentDeclaration as? KSClassDeclaration }
@@ -27,8 +27,12 @@ class SboEventProcessor(
             val isObject = clazz.classKind == ClassKind.OBJECT
             val instanceRef = if (isObject) className else "$className()"
 
+            logger.info("Generating EventRegister for $packageName.$className with functions: ${functions.map { it.simpleName.asString() }}")
+
+            // Nur KSFile-Objekte sammeln, die nicht null sind
+            val dependencies = functions.mapNotNull { it.containingFile }.toTypedArray<KSFile>()
             val file = codeGenerator.createNewFile(
-                Dependencies(false, clazz.containingFile!!),
+                Dependencies(true, *dependencies),
                 packageName,
                 fileName
             )
@@ -58,24 +62,27 @@ class SboEventProcessor(
         }
 
         if (generatedObjects.isNotEmpty()) {
+            val allDependencies: List<KSFile> = classSymbols.keys.mapNotNull { it?.containingFile }
             val registryFile = codeGenerator.createNewFile(
-                Dependencies(false),
+                Dependencies(true, *allDependencies.toTypedArray()),
                 "net.sbo.mod.utils.events",
                 "SboEventGeneratedRegistry"
             )
-            OutputStreamWriter(registryFile).use { writer ->
-                writer.write("""
-                    package net.sbo.mod.utils.events
 
+            OutputStreamWriter(registryFile).use { writer ->
+                writer.write(
+                    """
+                    package net.sbo.mod.utils.events
+        
                     object SboEventGeneratedRegistry {
                         fun registerAll() {
                             ${generatedObjects.joinToString("\n") { "$it.register()" }}
                         }
                     }
-                """.trimIndent())
+                """.trimIndent()
+                )
             }
         }
-
         return emptyList()
     }
 }
