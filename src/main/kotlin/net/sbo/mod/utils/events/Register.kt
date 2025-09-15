@@ -10,13 +10,9 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.entity.Entity
-import net.minecraft.network.packet.Packet
 import net.minecraft.text.Text
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.World
 import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.utils.Helper.removeFormatting
 import net.sbo.mod.utils.chat.ChatHandler
@@ -24,12 +20,6 @@ import net.sbo.mod.utils.chat.ChatUtils.formattedString
 import net.sbo.mod.utils.events.TickScheduler.ScheduledTask
 import net.sbo.mod.utils.events.TickScheduler.tasks
 import net.sbo.mod.utils.events.impl.GuiOpenEvent
-import net.sbo.mod.utils.events.impl.PacketReceiveEvent
-import net.sbo.mod.utils.events.impl.PacketSendEvent
-import net.sbo.mod.utils.events.impl.PlayerInteractEvent
-import net.sbo.mod.utils.events.impl.GuiKeyEvent
-import net.sbo.mod.utils.events.impl.GuiRenderEvent
-import net.sbo.mod.utils.events.impl.GuiPostRenderEvent
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 import java.util.regex.Matcher
 import java.util.regex.Pattern

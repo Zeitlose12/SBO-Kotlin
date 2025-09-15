@@ -141,7 +141,6 @@ object BurrowDetector {
     fun onParticleReceive(event: PacketReceiveEvent) {
         val packet = event.packet
         if (packet !is ParticleS2CPacket) return
-        println("ParticleS2CPacket: type=${packet.parameters.type}, count=${packet.count}, speed=${packet.speed}, offset=(${packet.offsetX}, ${packet.offsetY}, ${packet.offsetZ})")
         if (!Diana.dianaBurrowDetect) return
         if (World.getWorld() != "Hub") return
 
