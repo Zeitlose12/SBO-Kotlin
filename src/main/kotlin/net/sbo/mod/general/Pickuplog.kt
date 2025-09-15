@@ -8,14 +8,13 @@ import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.game.World
 import net.sbo.mod.utils.data.Item
-import net.sbo.mod.utils.events.EventSubscriber
-import net.sbo.mod.utils.events.annotations.Subscribe
+import net.sbo.mod.utils.events.annotations.SboEvent
 import net.sbo.mod.utils.events.impl.InventorySlotUpdateEvent
 import net.sbo.mod.utils.overlay.Overlay
 import net.sbo.mod.utils.overlay.OverlayTextLine
 import java.util.regex.Pattern
 
-object Pickuplog : EventSubscriber() {
+object Pickuplog {
     data class OverlayLineData(var amount: Int, val name: String, var modified: Long)
 
     private var oldPurse: Long = 0L
@@ -57,8 +56,7 @@ object Pickuplog : EventSubscriber() {
         }
     }
 
-    @Suppress("unused")
-    @Subscribe
+    @SboEvent
     fun onInventorySlotUpdate(event: InventorySlotUpdateEvent) {
         if (mc.player == null || !World.isInSkyblock() || World.getWorld() == "None") return
         newInventory = Helper.readPlayerInv()

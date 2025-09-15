@@ -1,14 +1,17 @@
 package net.sbo.mod.utils.events
 
-import net.sbo.mod.utils.events.annotations.Subscribe
+import net.sbo.mod.utils.events.annotations.SboEvent
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.valueParameters
+import kotlin.reflect.jvm.javaMethod
 
 object EventBus {
     private val listeners = ConcurrentHashMap<KClass<*>, MutableList<(Any) -> Unit>>()
     private val simpleListeners = ConcurrentHashMap<String, MutableList<(Any?) -> Unit>>()
+    private val methodCache = ConcurrentHashMap<KClass<*>, List<Pair<KClass<*>, (Any, Any) -> Unit>>>()
 
     /* Register a listener for a specific event type.
      * The callback will be invoked when an event of the specified type is emitted.
@@ -53,27 +56,5 @@ object EventBus {
      */
     fun clear(eventName: String) {
         simpleListeners.remove(eventName)
-    }
-
-    /* Register all methods annotated with @Subscribe in the given listener object.
-     * The listener can have multiple methods annotated with @Subscribe, each taking a single parameter.
-     * When an event of the parameter's type is emitted, the corresponding method will be invoked.
-     */
-    fun register(listener: Any) {
-        val clazz = listener::class
-        for (method in clazz.members) {
-            val annotation = method.findAnnotation<Subscribe>() ?: continue
-            if (method.valueParameters.size != 1) {
-                error("@Subscribe-annotated methods must have exactly one parameter ${method.name}")
-            }
-            val paramType = method.valueParameters[0].type.classifier as? KClass<*> ?: continue
-
-            val callback: (Any) -> Unit = { event ->
-                if (paramType.isInstance(event)) {
-                    method.call(listener, event)
-                }
-            }
-            listeners.computeIfAbsent(paramType) { mutableListOf() }.add(callback)
-        }
     }
 }

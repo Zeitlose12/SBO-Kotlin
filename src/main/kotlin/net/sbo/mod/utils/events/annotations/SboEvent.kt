@@ -1,6 +1,6 @@
 package net.sbo.mod.utils.events.annotations
 
 @Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.RUNTIME)
+@Retention(AnnotationRetention.SOURCE)
 
-annotation class Subscribe
+annotation class SboEvent

@@ -8,3 +8,7 @@ pluginManagement {
 		gradlePluginPortal()
 	}
 }
+
+rootProject.name = 'SBO-Kotlin'
+include 'mod'
+include 'event-processor'

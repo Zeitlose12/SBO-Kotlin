@@ -40,6 +40,7 @@ import net.sbo.mod.utils.SboTimerManager
 import net.sbo.mod.utils.SoundHandler
 import net.sbo.mod.utils.chat.ChatHandler
 import net.sbo.mod.utils.overlay.OverlayManager
+import net.sbo.mod.utils.events.SboEventGeneratedRegistry
 
 object SBOKotlin {
 	@JvmField
@@ -71,7 +72,11 @@ object SBOKotlin {
 		// Load Custom Sound System
 		SoundHandler.init()
 
+		// Register Annotation Pocessor
+		SboEventGeneratedRegistry.registerAll()
+
 		// load Main Features
+
 		PartyCommands.registerPartyChatListeners()
 		Register.command("sbo") {
 			mc.send{
