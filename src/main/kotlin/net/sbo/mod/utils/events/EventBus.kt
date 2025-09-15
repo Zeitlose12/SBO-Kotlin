@@ -11,7 +11,6 @@ import kotlin.reflect.jvm.javaMethod
 object EventBus {
     private val listeners = ConcurrentHashMap<KClass<*>, MutableList<(Any) -> Unit>>()
     private val simpleListeners = ConcurrentHashMap<String, MutableList<(Any?) -> Unit>>()
-    private val methodCache = ConcurrentHashMap<KClass<*>, List<Pair<KClass<*>, (Any, Any) -> Unit>>>()
 
     /* Register a listener for a specific event type.
      * The callback will be invoked when an event of the specified type is emitted.
