@@ -6,18 +6,15 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import net.sbo.mod.SBOKotlin;
-import net.sbo.mod.guis.achievements.AchievementsGUI;
+import net.sbo.mod.guis.AchievementsGUI;
+import net.sbo.mod.guis.Main;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameMenuScreen.class)
 public abstract class GameMenuScreenMixin extends Screen {
-
-    @Unique
-    private static AchievementsGUI achievementsGUI;
 
     protected GameMenuScreenMixin() {
         super(null);
@@ -29,8 +26,10 @@ public abstract class GameMenuScreenMixin extends Screen {
 
         ButtonWidget button = ButtonWidget.builder(Text.literal("SBO"), b -> {
             SBOKotlin.mc.send (() -> {
-                if (achievementsGUI == null) achievementsGUI = new AchievementsGUI();
-                UScreen.displayScreen(achievementsGUI);
+                if (Main.INSTANCE.getAchievementsGui$sbo() == null) {
+                    Main.INSTANCE.setAchievementsGui$sbo(new AchievementsGUI());
+                }
+                UScreen.displayScreen(Main.INSTANCE.getAchievementsGui$sbo());
             });
         }).dimensions(self.width / 2 + 104, self.height / 4 + 32, 30, 20).build();
 

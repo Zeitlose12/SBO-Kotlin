@@ -1,5 +1,4 @@
-package net.sbo.mod.guis.achievements
-
+package net.sbo.mod.guis
 
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.UIComponent
@@ -77,7 +76,7 @@ class AchievementsGUI : WindowScreen(ElementaVersion.V10) {
         UIBlock().constrain {
             width = 100.percent
             height = 100.percent
-        }.setColor(Color(0,0,0,200)) childOf window
+        }.setColor(Color(0, 0, 0, 200)) childOf window
 
         achievementsContainer = UIBlock().constrain {
             x = CenterConstraint()
@@ -109,14 +108,14 @@ class AchievementsGUI : WindowScreen(ElementaVersion.V10) {
             width = FillConstraint()
             height = FillConstraint()
         } childOf achievementsContainer
-        scrollComponent.setColor(Color(0,0,0,0))
+        scrollComponent.setColor(Color(0, 0, 0, 0))
 
         contentPanel = UIBlock().constrain {
             x = 0.pixels
             y = 0.pixels
             width = FillConstraint()
             height = ChildBasedSizeConstraint()
-        }.setColor(Color(0,0,0,0)) childOf scrollComponent
+        }.setColor(Color(0, 0, 0, 0)) childOf scrollComponent
 
         filterButtonOutline = UIRoundedRectangle(5f).constrain {
             x = achievementsContainer.getLeft().pixels
