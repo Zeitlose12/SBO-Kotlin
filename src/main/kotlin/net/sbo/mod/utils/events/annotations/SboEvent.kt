@@ -9,7 +9,7 @@ package net.sbo.mod.utils.events.annotations
  *
  * The function must have a single parameter which is the event type.
  *
- * The function must be inside an object singleton.
+ * The function must be inside an object singleton or a companion object.
  *
  * The function will be registered to the event bus at compile time.
  *
