@@ -45,6 +45,7 @@ import net.sbo.mod.utils.data.Party
 import net.sbo.mod.utils.data.PartyPlayerStats
 import net.sbo.mod.utils.data.Reqs
 import net.sbo.mod.utils.data.SboDataObject.pfConfigState
+import net.sbo.mod.utils.events.annotations.SboEvent
 import net.sbo.mod.utils.events.impl.PartyFinderOpenEvent
 import net.sbo.mod.utils.events.impl.PartyFinderRefreshListEvent
 import java.awt.Color
@@ -90,16 +91,26 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
 
 
     init {
-        registers()
         create()
+    }
 
-        EventBus.on(PartyFinderRefreshListEvent::class) {
-            updateCurrentPartyList(true)
+    companion object {
+        var instance: PartyFinderGUI? = null
+
+        @SboEvent
+        fun onPartyFinderRefresh(event: PartyFinderRefreshListEvent) {
+            instance?.updateCurrentPartyList(true)
         }
 
-        EventBus.on(PartyFinderOpenEvent::class) {
-            onScreenOpen()
+        @SboEvent
+        fun onPartyFinderOpen(event: PartyFinderOpenEvent) {
+            instance?.onScreenOpen()
         }
+    }
+
+    private fun create() {
+        instance = this
+        createGui()
 
         window.onKeyType { typedChar, keyCode ->
             if (keyCode == UKeyboard.KEY_ESCAPE) {
@@ -148,10 +159,6 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
         if (mc.options.guiScale.value != 2 || guiScale == null) return
         mc.options.guiScale.value = guiScale // restore original gui scale
         guiScale = null
-    }
-
-    private fun registers() {
-
     }
 
     internal fun getTextScale(base: Float = 1f): PixelConstraint {
@@ -876,7 +883,7 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
         }
     }
 
-    private fun create() {
+    private fun createGui() {
         filterBackground = UIBlock().constrain {
             width = 100.percent()
             height = 100.percent()

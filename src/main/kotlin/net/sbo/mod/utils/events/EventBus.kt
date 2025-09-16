@@ -22,11 +22,4 @@ object EventBus {
         val callbacks = listeners[event::class]
         callbacks?.forEach { callback -> callback(event) }
     }
-
-    /* Clear all listeners for a specific event type.
-     * This will remove all callbacks associated with the given event type.
-     */
-    fun clear(eventType: KClass<*>) {
-        listeners.remove(eventType)
-    }
 }

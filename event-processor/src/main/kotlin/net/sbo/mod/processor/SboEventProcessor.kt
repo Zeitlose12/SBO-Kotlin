@@ -2,6 +2,7 @@ package net.sbo.mod.processor
 
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
+import com.google.devtools.ksp.symbol.Modifier
 import java.io.OutputStreamWriter
 
 class SboEventProcessor(
@@ -29,7 +30,15 @@ class SboEventProcessor(
                 logger.error("@SboEvent can only be used inside objects: ${clazz.simpleName.asString()}")
                 return@forEach
             }
-            val instanceRef = className
+
+            val isCompanionObject = clazz.classKind == ClassKind.OBJECT && clazz.parentDeclaration is KSClassDeclaration
+
+            val instanceRef = if (isCompanionObject) {
+                val enclosingClass = clazz.parentDeclaration as KSClassDeclaration
+                "${enclosingClass.simpleName.asString()}.Companion"
+            } else {
+                className
+            }
 
             logger.info("Generating EventRegister for $packageName.$className with functions: ${functions.map { it.simpleName.asString() }}")
 
