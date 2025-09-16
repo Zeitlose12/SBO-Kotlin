@@ -45,6 +45,8 @@ import net.sbo.mod.utils.data.Party
 import net.sbo.mod.utils.data.PartyPlayerStats
 import net.sbo.mod.utils.data.Reqs
 import net.sbo.mod.utils.data.SboDataObject.pfConfigState
+import net.sbo.mod.utils.events.impl.PartyFinderOpenEvent
+import net.sbo.mod.utils.events.impl.PartyFinderRefreshListEvent
 import java.awt.Color
 
 
@@ -91,11 +93,11 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
         registers()
         create()
 
-        EventBus.on("refreshPartyList") {
+        EventBus.on(PartyFinderRefreshListEvent::class) {
             updateCurrentPartyList(true)
         }
 
-        EventBus.on("gui_opened") {
+        EventBus.on(PartyFinderOpenEvent::class) {
             onScreenOpen()
         }
 

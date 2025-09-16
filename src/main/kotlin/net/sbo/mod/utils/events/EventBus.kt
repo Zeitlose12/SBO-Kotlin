@@ -5,7 +5,6 @@ import kotlin.reflect.KClass
 
 object EventBus {
     private val listeners = ConcurrentHashMap<KClass<*>, MutableList<(Any) -> Unit>>()
-    private val simpleListeners = ConcurrentHashMap<String, MutableList<(Any?) -> Unit>>()
 
     /* Register a listener for a specific event type.
      * The callback will be invoked when an event of the specified type is emitted.
@@ -29,26 +28,5 @@ object EventBus {
      */
     fun clear(eventType: KClass<*>) {
         listeners.remove(eventType)
-    }
-
-    /* Simple string-based event system.
-     * Allows registering and emitting events identified by a string name.
-     */
-    fun on(eventName: String, callback: (Any?) -> Unit) {
-        simpleListeners.computeIfAbsent(eventName) { mutableListOf() }.add(callback)
-    }
-
-    /* Emit a string-based event.
-     * All callbacks registered for the given event name will be invoked with the provided data.
-     */
-    fun emit(eventName: String, data: Any? = null) {
-        simpleListeners[eventName]?.forEach { callback -> callback(data) }
-    }
-
-    /* Clear all listeners for a specific string-based event.
-     * This will remove all callbacks associated with the given event name.
-     */
-    fun clear(eventName: String) {
-        simpleListeners.remove(eventName)
     }
 }
