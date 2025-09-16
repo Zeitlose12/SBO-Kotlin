@@ -38,7 +38,6 @@ import net.sbo.mod.partyfinder.PartyFinderManager.sendJoinRequest
 import net.sbo.mod.partyfinder.PartyPlayer.getPartyPlayerStats
 import net.sbo.mod.settings.categories.PartyFinder
 import net.sbo.mod.utils.chat.Chat
-import net.sbo.mod.utils.events.EventBus
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.data.HighlightElement
 import net.sbo.mod.utils.data.Party

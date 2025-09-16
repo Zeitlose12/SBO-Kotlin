@@ -5,7 +5,7 @@ import net.sbo.mod.SBOKotlin
 import net.sbo.mod.SBOKotlin.mc
 import net.sbo.mod.guis.partyfinder.PartyFinderGUI
 import net.sbo.mod.utils.chat.Chat
-import net.sbo.mod.utils.events.EventBus
+import net.sbo.mod.utils.events.SBOEvent
 import net.sbo.mod.utils.events.Register
 import net.sbo.mod.utils.events.impl.PartyFinderOpenEvent
 import net.sbo.mod.utils.game.World
@@ -29,7 +29,7 @@ object Main {
                     partyFinderGui = PartyFinderGUI()
                 }
                 UScreen.displayScreen(partyFinderGui!!)
-                EventBus.emit(PartyFinderOpenEvent())
+                SBOEvent.emit(PartyFinderOpenEvent())
             }
         }
 

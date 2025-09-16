@@ -2,7 +2,7 @@ package net.sbo.mod.utils.events
 
 import kotlin.reflect.KClass
 
-object EventBus {
+object SBOEvent {
     private val listeners = mutableMapOf<KClass<*>, MutableList<(Any) -> Unit>>()
 
     /** Register a listener for a specific event type. */

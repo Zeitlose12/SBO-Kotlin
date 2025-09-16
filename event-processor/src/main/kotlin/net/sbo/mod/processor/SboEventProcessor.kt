@@ -56,14 +56,14 @@ class SboEventProcessor(
                     if (paramType == null) {
                         "// Cannot resolve type for ${fn.simpleName.asString()}"
                     } else {
-                        "EventBus.on($paramType::class) { e -> $instanceRef.${fn.simpleName.asString()}(e) }"
+                        "SBOEvent.on($paramType::class) { e -> $instanceRef.${fn.simpleName.asString()}(e) }"
                     }
                 }
 
                 writer.write("""
                     package $packageName
 
-                    import net.sbo.mod.utils.events.EventBus
+                    import net.sbo.mod.utils.events.SBOEvent
 
                     object $fileName {
                         fun register() {
