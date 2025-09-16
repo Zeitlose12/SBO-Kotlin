@@ -21,7 +21,7 @@ import net.sbo.mod.partyfinder.PartyPlayer
 import net.sbo.mod.utils.events.ClickActionManager
 import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.game.World
-import net.sbo.mod.diana.BurrowDetector
+import net.sbo.mod.diana.burrows.BurrowDetector
 import net.sbo.mod.diana.guess.DianaGuess
 import net.sbo.mod.diana.DianaMobDetect
 import net.sbo.mod.diana.achievements.AchievementManager
