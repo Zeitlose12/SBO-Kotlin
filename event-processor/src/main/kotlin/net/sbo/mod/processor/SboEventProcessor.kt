@@ -25,7 +25,11 @@ class SboEventProcessor(
             generatedObjects.add("$packageName.$fileName")
 
             val isObject = clazz.classKind == ClassKind.OBJECT
-            val instanceRef = if (isObject) className else "$className()"
+            if (!isObject) {
+                logger.error("@SboEvent can only be used inside objects: ${clazz.simpleName.asString()}")
+                return@forEach
+            }
+            val instanceRef = className
 
             logger.info("Generating EventRegister for $packageName.$className with functions: ${functions.map { it.simpleName.asString() }}")
 

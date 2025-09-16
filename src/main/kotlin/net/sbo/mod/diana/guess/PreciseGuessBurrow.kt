@@ -19,7 +19,7 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 
-class PreciseGuessBurrow {
+object PreciseGuessBurrow {
     private var particleLocations = mutableListOf<SboVec>()
     private var guessPoint: SboVec? = null
     private var lastLavaParticle: Long = 0
@@ -54,6 +54,23 @@ class PreciseGuessBurrow {
         DianaGuess.finalLocation = guessPosition.down(0.5).roundLocationToBlock()
         DianaGuess.finalLocation = guessPosition.down(0.5).roundLocationToBlock();
         WaypointManager.updateGuess(DianaGuess.finalLocation);
+    }
+
+    @SboEvent
+    fun onUseSpade(event: PlayerInteractEvent) {
+        if (!Diana.dianaBurrowGuess) return
+        val action = event.action
+        if (action != "useItem" && action != "useBlock") return
+        val player = SBOKotlin.mc.player
+        val item = player?.mainHandStack
+        if (item?.isEmpty == true) return
+        if (item == null || !item.name.string.contains("Spade")) return
+        if (System.currentTimeMillis() - this.lastLavaParticle < 200) {
+            event.isCanceled = true
+            return
+        }
+        this.particleLocations.clear()
+        DianaGuess.lastGuessTime = System.currentTimeMillis()
     }
 
     fun guessBurrowLocation(): SboVec? {
@@ -102,23 +119,5 @@ class PreciseGuessBurrow {
             guessPitch = (windowMin + windowMax) / 2
         }
         return guessPitch
-    }
-
-    @SboEvent
-    fun onUseSpade(event: PlayerInteractEvent) {
-        if (!Diana.dianaBurrowGuess) return
-        val action = event.action
-        if (action != "useItem" && action != "useBlock") return
-        val player = SBOKotlin.mc.player
-        val item = player?.mainHandStack
-        if (item?.isEmpty == true) return
-        if (item == null || !item.name.string.contains("Spade")) return
-        println("Clearing burrow guess data")
-        if (System.currentTimeMillis() - this.lastLavaParticle < 200) {
-            event.isCanceled = true
-            return
-        }
-        this.particleLocations.clear()
-        DianaGuess.lastGuessTime = System.currentTimeMillis()
     }
 }
