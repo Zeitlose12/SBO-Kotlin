@@ -72,6 +72,7 @@ Before you begin, you need to have a few things installed:
 
 * **Fabric API**: This is a dependency for most Fabric mods, including SkyblockOverhaul. [Download it from Modrinth](https://modrinth.com/mod/fabric-api)
 * **Fabric Language Kotlin**: This mod is written in Kotlin, so you need this library as well. [Download it from Modrinth](https://modrinth.com/mod/fabric-language-kotlin)
+* **Mod Menu**: needed so sbo settings show up int mod page ingame. [Download it from Modrinth](https://modrinth.com/mod/modmenu)
 
 ### Step-by-Step Installation Guide
 
