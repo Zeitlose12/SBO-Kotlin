@@ -82,8 +82,8 @@ Before you begin, you need to have a few things installed:
 **2. Install SkyblockOverhaul**
 
 * Now you can download the SkyblockOverhaul mod itself.
-* Go to the mod's download page (link to Modrinth) and download the `.jar` file for the correct Minecraft version.
-* Or get it from the releases section of this repository.
+* Go to the mod's download page [Skyblock Overhaul on Modrinth](https://modrinth.com/mod/skyblock-overhaul) and download the `.jar` file for the correct Minecraft version.
+* Or get it from the [release section](https://github.com/SkyblockOverhaul/SBO-Kotlin/releases) of this repository.
 
 **3. Launch the Game**
 
