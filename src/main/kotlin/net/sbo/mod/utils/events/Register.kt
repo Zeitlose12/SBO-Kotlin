@@ -19,8 +19,6 @@ import net.sbo.mod.utils.chat.ChatHandler
 import net.sbo.mod.utils.chat.ChatUtils.formattedString
 import net.sbo.mod.utils.events.TickScheduler.ScheduledTask
 import net.sbo.mod.utils.events.TickScheduler.tasks
-import net.sbo.mod.utils.events.impl.GuiOpenEvent
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -143,17 +141,6 @@ object Register {
     fun onWorldChange(action: (client: MinecraftClient) -> Unit) {
         ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register { _, _ ->
             action(mc)
-        }
-    }
-
-    /**
-     * Registers an event that listens for GUI open events and executes an action.
-     * @param action The action to execute when a GUI is opened.
-     */
-    fun onGuiOpen(action: (screen: Screen, ci: CallbackInfo) -> Unit) {
-        EventBus.on(GuiOpenEvent::class) { event ->
-            val screen = event.screen
-            action(screen, event.ci)
         }
     }
 
