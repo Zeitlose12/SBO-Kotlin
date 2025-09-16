@@ -13,6 +13,7 @@ import net.sbo.mod.utils.http.Http
 
 object Main {
     private var partyFinderGui: PartyFinderGUI? = null
+    private var pastEventsGui: PastEventsGui? = null
     internal var achievementsGui: AchievementsGUI? = null
     private var updating = false
     private var lastUpdate = 0L
@@ -39,6 +40,15 @@ object Main {
                     achievementsGui = AchievementsGUI()
                 }
                 UScreen.displayScreen(achievementsGui!!)
+            }
+        }
+
+        Register.command("sboapastdianaevents", "sbopevents", "sbopastevents", "sbopde") {
+            mc.send {
+                if (pastEventsGui == null) {
+                    pastEventsGui = PastEventsGui()
+                }
+                UScreen.displayScreen(pastEventsGui!!)
             }
         }
 

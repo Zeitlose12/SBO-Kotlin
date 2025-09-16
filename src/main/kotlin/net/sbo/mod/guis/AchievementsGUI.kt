@@ -51,10 +51,7 @@ class AchievementsGUI : WindowScreen(ElementaVersion.V10) {
     }
 
     private fun updateAchievementList() {
-        achievementList = AchievementManager.achievements.values.sortedBy { it.id }.filter {
-            if (it.hidden && !it.unlocked) return@filter false
-            true
-        }.let { achievements ->
+        achievementList = AchievementManager.achievements.values.sortedBy { it.id }.let { achievements ->
             when (filterType) {
                 AchievementFilter.RARITY -> achievements.sortedBy { rarityOrder.indexOf(it.rarity) }
                 AchievementFilter.LOCKED -> achievements.filter { !it.isUnlocked() }
@@ -64,9 +61,10 @@ class AchievementsGUI : WindowScreen(ElementaVersion.V10) {
         }
 
         if (this::unlockedCountText.isInitialized) {
-            val totalAchievements = AchievementManager.achievements.values.count { !(it.hidden && !it.isUnlocked()) }
-            val unlockedPercentage = (AchievementManager.achievementsUnlocked.toFloat() / totalAchievements * 100).toFixed(2)
-            unlockedCountText.setText("Unlocked: ${AchievementManager.achievementsUnlocked}/${totalAchievements} ($unlockedPercentage%)")
+            val unlockedAchievements = AchievementManager.achievements.values.count { it.isUnlocked() }
+            val totalAchievements = AchievementManager.achievements.values.count()
+            val unlockedPercentage = (unlockedAchievements.toFloat() / totalAchievements * 100).toFixed(2)
+            unlockedCountText.setText("Unlocked: $unlockedAchievements/$totalAchievements ($unlockedPercentage%)")
         }
 
         if (this::filterText.isInitialized) {
@@ -95,8 +93,9 @@ class AchievementsGUI : WindowScreen(ElementaVersion.V10) {
         } childOf window
         titleText.setColor(Color.WHITE)
 
-        val totalAchievements = AchievementManager.achievements.values.count { !(it.hidden && !it.isUnlocked()) }
-        val unlockedPercentage = (AchievementManager.achievementsUnlocked.toFloat() / totalAchievements * 100).toFixed(2)
+        val unlockedAchievements = AchievementManager.achievements.values.count { it.isUnlocked() }
+        val totalAchievements = AchievementManager.achievements.values.count()
+        val unlockedPercentage = (unlockedAchievements.toFloat() / totalAchievements * 100).toFixed(2)
         unlockedCountText = UIText("Unlocked: ${AchievementManager.achievementsUnlocked}/${totalAchievements} ($unlockedPercentage%)").constrain {
             x = CenterConstraint()
             y = SiblingConstraint(5f)
