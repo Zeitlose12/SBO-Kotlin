@@ -218,7 +218,7 @@ object DianaLoot {
         )
         lines.add(timerLine)
         if (type == Diana.Tracker.TOTAL) lines.add(OverlayTextLine("${YELLOW}Total Events: $AQUA$totalEvents"))
-        if (screen == "CraftingOpen" || mc.currentScreen?.title?.string == "Crafting" && type == Diana.Tracker.SESSION) lines.add(resetSession)
+        if ((screen == "CraftingOpen" || mc.currentScreen?.title?.string == "Crafting") && type == Diana.Tracker.SESSION) lines.add(resetSession)
         overlay.setLines(lines)
     }
 
