@@ -23,10 +23,10 @@ class Overlay(
     var x: Float,
     var y: Float,
     var scale: Float = 1.0f,
-    var allowedGuis: List<String> = listOf("Chat screen")
+    var allowedGuis: List<String> = listOf("Chat screen"),
+    var exampleView: List<OverlayTextLine> = listOf()
 ) {
     private var lines = mutableListOf<OverlayTextLine>()
-    private var renderGui: Boolean = true
     private var condition: () -> Boolean = { true }
 
     var selected: Boolean = false
@@ -46,6 +46,10 @@ class Overlay(
     fun setCondition(condition: () -> Boolean): Overlay {
         this.condition = condition
         return this
+    }
+
+    fun checkCondition(): Boolean {
+        return condition()
     }
 
     fun addLine(line: OverlayTextLine) {
@@ -72,10 +76,15 @@ class Overlay(
         lines = mutableListOf()
     }
 
+    fun getLines(): List<OverlayTextLine> {
+        if (lines.isEmpty() && exampleView.isNotEmpty() && Helper.currentScreen is OverlayEditScreen) {
+            return exampleView
+        }
+        return lines
+    }
+
     fun overlayClicked(mouseX: Double, mouseY: Double) {
         if (!World.isInSkyblock()) return
-        if (!renderGui) return
-        if (!condition()) return
         if (Helper.getGuiName() !in allowedGuis) return
         val textRenderer = mc.textRenderer ?: return
         if (!isOverOverlay(mouseX, mouseY)) return
@@ -83,7 +92,7 @@ class Overlay(
         var currentY = y/this.scale
         var currentX = x/this.scale
 
-        for (line in lines) {
+        for (line in getLines()) {
             line.lineClicked(mouseX, mouseY, currentX * this.scale, currentY * this.scale, textRenderer, this.scale)
 
             if (line.linebreak) {
@@ -98,14 +107,10 @@ class Overlay(
     fun getTotalHeight(): Int {
         val textRenderer = mc.textRenderer ?: return 0
         var totalHeight = 0
-        for (line in lines) {
-            if (line.linebreak) {
+        for (line in getLines()) {
+            if (line.linebreak && line.checkCondition()) {
                 totalHeight += textRenderer.fontHeight + 1
             }
-        }
-
-        if (lines.isNotEmpty()) {
-            totalHeight += textRenderer.fontHeight + 1
         }
         return totalHeight
     }
@@ -114,7 +119,7 @@ class Overlay(
         val textRenderer = mc.textRenderer ?: return 0
         var maxWidth = 0
         var currentWidth = 0
-        for (line in lines) {
+        for (line in getLines()) {
             currentWidth += textRenderer.getWidth(line.text)
             if (line.linebreak) {
                 if (currentWidth > maxWidth) {
@@ -131,6 +136,7 @@ class Overlay(
     }
 
     fun isOverOverlay(mouseX: Double, mouseY: Double): Boolean {
+        if (!condition()) return false
         val totalWidth = getTotalWidth() * this.scale
         val totalHeight = getTotalHeight() * this.scale
 
@@ -138,7 +144,6 @@ class Overlay(
     }
 
     fun render(drawContext: DrawContext, mouseX: Double, mouseY: Double) {
-        if (!renderGui) return
         if (!condition()) return
         val textRenderer = mc.textRenderer ?: return
 
@@ -156,7 +161,11 @@ class Overlay(
             drawContext.drawText(textRenderer, "X: ${x.toInt()} Y: ${y.toInt()} Scale: ${String.format("%.1f", scale)}", (currentX).toInt(), (currentY - textRenderer.fontHeight - 1).toInt(), Color(255, 255, 255, 200).rgb, true)
         }
 
-        for (line in lines) {
+        if (isOverOverlay(mouseX, mouseY) && Helper.currentScreen is OverlayEditScreen) {
+            drawContext.fill(currentX.toInt(), currentY.toInt(), (currentX + totalWidth).toInt(), (currentY + totalHeight).toInt(), Color(0, 0, 0, 100).rgb)
+        }
+
+        for (line in getLines()) {
             if (!line.checkCondition()) continue
             if (Helper.getGuiName() in allowedGuis) line.updateMouseInteraction(mouseX, mouseY, currentX*this.scale, currentY*this.scale, textRenderer, this.scale, drawContext)
 

@@ -22,10 +22,10 @@ import net.sbo.mod.utils.events.ClickActionManager
 import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.game.World
 import net.sbo.mod.diana.burrows.BurrowDetector
-import net.sbo.mod.diana.guess.DianaGuess
 import net.sbo.mod.diana.DianaMobDetect
 import net.sbo.mod.diana.achievements.AchievementManager
 import net.sbo.mod.diana.achievements.AchievementManager.unlockAchievement
+import net.sbo.mod.diana.PreciseGuessBurrow
 import net.sbo.mod.general.HelpCommand
 import net.sbo.mod.overlays.Bobber
 import net.sbo.mod.overlays.DianaLoot
@@ -95,7 +95,7 @@ object SBOKotlin {
 		HypixelModApi.init()
 		PartyFinderManager.init()
 		PartyCheck.init()
-		DianaGuess.init()
+		PreciseGuessBurrow.init()
 		BurrowDetector.init()
 		Mayor.init()
 		DianaTracker.init()

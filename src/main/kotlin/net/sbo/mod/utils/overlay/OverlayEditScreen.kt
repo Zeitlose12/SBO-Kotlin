@@ -21,8 +21,7 @@ class OverlayEditScreen : Screen(Text.literal("SBO_Overlay_Editor")) {
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (button == 0) {
-            val overlays = OverlayManager.overlays.asReversed()
-            selectedOverlay = overlays.firstOrNull { it.isOverOverlay(mouseX, mouseY) }
+            selectedOverlay = OverlayManager.overlays.firstOrNull { it.isOverOverlay(mouseX, mouseY) }
 
             if (selectedOverlay != null) {
                 isDragging = true

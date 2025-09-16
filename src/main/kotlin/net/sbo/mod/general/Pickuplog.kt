@@ -11,6 +11,7 @@ import net.sbo.mod.utils.data.Item
 import net.sbo.mod.utils.events.annotations.SboEvent
 import net.sbo.mod.utils.events.impl.InventorySlotUpdateEvent
 import net.sbo.mod.utils.overlay.Overlay
+import net.sbo.mod.utils.overlay.OverlayExamples
 import net.sbo.mod.utils.overlay.OverlayTextLine
 import java.util.regex.Pattern
 
@@ -25,7 +26,7 @@ object Pickuplog {
 
     private val regex = Regex("""\+([\d,]+) ([^\(]+)""")
 
-    private val overlay: Overlay = Overlay("pickuplog", 5f, 5f, 1f, listOf("Chat screen", "Crafting"))
+    private val overlay: Overlay = Overlay("pickuplog", 5f, 5f, 1f, listOf("Chat screen", "Crafting"), OverlayExamples.pickupLogExample)
 
     private val itemsShowAdded: MutableList<MutableMap<String, OverlayLineData>> = mutableListOf()
     private val itemsShowRemoved: MutableList<MutableMap<String, OverlayLineData>> = mutableListOf()
