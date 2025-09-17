@@ -15,7 +15,7 @@ import net.sbo.mod.general.Pickuplog
 import net.sbo.mod.utils.data.SboDataObject
 import net.sbo.mod.partyfinder.PartyFinderManager
 import net.sbo.mod.utils.SboKeyBinds
-import net.sbo.mod.guis.Main
+import net.sbo.mod.guis.Guis
 import net.sbo.mod.partyfinder.PartyCheck
 import net.sbo.mod.partyfinder.PartyPlayer
 import net.sbo.mod.utils.events.ClickActionManager
@@ -54,7 +54,6 @@ object SBOKotlin {
 
 	val configurator = Configurator("sbo")
 	val settings = Settings.register(configurator)
-	val guis = Main
 
 	lateinit var version: String
 
@@ -87,7 +86,7 @@ object SBOKotlin {
 			SoundHandler.playCustomSound("buzzer", 100f)
 		}
 
-		guis.register()
+		Guis.register()
 		HelpCommand.init()
 		ClickActionManager.init()
 		SboKeyBinds.init()

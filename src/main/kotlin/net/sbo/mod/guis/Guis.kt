@@ -11,7 +11,7 @@ import net.sbo.mod.utils.events.impl.PartyFinderOpenEvent
 import net.sbo.mod.utils.game.World
 import net.sbo.mod.utils.http.Http
 
-object Main {
+object Guis {
     private var partyFinderGui: PartyFinderGUI? = null
     private var pastEventsGui: PastEventsGui? = null
     internal var achievementsGui: AchievementsGUI? = null
