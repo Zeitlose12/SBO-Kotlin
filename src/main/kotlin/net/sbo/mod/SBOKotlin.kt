@@ -15,17 +15,17 @@ import net.sbo.mod.general.Pickuplog
 import net.sbo.mod.utils.data.SboDataObject
 import net.sbo.mod.partyfinder.PartyFinderManager
 import net.sbo.mod.utils.SboKeyBinds
-import net.sbo.mod.guis.Main
+import net.sbo.mod.guis.Guis
 import net.sbo.mod.partyfinder.PartyCheck
 import net.sbo.mod.partyfinder.PartyPlayer
 import net.sbo.mod.utils.events.ClickActionManager
 import net.sbo.mod.utils.HypixelModApi
 import net.sbo.mod.utils.game.World
-import net.sbo.mod.diana.BurrowDetector
-import net.sbo.mod.diana.DianaGuess
+import net.sbo.mod.diana.burrows.BurrowDetector
 import net.sbo.mod.diana.DianaMobDetect
 import net.sbo.mod.diana.achievements.AchievementManager
 import net.sbo.mod.diana.achievements.AchievementManager.unlockAchievement
+import net.sbo.mod.diana.PreciseGuessBurrow
 import net.sbo.mod.general.HelpCommand
 import net.sbo.mod.overlays.Bobber
 import net.sbo.mod.overlays.DianaLoot
@@ -40,6 +40,7 @@ import net.sbo.mod.utils.SboTimerManager
 import net.sbo.mod.utils.SoundHandler
 import net.sbo.mod.utils.chat.ChatHandler
 import net.sbo.mod.utils.overlay.OverlayManager
+import net.sbo.mod.utils.events.SboEventGeneratedRegistry
 
 object SBOKotlin {
 	@JvmField
@@ -53,7 +54,6 @@ object SBOKotlin {
 
 	val configurator = Configurator("sbo")
 	val settings = Settings.register(configurator)
-	val guis = Main
 
 	lateinit var version: String
 
@@ -71,6 +71,9 @@ object SBOKotlin {
 		// Load Custom Sound System
 		SoundHandler.init()
 
+		// Register Annotation Pocessor
+		SboEventGeneratedRegistry.registerAll()
+
 		// load Main Features
 		PartyCommands.registerPartyChatListeners()
 		Register.command("sbo") {
@@ -83,7 +86,7 @@ object SBOKotlin {
 			SoundHandler.playCustomSound("buzzer", 100f)
 		}
 
-		guis.register()
+		Guis.register()
 		HelpCommand.init()
 		ClickActionManager.init()
 		SboKeyBinds.init()
@@ -91,7 +94,7 @@ object SBOKotlin {
 		HypixelModApi.init()
 		PartyFinderManager.init()
 		PartyCheck.init()
-		DianaGuess.init()
+		PreciseGuessBurrow.init()
 		BurrowDetector.init()
 		Mayor.init()
 		DianaTracker.init()

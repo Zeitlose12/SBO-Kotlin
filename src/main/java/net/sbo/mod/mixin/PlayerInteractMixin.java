@@ -6,7 +6,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.sbo.mod.utils.events.EventBus;
+import net.sbo.mod.utils.events.SBOEvent;
 import net.sbo.mod.utils.events.impl.PlayerInteractEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -26,7 +26,7 @@ public class PlayerInteractMixin {
             PlayerInteractEvent event = new PlayerInteractEvent(
                     "useItem", null, client.player, client.player.getWorld(), false
             );
-            EventBus.INSTANCE.emit(event);
+            SBOEvent.INSTANCE.emit(event);
 
             if (event.isCanceled()) {
                 cir.setReturnValue(ActionResult.FAIL);
@@ -41,7 +41,7 @@ public class PlayerInteractMixin {
             PlayerInteractEvent event = new PlayerInteractEvent(
                     "useBlock", hitResult.getBlockPos(), player, player.getWorld(), false
             );
-            EventBus.INSTANCE.emit(event);
+            SBOEvent.INSTANCE.emit(event);
 
             if (event.isCanceled()) {
                 cir.setReturnValue(ActionResult.FAIL);

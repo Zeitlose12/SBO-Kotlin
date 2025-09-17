@@ -72,6 +72,7 @@ Before you begin, you need to have a few things installed:
 
 * **Fabric API**: This is a dependency for most Fabric mods, including SkyblockOverhaul. [Download it from Modrinth](https://modrinth.com/mod/fabric-api)
 * **Fabric Language Kotlin**: This mod is written in Kotlin, so you need this library as well. [Download it from Modrinth](https://modrinth.com/mod/fabric-language-kotlin)
+* **Mod Menu**: needed so sbo settings show up in mod page ingame. [Download it from Modrinth](https://modrinth.com/mod/modmenu)
 
 ### Step-by-Step Installation Guide
 
@@ -82,8 +83,8 @@ Before you begin, you need to have a few things installed:
 **2. Install SkyblockOverhaul**
 
 * Now you can download the SkyblockOverhaul mod itself.
-* Go to the mod's download page (link to Modrinth) and download the `.jar` file for the correct Minecraft version.
-* Or get it from the releases section of this repository.
+* Go to the mod's download page [Skyblock Overhaul on Modrinth](https://modrinth.com/mod/skyblock-overhaul) and download the `.jar` file for the correct Minecraft version.
+* Or get it from the [release section](https://github.com/SkyblockOverhaul/SBO-Kotlin/releases) of this repository.
 
 **3. Launch the Game**
 

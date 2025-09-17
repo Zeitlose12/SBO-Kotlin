@@ -15,7 +15,7 @@ import net.sbo.mod.utils.http.Http.getString
 import net.sbo.mod.utils.data.SboDataObject.sboData
 import net.sbo.mod.SBOKotlin.API_URL
 import net.sbo.mod.partyfinder.PartyPlayer.getPartyPlayerStats
-import net.sbo.mod.utils.events.EventBus
+import net.sbo.mod.utils.events.SBOEvent
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.data.PartyPlayerStats
 import net.sbo.mod.utils.data.GetAllParties
@@ -23,6 +23,7 @@ import net.sbo.mod.utils.data.Party
 import net.sbo.mod.utils.data.PartyAddResponse
 import net.sbo.mod.utils.data.PartyUpdateResponse
 import net.sbo.mod.utils.data.Reqs
+import net.sbo.mod.utils.events.impl.PartyFinderRefreshListEvent
 import net.sbo.mod.utils.http.Http.getInt
 import java.util.UUID
 import java.util.regex.Pattern
@@ -222,7 +223,7 @@ object PartyFinderManager {
                         inQueue = true
                         creatingParty = false
                         partyReqsMap = response.partyReqs!!
-                        EventBus.emit("refreshPartyList")
+                        SBOEvent.emit(PartyFinderRefreshListEvent())
 
                         if (ghostParty) {
                             removePartyFromQueue()

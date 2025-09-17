@@ -10,6 +10,7 @@ import net.sbo.mod.utils.Player
 import net.sbo.mod.utils.chat.Chat
 import net.sbo.mod.utils.chat.ChatUtils.formattedString
 import net.sbo.mod.utils.overlay.Overlay
+import net.sbo.mod.utils.overlay.OverlayExamples
 import net.sbo.mod.utils.overlay.OverlayTextLine
 import kotlin.math.roundToInt
 
@@ -17,7 +18,7 @@ object DianaMobDetect {
     private val trackedArmorStands = mutableMapOf<Int, String>()
     private val defeatedMobs = mutableSetOf<Int>()
     private val mobDeathListeners = mutableListOf<(String, ArmorStandEntity) -> Unit>() // <-- NEW
-    private val mobHpOverlay: Overlay = Overlay("mythosMobHp", 10f, 10f, 1f, listOf("Chat screen")).setCondition { Diana.mythosMobHp }
+    private val mobHpOverlay: Overlay = Overlay("mythosMobHp", 10f, 10f, 1f, listOf("Chat screen"), OverlayExamples.mythosMobHpExample).setCondition { Diana.mythosMobHp }
 
     fun init() {
         mobHpOverlay.init()

@@ -2,7 +2,7 @@ package net.sbo.mod.utils.waypoint
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
-import net.sbo.mod.diana.DianaGuess
+import net.sbo.mod.diana.PreciseGuessBurrow
 import net.sbo.mod.settings.categories.Customization
 import net.sbo.mod.utils.render.WaypointRenderer
 import net.sbo.mod.settings.categories.Diana
@@ -287,7 +287,7 @@ object WaypointManager {
     var tryWarp: Boolean = false
     fun executeWarpCommand(warp: String) {
         if (!checkDiana()) return
-        if (Diana.warpDelay > 0 && System.currentTimeMillis() - DianaGuess.lastGuessTime < Diana.warpDelay) return
+        if (Diana.warpDelay > 0 && System.currentTimeMillis() - PreciseGuessBurrow.lastGuessTime < Diana.warpDelay) return
         if (warp.isNotEmpty() && !tryWarp) {
             tryWarp = true
             Chat.command("warp $warp")

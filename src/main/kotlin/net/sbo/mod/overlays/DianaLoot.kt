@@ -16,13 +16,15 @@ import net.sbo.mod.utils.SboTimerManager
 import net.sbo.mod.utils.data.DianaTracker
 import net.sbo.mod.utils.data.SboDataObject.SBOConfigBundle
 import net.sbo.mod.utils.events.Register
+import net.sbo.mod.utils.events.annotations.SboEvent
+import net.sbo.mod.utils.events.impl.GuiOpenEvent
 import net.sbo.mod.utils.render.RenderUtils2D
 import java.util.concurrent.TimeUnit
 
 object DianaLoot {
     private var isSellTypeHovered = false
     val timerLine: OverlayTextLine = OverlayTextLine("")
-    val overlay = Overlay("Diana Loot", 10f, 10f, 1f, listOf("Chat screen", "Crafting")).setCondition { Diana.lootTracker != Diana.Tracker.OFF && Helper.checkDiana() }
+    val overlay = Overlay("Diana Loot", 10f, 10f, 1f, listOf("Chat screen", "Crafting")).setCondition { (Diana.lootTracker != Diana.Tracker.OFF && Helper.checkDiana()) || Helper.hasSpade }
     val changeView: OverlayTextLine = OverlayTextLine("${YELLOW}Change View", linebreak = false)
         .onClick {
             Diana.lootTracker = Diana.lootTracker.next()
@@ -57,6 +59,7 @@ object DianaLoot {
             SBOConfigBundle.dianaTrackerSessionData.reset().save()
             updateLines()
             DianaMobs.updateLines()
+            InquisLoot.updateLines()
         }
         .onMouseEnter {
             resetSession.text = "$RED${UNDERLINE}Reset Session"
@@ -69,11 +72,6 @@ object DianaLoot {
         overlay.init()
         updateLines()
         updateTimerText()
-        Register.onGuiOpen { screen, ci ->
-            if (screen.title.string == "Crafting") {
-                updateLines("CraftingOpen")
-            }
-        }
         Register.onGuiClose { screen ->
             if (screen.title.string == "Crafting") {
                 overlay.removeLine(changeView)
@@ -84,6 +82,13 @@ object DianaLoot {
         }
         Register.onTick(1) {
             updateTimerText()
+        }
+    }
+
+    @SboEvent
+    fun onGuiOpen(event: GuiOpenEvent) {
+        if (event.screen.title.string == "Crafting") {
+            updateLines("CraftingOpen")
         }
     }
 
@@ -213,7 +218,7 @@ object DianaLoot {
         )
         lines.add(timerLine)
         if (type == Diana.Tracker.TOTAL) lines.add(OverlayTextLine("${YELLOW}Total Events: $AQUA$totalEvents"))
-        if (screen == "CraftingOpen" || mc.currentScreen?.title?.string == "Crafting" && type == Diana.Tracker.SESSION) lines.add(resetSession)
+        if ((screen == "CraftingOpen" || mc.currentScreen?.title?.string == "Crafting") && type == Diana.Tracker.SESSION) lines.add(resetSession)
         overlay.setLines(lines)
     }
 

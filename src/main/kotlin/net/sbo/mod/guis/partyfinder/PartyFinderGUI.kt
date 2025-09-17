@@ -1,4 +1,6 @@
 package net.sbo.mod.guis.partyfinder
+//todo: remake this with a newer/maintained gui library like PolyUI: https://github.com/Polyfrost/polyui-jvm
+//import org.polyfrost.polyui.component.impl.*
 
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import gg.essential.elementa.ElementaVersion
@@ -36,13 +38,15 @@ import net.sbo.mod.partyfinder.PartyFinderManager.sendJoinRequest
 import net.sbo.mod.partyfinder.PartyPlayer.getPartyPlayerStats
 import net.sbo.mod.settings.categories.PartyFinder
 import net.sbo.mod.utils.chat.Chat
-import net.sbo.mod.utils.events.EventBus
 import net.sbo.mod.utils.Helper
 import net.sbo.mod.utils.data.HighlightElement
 import net.sbo.mod.utils.data.Party
 import net.sbo.mod.utils.data.PartyPlayerStats
 import net.sbo.mod.utils.data.Reqs
 import net.sbo.mod.utils.data.SboDataObject.pfConfigState
+import net.sbo.mod.utils.events.annotations.SboEvent
+import net.sbo.mod.utils.events.impl.PartyFinderOpenEvent
+import net.sbo.mod.utils.events.impl.PartyFinderRefreshListEvent
 import java.awt.Color
 
 
@@ -86,16 +90,26 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
 
 
     init {
-        registers()
         create()
+    }
 
-        EventBus.on("refreshPartyList") {
-            updateCurrentPartyList(true)
+    companion object {
+        var instance: PartyFinderGUI? = null
+
+        @SboEvent
+        fun onPartyFinderRefresh(event: PartyFinderRefreshListEvent) {
+            instance?.updateCurrentPartyList(true)
         }
 
-        EventBus.on("gui_opened") {
-            onScreenOpen()
+        @SboEvent
+        fun onPartyFinderOpen(event: PartyFinderOpenEvent) {
+            instance?.onScreenOpen()
         }
+    }
+
+    private fun create() {
+        instance = this
+        createGui()
 
         window.onKeyType { typedChar, keyCode ->
             if (keyCode == UKeyboard.KEY_ESCAPE) {
@@ -144,10 +158,6 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
         if (mc.options.guiScale.value != 2 || guiScale == null) return
         mc.options.guiScale.value = guiScale // restore original gui scale
         guiScale = null
-    }
-
-    private fun registers() {
-
     }
 
     internal fun getTextScale(base: Float = 1f): PixelConstraint {
@@ -872,7 +882,7 @@ class PartyFinderGUI : WindowScreen(ElementaVersion.V10) {
         }
     }
 
-    private fun create() {
+    private fun createGui() {
         filterBackground = UIBlock().constrain {
             width = 100.percent()
             height = 100.percent()
