@@ -1,5 +1,5 @@
 <h1 align="center">
-  [SBO] SkyblockOverhaul: Mod for Hypixel SkyBlock
+  [SBO] SkyblockOverhaul: Unofficial version of the mod
 </h1>
 
 ---
